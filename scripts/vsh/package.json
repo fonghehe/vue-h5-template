@@ -1,0 +1,32 @@
+{
+  "name": "@vh5/vsh",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "bin": {
+    "vsh": "./bin/vsh.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "stub": "pnpm exec tsdown"
+  },
+  "dependencies": {
+    "@clack/prompts": "catalog:",
+    "@vh5/node-utils": "workspace:*",
+    "cac": "catalog:",
+    "circular-dependency-scanner": "catalog:",
+    "depcheck": "catalog:",
+    "publint": "catalog:"
+  }
+}

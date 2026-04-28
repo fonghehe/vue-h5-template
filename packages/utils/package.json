@@ -1,0 +1,20 @@
+{
+  "name": "@vh5/utils",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@vh5-core/shared": "workspace:*",
+    "@vh5-core/typings": "workspace:*",
+    "vue-router": "catalog:"
+  }
+}

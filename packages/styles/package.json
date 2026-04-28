@@ -1,0 +1,28 @@
+{
+  "name": "@vh5/styles",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./nutui": {
+      "default": "./src/nutui/index.css"
+    },
+    "./vant": {
+      "default": "./src/vant/index.css"
+    },
+    "./varlet": {
+      "default": "./src/varlet/index.css"
+    },
+    "./global": {
+      "types": "./src/global/index.d.ts",
+      "default": "./src/global/index.scss"
+    }
+  },
+  "dependencies": {
+    "@vh5-core/design": "workspace:*"
+  }
+}

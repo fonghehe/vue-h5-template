@@ -1,0 +1,71 @@
+{
+  "name": "@vh5-core/shared",
+  "version": "1.0.0",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./constants": {
+      "types": "./src/constants/index.ts",
+      "development": "./src/constants/index.ts",
+      "default": "./dist/constants/index.mjs"
+    },
+    "./utils": {
+      "types": "./src/utils/index.ts",
+      "development": "./src/utils/index.ts",
+      "default": "./dist/utils/index.mjs"
+    },
+    "./cache": {
+      "types": "./src/cache/index.ts",
+      "development": "./src/cache/index.ts",
+      "default": "./dist/cache/index.mjs"
+    },
+    "./store": {
+      "types": "./src/store.ts",
+      "development": "./src/store.ts",
+      "default": "./dist/store.mjs"
+    }
+  },
+  "publishConfig": {
+    "exports": {
+      "./constants": {
+        "types": "./dist/constants/index.d.ts",
+        "default": "./dist/constants/index.mjs"
+      },
+      "./utils": {
+        "types": "./dist/utils/index.d.ts",
+        "default": "./dist/utils/index.mjs"
+      },
+      "./cache": {
+        "types": "./dist/cache/index.d.ts",
+        "default": "./dist/cache/index.mjs"
+      },
+      "./store": {
+        "types": "./dist/store.d.ts",
+        "default": "./dist/store.mjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "pnpm unbuild",
+    "stub": "pnpm unbuild --stub"
+  },
+  "dependencies": {
+    "@tanstack/vue-store": "catalog:",
+    "@vue/shared": "catalog:",
+    "clsx": "catalog:",
+    "dayjs": "catalog:",
+    "defu": "catalog:",
+    "es-toolkit": "catalog:",
+    "lodash.clonedeep": "catalog:",
+    "nprogress": "catalog:",
+    "tailwind-merge": "catalog:"
+  },
+  "devDependencies": {
+    "@types/lodash.clonedeep": "catalog:",
+    "@types/nprogress": "catalog:"
+  }
+}

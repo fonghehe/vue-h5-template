@@ -1,0 +1,108 @@
+{
+  "folders": [
+    {
+      "name": "@vh5/backend-mock",
+      "path": "apps/backend-mock",
+    },
+    {
+      "name": "@vh5/h5-nutui",
+      "path": "apps/h5-nutui",
+    },
+    {
+      "name": "@vh5/h5-vant",
+      "path": "apps/h5-vant",
+    },
+    {
+      "name": "@vh5/h5-varlet",
+      "path": "apps/h5-varlet",
+    },
+    {
+      "name": "@vh5/docs",
+      "path": "docs",
+    },
+    {
+      "name": "@vh5/commitlint-config",
+      "path": "internal/lint-configs/commitlint-config",
+    },
+    {
+      "name": "@vh5/eslint-config",
+      "path": "internal/lint-configs/eslint-config",
+    },
+    {
+      "name": "@vh5/lint-staged-config",
+      "path": "internal/lint-configs/lint-staged-config",
+    },
+    {
+      "name": "@vh5/oxfmt-config",
+      "path": "internal/lint-configs/oxfmt-config",
+    },
+    {
+      "name": "@vh5/oxlint-config",
+      "path": "internal/lint-configs/oxlint-config",
+    },
+    {
+      "name": "@vh5/prettier-config",
+      "path": "internal/lint-configs/prettier-config",
+    },
+    {
+      "name": "@vh5/stylelint-config",
+      "path": "internal/lint-configs/stylelint-config",
+    },
+    {
+      "name": "@vh5/node-utils",
+      "path": "internal/node-utils",
+    },
+    {
+      "name": "@vh5/tsconfig",
+      "path": "internal/tsconfig",
+    },
+    {
+      "name": "@vh5/vite-config",
+      "path": "internal/vite-config",
+    },
+    {
+      "name": "@vh5-core/design",
+      "path": "packages/@core/base/design",
+    },
+    {
+      "name": "@vh5-core/icons",
+      "path": "packages/@core/base/icons",
+    },
+    {
+      "name": "@vh5-core/shared",
+      "path": "packages/@core/base/shared",
+    },
+    {
+      "name": "@vh5-core/typings",
+      "path": "packages/@core/base/typings",
+    },
+    {
+      "name": "@vh5-core/composables",
+      "path": "packages/@core/composables",
+    },
+    {
+      "name": "@vh5-core/preferences",
+      "path": "packages/@core/preferences",
+    },
+    {
+      "name": "@vh5/locales",
+      "path": "packages/locales",
+    },
+    {
+      "name": "@vh5/stores",
+      "path": "packages/stores",
+    },
+    {
+      "name": "@vh5/styles",
+      "path": "packages/styles",
+    },
+    {
+      "name": "@vh5/utils",
+      "path": "packages/utils",
+    },
+    {
+      "name": "@vh5/vsh",
+      "path": "scripts/vsh",
+    },
+  ],
+}

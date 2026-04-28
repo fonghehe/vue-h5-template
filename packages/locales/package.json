@@ -1,0 +1,24 @@
+{
+  "name": "@vh5/locales",
+  "version": "1.0.0",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./langs/zh-CN/app.json": "./src/langs/zh-CN/app.json",
+    "./langs/zh-TW/app.json": "./src/langs/zh-TW/app.json",
+    "./langs/en-US/app.json": "./src/langs/en-US/app.json",
+    "./langs/ja-JP/app.json": "./src/langs/ja-JP/app.json"
+  },
+  "dependencies": {
+    "@intlify/core-base": "catalog:",
+    "@vh5-core/composables": "workspace:*",
+    "vue": "catalog:",
+    "vue-i18n": "catalog:"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@vh5/oxfmt-config",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "stub": "pnpm exec tsdown"
+  },
+  "dependencies": {
+    "oxfmt": "catalog:"
+  }
+}
