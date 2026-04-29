@@ -1,8 +1,8 @@
-# Vite 配置
+# Vite Config
 
-`internal/vite-config` 提供共享的 Vite 配置生成器。
+`internal/vite-config` provides a shared Vite configuration generator.
 
-## 使用
+## Usage
 
 ```ts
 import { defineConfig } from "@vh5/vite-config";
@@ -12,47 +12,24 @@ export default defineConfig(async () => ({
     uiLibrary: "nut", // 'nut' | 'vant' | 'varlet'
   },
   vite: {
-    // 自定义 Vite 配置
+    /* custom config */
   },
 }));
 ```
 
-## 内置插件
+## Built-in Plugins
 
-| 插件                       | 说明                |
-| -------------------------- | ------------------- |
-| `@vitejs/plugin-vue`       | Vue 3 SFC 支持      |
-| `@vitejs/plugin-vue-jsx`   | JSX/TSX 支持        |
-| `unplugin-auto-import`     | API 自动导入        |
-| `unplugin-vue-components`  | 组件按需自动注册    |
-| `vite-plugin-vue-devtools` | Vue DevTools        |
-| `postcss-px-to-viewport`   | px 转 viewport 适配 |
-| `vite-plugin-html`         | HTML 模板注入       |
-| `vite-plugin-compression`  | Gzip/Brotli 压缩    |
-| `vite-plugin-pwa`          | PWA 支持            |
-| `vite:mock-server`         | Nitro Mock 服务     |
-
-## 按需加载配置
-
-通过 `uiLibrary` 选项自动配置对应的 Resolver：
-
-| UI 库  | Component Resolver     | Auto Import Resolver                         | importStyle        |
-| ------ | ---------------------- | -------------------------------------------- | ------------------ |
-| vant   | `VantResolver`         | `VantResolver`                               | `false`（全量CSS） |
-| varlet | `VarletImportResolver` | `VarletImportResolver({ autoImport: true })` | 自动               |
-| nutui  | `NutUIResolver`        | —                                            | 自动               |
-
-## 配置选项
-
-```ts
-interface ApplicationPluginOptions {
-  uiLibrary?: "nut" | "vant" | "varlet";
-  devtools?: boolean;
-  compress?: boolean;
-  compressTypes?: ("brotli" | "gzip")[];
-  html?: boolean;
-  pwa?: boolean;
-  injectAppLoading?: boolean;
-  nitroMock?: boolean;
-}
-```
+| Plugin                     | Description                  |
+| -------------------------- | ---------------------------- |
+| `@vitejs/plugin-vue`       | Vue 3 SFC support            |
+| `@vitejs/plugin-vue-jsx`   | JSX/TSX support              |
+| `unplugin-auto-import`     | Auto import APIs             |
+| `unplugin-vue-components`  | Auto register components     |
+| `unplugin-vue-router`      | Type-safe file-based routing |
+| `unocss`                   | Atomic CSS engine            |
+| `vite-plugin-eruda-pro`    | Mobile debug console (dev)   |
+| `vite-plugin-vue-devtools` | Vue DevTools                 |
+| `postcss-mobile-forever`   | Mobile viewport adaptation   |
+| `vite-plugin-html`         | HTML template inject         |
+| `vite-plugin-compression`  | Gzip/Brotli compress         |
+| `vite-plugin-pwa`          | PWA support                  |

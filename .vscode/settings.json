@@ -238,5 +238,5 @@
   "commentTranslate.hover.enabled": false,
   "commentTranslate.multiLineMerge": true,
   "vue.server.hybridMode": true,
-  "cSpell.words": ["fonghehe", "vant"]
+  "cSpell.words": ["fonghehe", "unocss", "vant"]
 }

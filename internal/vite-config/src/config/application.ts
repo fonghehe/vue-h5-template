@@ -3,8 +3,9 @@ import type { CSSOptions, UserConfig } from "vite";
 import type { DefineApplicationOptions } from "../typing";
 import { defineConfig, loadEnv, mergeConfig } from "vite";
 
-import postcssPxToViewport from "postcss-px-to-viewport-8-plugin";
 import autoprefixer from "autoprefixer";
+
+import viewport from "postcss-mobile-forever";
 
 import { defaultImportmapOptions, getDefaultPwaOptions } from "../options";
 import { loadApplicationPlugins } from "../plugins";
@@ -41,6 +42,8 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       print: !isBuild,
       pwa: true,
       pwaOptions: getDefaultPwaOptions(appTitle),
+      unocss: true,
+      vconsole: !isBuild,
       vxeTableLazyImport: true,
       ...envConfig,
       ...application,
@@ -107,31 +110,22 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
 }
 
 function createCssOptions(pxToViewport = true, pxToViewportOptions?: any): CSSOptions {
+  const baseViewportOpts = {
+    appSelector: "#app",
+    viewportWidth: 375,
+    unitPrecision: 3,
+    maxDisplayWidth: 600,
+    propList: ["*"],
+    selectorBlackList: [".ignore", "keep-px"],
+    valueBlackList: ["1px solid"],
+    mobileUnit: "vw",
+    rootContainingBlockSelectorList: ["van-popup--bottom"],
+    ...pxToViewportOptions,
+  };
   return {
     postcss: pxToViewport
       ? {
-          plugins: [
-            autoprefixer({
-              overrideBrowserslist: ["Android 4.1", "iOS 7.1", "Chrome > 31", "ff > 31", "ie >= 8"],
-            }),
-            postcssPxToViewport({
-              unitToConvert: "px", // 要转化的单位
-              viewportWidth: 375, // UI设计稿的宽度
-              unitPrecision: 6, // 转换后的精度，即小数点位数
-              propList: ["*"], // 指定转换的css属性的单位，*代表全部css属性的单位都进行转换
-              viewportUnit: "vw", // 指定需要转换成的视窗单位，默认vw
-              fontViewportUnit: "vw", // 指定字体需要转换成的视窗单位，默认vw
-              minPixelValue: 1, // 默认值1，小于或等于1px则不进行转换
-              mediaQuery: true, // 是否在媒体查询的css代码中也进行转换，默认false
-              replace: true, // 是否转换后直接更换属性值
-              landscape: false, //是否添加根据 landscapeWidth 生成的媒体查询条件 @media (orientation: landscape)
-              landscapeUnit: "rem", //横屏时使用的单位
-              landscapeWidth: 1134, //横屏时使用的视口宽度
-              include: [],
-              exclude: [], // 设置忽略文件，用正则做目录名匹配
-              ...pxToViewportOptions,
-            }),
-          ],
+          plugins: [autoprefixer(), viewport(baseViewportOpts)],
         }
       : undefined,
   };

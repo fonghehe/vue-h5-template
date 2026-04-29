@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@unocss/preset-rem-to-px": "catalog:",
     "@vh5/commitlint-config": "workspace:*",
     "@vh5/eslint-config": "workspace:*",
     "@vh5/oxlint-config": "workspace:*",
@@ -41,6 +42,7 @@
     "turbo": "catalog:",
     "typescript": "catalog:",
     "unbuild": "catalog:",
+    "unocss": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "vue": "catalog:",

@@ -49,6 +49,31 @@ pnpm start
 | user       | 123456     | 一般ユーザー |
 | admin      | 123456     | 管理者       |
 
+## ログインリクエスト例
+
+```bash
+curl -X POST http://localhost:5320/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"user","password":"123456"}'
+```
+
+レスポンス：
+
+```json
+{
+  "code": 0,
+  "data": {
+    "id": 0,
+    "realName": "テストユーザー",
+    "avatar": "...",
+    "roles": ["user"],
+    "username": "user",
+    "accessToken": "eyJhbGciOiJIUzI1NiI..."
+  },
+  "message": "ok"
+}
+```
+
 ## JWT 認証
 
 - Access Token 有効期限：7日間

@@ -1,7 +1,7 @@
 import type { DefaultTheme, LocaleSpecificConfig } from "vitepress";
 
 export const zhHK: LocaleSpecificConfig<DefaultTheme.Config> = {
-  label: "香港繁體",
+  label: "繁體中文(港)",
   lang: "zh-HK",
   link: "/zh-HK/",
   themeConfig: {

@@ -10,10 +10,13 @@ import type {
 import viteVue from "@vitejs/plugin-vue";
 import viteVueJsx from "@vitejs/plugin-vue-jsx";
 import { visualizer as viteVisualizerPlugin } from "rollup-plugin-visualizer";
+import UnoCSS from "unocss/vite";
+import VueRouter from "unplugin-vue-router/vite";
 import viteCompressPlugin from "vite-plugin-compression";
 import viteDtsPlugin from "vite-plugin-dts";
 import { createHtmlPlugin as viteHtmlPlugin } from "vite-plugin-html";
 import { VitePWA } from "vite-plugin-pwa";
+import eruda from "vite-plugin-eruda-pro";
 import viteVueDevTools from "vite-plugin-vue-devtools";
 import { viteArchiverPlugin } from "./archiver";
 import { viteExtraAppConfigPlugin } from "./extra-app-config";
@@ -49,6 +52,12 @@ async function loadCommonPlugins(options: CommonPluginOptions): Promise<Conditio
     {
       condition: true,
       plugins: () => [
+        // VueRouter must be before Vue plugin
+        VueRouter({
+          routesFolder: "src/views",
+          dts: "types/typed-router.d.ts",
+          extensions: [".vue"],
+        }),
         viteVue({
           script: {
             defineModel: true,
@@ -103,12 +112,26 @@ async function loadApplicationPlugins(options: ApplicationPluginOptions): Promis
     printInfoMap,
     pwa,
     pwaOptions,
+    unocss,
+    vconsole,
     ...commonOptions
   } = options;
   const commonPlugins = await loadCommonPlugins(commonOptions);
 
   return await loadConditionPlugins([
     ...commonPlugins,
+
+    {
+      condition: unocss !== false,
+      plugins: () => [UnoCSS()],
+    },
+
+    {
+      condition: vconsole !== false && !isBuild,
+      plugins: () => [
+        eruda({ open: true, erudaUrl: "https://cdn.jsdelivr.net/npm/eruda", erudaOptions: {} }),
+      ],
+    },
 
     {
       condition: print,

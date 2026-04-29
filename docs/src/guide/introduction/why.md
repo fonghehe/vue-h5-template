@@ -1,54 +1,54 @@
-# 为什么选择 Vue H5 Template？
+# Why Vue H5 Template?
 
-## 背景
+## Background
 
-在移动端 H5 开发中，开发者在启动新项目时常常面临类似的挑战：
+In mobile H5 development, developers often face similar challenges when starting a new project:
 
-- 选择合适的 UI 框架（NutUI、Vant、Varlet）并正确配置
-- 从零开始配置构建工具和开发环境
-- 在团队中建立统一的代码规范、lint 和格式化标准
-- 实现常见功能如登录认证、状态管理、国际化等
-- 管理多个应用之间的共享代码和配置
+- Choosing the right UI framework (NutUI, Vant, Varlet) and setting it up properly
+- Configuring the build tool and development environment from scratch
+- Setting up code standards, linting, and formatting across the team
+- Implementing common features like authentication, state management, and internationalization
+- Managing multiple apps with shared code and configurations
 
-Vue H5 Template 旨在通过一个结构良好、生产就绪的 Monorepo 模板来解决这些问题。
+Vue H5 Template was created to solve these problems with a well-structured, production-ready Monorepo template.
 
-## 为什么选择 Monorepo？
+## Why Monorepo?
 
-### 代码复用
+### Code Reuse
 
-在传统的多仓库模式中，共享代码（utils、stores、styles、configs）需要单独维护和发布。而在 Monorepo 中：
+In traditional multi-repo setups, shared code (utils, stores, styles, configs) must be maintained separately and published as packages. In a Monorepo:
 
-- 共享包通过 workspace 引用直接链接
-- 共享代码的变更立即对所有应用生效
-- 无需发布和管理内部包的版本
+- Shared packages are linked directly via workspace references
+- Changes to shared code are immediately available to all apps
+- No need to publish and version internal packages
 
-### 统一规范
+### Unified Standards
 
-使用 Monorepo，所有应用共享相同的：
+With Monorepo, all apps share the same:
 
-- ESLint、Prettier、Stylelint 配置
-- TypeScript 配置
-- 提交约定和 CI/CD 流程
-- 依赖版本（通过 pnpm catalog）
+- ESLint, Prettier, Stylelint configurations
+- TypeScript configuration
+- Commit conventions and CI/CD pipelines
+- Dependency versions via pnpm catalog
 
-### 多 UI 框架支持
+### Multi-UI Framework Support
 
-不同团队或项目可能偏好不同的 UI 框架。Vue H5 Template 提供了三套开箱即用的应用模板：
+Different teams or projects may prefer different UI frameworks. Vue H5 Template provides three ready-to-use app templates:
 
-| 应用      | UI 框架    | 默认端口 |
-| --------- | ---------- | -------- |
-| h5-nutui  | NutUI 4.x  | 5777     |
-| h5-vant   | Vant 4.x   | 5778     |
-| h5-varlet | Varlet 3.x | 5779     |
+| App       | UI Framework | Default Port |
+| --------- | ------------ | ------------ |
+| h5-nutui  | NutUI 4.x    | 5777         |
+| h5-vant   | Vant 4.x     | 5778         |
+| h5-varlet | Varlet 3.x   | 5779         |
 
-你可以选择其中一个，也可以同时使用多个。
+You can choose one or use multiple simultaneously.
 
-## 质量与规范
+## Quality & Standards
 
-项目采用严格的质量标准：
+The project adopts strict quality standards:
 
-- **类型安全**：完整的 TypeScript 覆盖
-- **代码风格**：ESLint + Prettier + Stylelint，共享配置
-- **提交约定**：Commitlint + Conventional Commits
-- **Git Hooks**：Lefthook 处理 pre-commit 和 commit-msg 检查
-- **拼写检查**：CSpell 检查拼写错误
+- **Type Safety**: Full TypeScript coverage
+- **Code Style**: ESLint + Prettier + Stylelint with shared configs
+- **Commit Convention**: Commitlint with Conventional Commits
+- **Git Hooks**: Lefthook for pre-commit and commit-msg checks
+- **Spell Checking**: CSpell for catching typos

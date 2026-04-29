@@ -1,10 +1,10 @@
-# 常见问题
+# FAQ
 
-## 安装问题
+## Installation Issues
 
-### `pnpm install` 失败
+### `pnpm install` fails
 
-请确保使用了正确的版本：
+Make sure you are using the correct versions:
 
 - Node.js >= 20.12.0
 - pnpm >= 10.0.0
@@ -14,7 +14,7 @@ node -v
 pnpm -v
 ```
 
-如果版本过旧，请升级：
+If using an older version, upgrade:
 
 ```bash
 npm i -g corepack
@@ -22,59 +22,59 @@ corepack enable
 corepack prepare pnpm@latest --activate
 ```
 
-### 端口被占用
+### Port already in use
 
-如果默认端口被占用，可以修改对应应用的 `.env.development` 中的 `VITE_PORT`，或直接设置：
+If the default port is occupied, you can modify the `VITE_PORT` in the corresponding app's `.env.development` file, or set it directly:
 
 ```bash
 VITE_PORT=3000 pnpm dev:nutui
 ```
 
-## 开发问题
+## Development Issues
 
-### Mock 服务不工作
+### Mock server not working
 
-确保 `.env.development` 中设置了 `VITE_NITRO_MOCK=true`。Mock 服务默认运行在端口 `5320`。
+Ensure `VITE_NITRO_MOCK=true` is set in `.env.development`. The mock server runs on port `5320` by default.
 
-### 自动导入不生效
+### Auto-import not working
 
-运行一次 `pnpm dev` 生成自动导入的类型声明文件。生成的文件（`auto-imports.d.ts`、`components.d.ts`）应提交到版本控制。
+Run `pnpm dev` once to generate the auto-import type declarations. The generated files (`auto-imports.d.ts`, `components.d.ts`) should be committed to version control.
 
-### 如何添加新页面？
+### How to add a new page?
 
-1. 在 `src/views/` 中创建 `.vue` 文件
-2. 在 `src/router/` 中添加路由
-3. 如果页面需要 tabbar 入口，更新 layout 配置
+1. Create a `.vue` file in `src/views/`
+2. Add the route in `src/router/`
+3. If the page needs a tabbar entry, update the layout configuration
 
-### 如何添加新的 API 接口？
+### How to add a new API endpoint?
 
-1. 在 `src/api/` 中创建 API 函数
-2. 如果使用 mock 数据，在 `apps/backend-mock/api/` 中添加 mock 处理器
+1. Create the API function in `src/api/`
+2. If using mock data, add the mock handler in `apps/backend-mock/api/`
 
-## 构建问题
+## Build Issues
 
-### 构建内存溢出
+### Build out of memory
 
-根目录 `package.json` 已设置 `NODE_OPTIONS=--max-old-space-size=8192`。如果仍然不够，可以增大该值。
+The root `package.json` already sets `NODE_OPTIONS=--max-old-space-size=8192`. If it's still not enough, increase the value.
 
-### 如何部署到子目录？
+### How to deploy to a subdirectory?
 
-在 `.env.production` 中设置 `VITE_BASE`：
+Set `VITE_BASE` in `.env.production`:
 
 ```bash
 VITE_BASE=/my-app/
 ```
 
-## 其他
+## Other
 
-### 如何移除不需要的 UI 框架应用？
+### How to remove an unused UI framework app?
 
-1. 删除应用目录（如 `apps/h5-varlet/`）
-2. 从根目录 `package.json` 中移除对应的脚本命令
-3. 运行 `pnpm install` 更新 workspace
+1. Delete the app directory (e.g., `apps/h5-varlet/`)
+2. Remove the corresponding scripts from root `package.json`
+3. Run `pnpm install` to update the workspace
 
-### 如何添加新的共享包？
+### How to add a new shared package?
 
-1. 在 `packages/` 下创建新目录
-2. 添加 `package.json` 并使用 `@vh5/` 作用域
-3. 在应用中通过 `"@vh5/my-package": "workspace:*"` 引用
+1. Create a new directory under `packages/`
+2. Add `package.json` with the `@vh5/` scope
+3. Reference it in apps via `"@vh5/my-package": "workspace:*"`

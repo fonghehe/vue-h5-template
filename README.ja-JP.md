@@ -4,7 +4,7 @@
 
 Vue 3 + TypeScript + Turborepo ベースのモバイル H5 開発テンプレート
 
-[English](./README.md) | [简体中文](./README.zh-CN.md) | 日本語 | [繁體中文](./README.zh-TW.md) | [香港繁體](./README.zh-HK.md)
+[English](./README.md) | [简体中文](./README.zh-CN.md) | 日本語 | [繁體中文(台)](./README.zh-TW.md) | [繁體中文(港)](./README.zh-HK.md)
 
 </div>
 
@@ -16,31 +16,36 @@ Vue H5 Template は、無料でオープンソースのモバイル H5 開発テ
 
 - **Monorepo アーキテクチャ**：Turborepo + pnpm workspace で複数の H5 アプリと共有パッケージを統合管理
 - **3つの UI フレームワーク**：NutUI、Vant、Varlet の3バージョンを提供、自由に選択可能
-- **TypeScript**：完全な TypeScript サポート
+- **TypeScript**：完全な TypeScript サポート、unplugin-vue-router による型安全なファイルルーティング
 - **Vite ビルド**：Vite ベースのビルド設定、自動インポートとコンポーネント自動登録に対応
+- **UnoCSS**：アトミック CSS エンジンで全アプリに utility-first スタイルを提供
 - **状態管理**：Pinia + 永続化プラグイン、本番環境では AES 暗号化ストレージ
 - **Mock サーバー**：Nitro ベースの Mock バックエンド、認証と商品 API を提供
+- **Eruda**：モバイルデバッグコンソールを内蔵（非本番環境のみ）
 - **統一規約**：ESLint / Prettier / Stylelint / Commitlint 設定を共有し、重複を削減
-- **モバイル対応**：postcss-px-to-viewport によるモバイル適応ソリューション
+- **モバイル対応**：postcss-mobile-forever によるモバイル適応（デザイン幅 375px、最大表示幅 600px）
 - **国際化**：中国語（簡体・繁体）、英語、日本語の4言語をサポート
 
 ## 技術スタック
 
-| 技術       | バージョン | 説明                          |
-| ---------- | ---------- | ----------------------------- |
-| Vue 3      | 3.5        | フロントエンドフレームワーク  |
-| TypeScript | 6.0        | 型安全性                      |
-| Vite       | 8.0        | ビルドツール                  |
-| Turborepo  | 2.9        | Monorepo 管理                 |
-| pnpm       | 10.27      | パッケージマネージャー        |
-| Pinia      | 3.0        | 状態管理                      |
-| Vue Router | 5.0        | ルーティング                  |
-| Vue I18n   | 11.3       | 国際化                        |
-| Nitro      | 2.x        | Mock サーバー                 |
-| NutUI      | 4.3        | UI コンポーネントライブラリ   |
-| Vant       | 4.9        | UI コンポーネントライブラリ   |
-| Varlet     | 3.12       | UI コンポーネントライブラリ   |
-| VueUse     | 14.x       | コンポジション ユーティリティ |
+| 技術                | バージョン | 説明                          |
+| ------------------- | ---------- | ----------------------------- |
+| Vue 3               | 3.5        | フロントエンドフレームワーク  |
+| TypeScript          | 6.0        | 型安全性                      |
+| Vite                | 8.0        | ビルドツール                  |
+| UnoCSS              | 66.x       | アトミック CSS エンジン       |
+| Turborepo           | 2.9        | Monorepo 管理                 |
+| pnpm                | 10.27      | パッケージマネージャー        |
+| Pinia               | 3.0        | 状態管理                      |
+| Vue Router          | 5.0        | ルーティング                  |
+| unplugin-vue-router | 0.19       | 型安全なファイルルーティング  |
+| Vue I18n            | 11.3       | 国際化                        |
+| Nitro               | 2.x        | Mock サーバー                 |
+| NutUI               | 4.3        | UI コンポーネントライブラリ   |
+| Vant                | 4.9        | UI コンポーネントライブラリ   |
+| Varlet              | 3.12       | UI コンポーネントライブラリ   |
+| VueUse              | 14.x       | コンポジション ユーティリティ |
+| Eruda               | 3.x        | モバイルデバッグコンソール    |
 
 ## 動作環境
 

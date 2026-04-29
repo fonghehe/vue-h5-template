@@ -51,14 +51,14 @@ const navTitle = computed(() => (router.currentRoute.value.meta?.title as string
 </script>
 
 <template>
-  <div class="main-page">
+  <div class="flex flex-col w-100dvw h-100dvh">
     <van-nav-bar
       :title="navTitle"
       :left-arrow="!tabbarVisible"
       safe-area-inset-top
       @click-left="goBack"
     />
-    <div class="main-box" :class="{ border: showBorder }">
+    <div class="flex-1 min-h-0 overflow-hidden overflow-y-auto" :class="{ 'px-15px': showBorder }">
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />
@@ -83,23 +83,5 @@ const navTitle = computed(() => (router.currentRoute.value.meta?.title as string
 <style scoped>
 .van-nav-bar {
   margin-bottom: 0;
-}
-
-.main-page {
-  display: flex;
-  flex-direction: column;
-  width: 100dvw;
-  height: 100dvh;
-}
-
-.main-box {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden auto;
-}
-
-.border {
-  padding-right: 15px;
-  padding-left: 15px;
 }
 </style>

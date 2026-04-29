@@ -96,7 +96,7 @@ catalog:
   pkg-types: ^2.3.0
   postcss: ^8.5.9
   postcss-html: ^1.8.1
-  postcss-px-to-viewport-8-plugin: ^1.2.5
+  postcss-mobile-forever: ^5.0.0
   postcss-scss: ^4.0.9
   prettier: ^3.2.5
   publint: ^0.3.18
@@ -119,12 +119,16 @@ catalog:
   turbo: ^2.9.6
   typescript: ^6.0.2
   tsdown: ^0.21.8
+  unocss: ^66.6.8
+  "@unocss/preset-rem-to-px": ^66.6.8
   unbuild: ^3.6.1
   unplugin-auto-import: ^20.3.0
   unplugin-vue-components: ^30.0.0
+  unplugin-vue-router: ^0.19.2
   vant: ^4.9.21
   vite: ^8.0.8
   vite-plugin-compression: ^0.5.1
+  vite-plugin-eruda-pro: ^1.0.1
   vite-plugin-dts: ^4.5.4
   vite-plugin-html: ^3.2.2
   vite-plugin-lazy-import: ^1.0.7

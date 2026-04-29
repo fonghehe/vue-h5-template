@@ -1,36 +1,36 @@
-# 国际化
+# Internationalization
 
-## 概述
+## Overview
 
-项目使用 `vue-i18n` 实现国际化，支持中文（简体/繁体）、英文、日语四种语言。
+The project uses `vue-i18n` for internationalization, supporting Simplified Chinese, Traditional Chinese, English, and Japanese.
 
-## 共享语言包
+## Shared Locale Files
 
-`packages/locales` 提供通用语言包，各应用共享使用：
+`packages/locales` provides shared locale files used across all apps:
 
 ```
 packages/locales/src/langs/
-├── zh-CN/    # 简体中文
+├── zh-CN/    # Simplified Chinese
 │   ├── app.json
 │   └── common.json
-├── zh-TW/    # 繁体中文
+├── zh-TW/    # Traditional Chinese
 │   ├── app.json
 │   └── common.json
-├── en-US/    # 英文
+├── en-US/    # English
 │   ├── app.json
 │   └── common.json
-└── ja-JP/    # 日语
+└── ja-JP/    # Japanese
     ├── app.json
     └── common.json
 ```
 
-## 应用特有语言包
+## App-specific Locale Files
 
-每个应用可在 `src/locales/langs/` 目录下定义自己的语言包：
+Each app can define its own locale files in `src/locales/langs/`:
 
 ```
 apps/h5-nutui/src/locales/
-├── index.ts          # i18n 初始化
+├── index.ts          # i18n initialization
 └── langs/
     ├── zh-CN/nutui.json
     ├── zh-TW/nutui.json
@@ -38,9 +38,7 @@ apps/h5-nutui/src/locales/
     └── ja-JP/nutui.json
 ```
 
-## 使用方式
-
-在 Vue 组件中使用 `$t()` 或导入 `t` 函数：
+## Usage
 
 ```vue
 <template>
@@ -52,11 +50,11 @@ import { t } from "@/locales";
 </script>
 ```
 
-## 加载机制
+## Loading Mechanism
 
-各应用的 `locales/index.ts` 通过 `import.meta.glob` 动态加载本地语言包，并通过 `loadMessages` 回调与 `@vh5/locales` 的 `setupI18n` 集成。同时会加载对应 UI 框架的语言包（NutUI / Vant / Varlet）。
+Each app's `locales/index.ts` dynamically loads locale files via `import.meta.glob` and integrates with `@vh5/locales`'s `setupI18n` via a `loadMessages` callback. It also loads the corresponding UI library locale (NutUI / Vant / Varlet).
 
-## 切换语言
+## Switching Language
 
 ```ts
 import { loadLocaleMessages } from "@vh5/locales";
@@ -64,38 +62,31 @@ import { loadLocaleMessages } from "@vh5/locales";
 await loadLocaleMessages("en-US");
 ```
 
-在"我的"页面中已内置语言切换功能，用户可以直接在应用内切换语言。
+A built-in language switcher is available on the "Mine" page.
 
-## 如何去掉国际化
+## How to Remove Internationalization
 
-如果你的项目不需要国际化功能，可以按照以下步骤移除：
+If your project does not need i18n, follow these steps:
 
-### 1. 移除语言包文件
-
-删除以下目录和文件：
+### 1. Remove Locale Files
 
 ```bash
-# 删除共享语言包
 rm -rf packages/locales/src/langs/
-
-# 删除各应用的语言包
 rm -rf apps/h5-nutui/src/locales/langs/
 rm -rf apps/h5-vant/src/locales/langs/
 rm -rf apps/h5-varlet/src/locales/langs/
 ```
 
-### 2. 简化 locales/index.ts
+### 2. Simplify locales/index.ts
 
-将各应用的 `src/locales/index.ts` 替换为直接导出字符串的简单实现：
+Replace each app's `src/locales/index.ts` with a simple string map:
 
 ```ts
-// src/locales/index.ts
 const messages: Record<string, string> = {
-  "app.home": "首页",
-  "app.list": "列表",
-  "app.mine": "我的",
-  "app.example": "示例",
-  // ... 其他文案
+  "app.home": "Home",
+  "app.list": "List",
+  "app.mine": "Mine",
+  "app.example": "Example",
 };
 
 export function t(key: string): string {
@@ -105,17 +96,16 @@ export function t(key: string): string {
 export const $t = t;
 ```
 
-### 3. 移除 setupI18n 调用
+### 3. Remove setupI18n
 
-在各应用的 `bootstrap.ts` 中删除 `await setupI18n(app)` 调用。
+Remove `await setupI18n(app)` from each app's `bootstrap.ts`.
 
-### 4. 移除依赖
+### 4. Remove Dependencies
 
 ```bash
-# 在根目录执行
 pnpm remove vue-i18n @intlify/core-base -r
 ```
 
-### 5. 清理组件
+### 5. Clean Up Components
 
-移除组件中语言切换相关的代码（如"我的"页面中的语言选择器）。
+Remove language switcher code from components (e.g., the language picker on the "Mine" page).

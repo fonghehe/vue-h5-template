@@ -1,57 +1,62 @@
-# 介绍
+# Introduction
 
-Vue H5 Template 是一个基于 **Turborepo** 的 Vue 3 移动端 H5 开发模板 Monorepo 项目。
+Vue H5 Template is a Vue 3 mobile H5 development template Monorepo project based on **Turborepo**.
 
-## 特性
+## Features
 
-- **Monorepo 管理** — 使用 Turborepo + pnpm workspace 统一管理多个应用和共享包
-- **三套 UI 框架** — 提供 NutUI、Vant、Varlet 三个版本，按需选用
-- **TypeScript** — 全面 TypeScript 支持
-- **Vite** — 基于 Vite 8 构建，支持自动导入、组件自动注册
-- **Pinia** — 状态管理 + 持久化（生产环境 AES 加密）
-- **Mock 后端** — 基于 Nitro 的 Mock 服务，提供登录认证、商品接口
-- **统一规范** — 共享 ESLint / Prettier / Stylelint / Commitlint 配置
-- **动态标题** — 路由切换自动更新页面标题
-- **px-to-viewport** — 移动端适配方案
-- **国际化** — 支持简体中文、繁体中文、英文、日文四种语言
+- **Monorepo Management** — Unified management of multiple apps and shared packages with Turborepo + pnpm workspace
+- **Three UI Frameworks** — NutUI, Vant, and Varlet versions available
+- **TypeScript** — Full TypeScript support with type-safe file-based routing (unplugin-vue-router)
+- **Vite** — Vite 8-based build with auto-import and component auto-registration
+- **UnoCSS** — Atomic CSS engine for utility-first styling, replacing traditional CSS class names
+- **Pinia** — State management with persistence (AES encryption in production)
+- **Mock Backend** — Nitro-based mock server with auth and product APIs
+- **Eruda** — Built-in mobile debugging console (non-production only)
+- **Unified Standards** — Shared ESLint / Prettier / Stylelint / Commitlint configs
+- **Dynamic Title** — Auto-update page title on route change
+- **Mobile Adaptation** — postcss-mobile-forever for responsive viewport adaptation with max-width limiting
+- **Internationalization** — Supports Simplified Chinese, Traditional Chinese, English, and Japanese
 
-## 技术栈
+## Tech Stack
 
-| 技术       | 版本  | 说明          |
-| ---------- | ----- | ------------- |
-| Vue 3      | 3.5   | 前端框架      |
-| TypeScript | 6.0   | 类型安全      |
-| Vite       | 8.0   | 构建工具      |
-| Turborepo  | 2.9   | Monorepo 管理 |
-| pnpm       | 10.27 | 包管理器      |
-| Pinia      | 3.0   | 状态管理      |
-| Vue Router | 5.0   | 路由管理      |
-| Vue I18n   | 11.3  | 国际化        |
-| Nitro      | 2.x   | Mock 服务端   |
-| NutUI      | 4.3   | UI 组件库     |
-| Vant       | 4.9   | UI 组件库     |
-| Varlet     | 3.12  | UI 组件库     |
-| VueUse     | 14.x  | 组合式工具集  |
+| Technology          | Version | Description              |
+| ------------------- | ------- | ------------------------ |
+| Vue 3               | 3.5     | Frontend framework       |
+| TypeScript          | 6.0     | Type safety              |
+| Vite                | 8.0     | Build tool               |
+| UnoCSS              | 66.x    | Atomic CSS engine        |
+| Turborepo           | 2.9     | Monorepo management      |
+| pnpm                | 10.27   | Package manager          |
+| Pinia               | 3.0     | State management         |
+| Vue Router          | 5.0     | Routing                  |
+| unplugin-vue-router | 0.19    | Type-safe file routing   |
+| Vue I18n            | 11.3    | Internationalization     |
+| Nitro               | 2.x     | Mock server              |
+| NutUI               | 4.3     | UI component library     |
+| Vant                | 4.9     | UI component library     |
+| Varlet              | 3.12    | UI component library     |
+| VueUse              | 14.x    | Composition utilities    |
+| Eruda               | 3.x     | Mobile debugging console |
 
-## 项目结构
+## Project Structure
 
 ```
 vue-h5-template/
-├── apps/                 # 应用目录
-│   ├── h5-nutui/         # NutUI 版 H5 应用（端口 5777）
-│   ├── h5-vant/          # Vant 版 H5 应用（端口 5778）
-│   ├── h5-varlet/        # Varlet 版 H5 应用（端口 5779）
-│   └── backend-mock/     # Nitro Mock 后端
-├── packages/             # 共享包
-│   ├── @core/            # 核心包（设计系统、composables、偏好设置）
-│   ├── locales/          # 国际化语言包
-│   ├── stores/           # Pinia 状态管理
-│   ├── styles/           # 全局样式
-│   └── utils/            # 工具函数
-├── internal/             # 内部配置包
-│   ├── vite-config/      # 共享 Vite 配置
-│   ├── tsconfig/         # 共享 TypeScript 配置
-│   └── lint-configs/     # 共享 Lint 配置
-├── scripts/              # 构建脚本
-└── docs/                 # 文档（本站）
+├── apps/                 # Applications
+│   ├── h5-nutui/         # NutUI H5 app (port 5777)
+│   ├── h5-vant/          # Vant H5 app (port 5778)
+│   ├── h5-varlet/        # Varlet H5 app (port 5779)
+│   └── backend-mock/     # Nitro mock backend
+├── packages/             # Shared packages
+│   ├── @core/            # Core (design, composables, preferences)
+│   ├── locales/          # i18n locale messages
+│   ├── stores/           # Pinia state management
+│   ├── styles/           # Global styles
+│   └── utils/            # Utility functions
+├── internal/             # Internal config packages
+│   ├── vite-config/      # Shared Vite config
+│   ├── tsconfig/         # Shared TypeScript config
+│   └── lint-configs/     # Shared lint configs
+├── scripts/              # Build scripts
+└── docs/                 # Documentation (this site)
 ```

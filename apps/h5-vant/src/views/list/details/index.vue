@@ -32,41 +32,14 @@ watch(
       </van-swipe-item>
     </van-swipe>
 
-    <div class="info">
-      <div class="price">
-        ￥<em>{{ details.data?.price }}.00</em>
+    <div class="p-5">
+      <div class="text-20px font-600 text-#f2270c">
+        ￥<em class="text-28px not-italic">{{ details.data?.price }}.00</em>
       </div>
-      <div class="title">{{ details.data?.title }}</div>
-      <div v-if="details.data?.description" class="desc">
+      <div class="mt-2">{{ details.data?.title }}</div>
+      <div v-if="details.data?.description" class="mt-2 text-14px text-#999">
         {{ details.data.description }}
       </div>
     </div>
   </section>
 </template>
-
-<style scoped>
-.info {
-  padding: 20px;
-}
-
-.price {
-  font-size: 20px;
-  font-weight: 600;
-  color: #f2270c;
-}
-
-.price em {
-  font-size: 28px;
-  font-style: normal;
-}
-
-.title {
-  margin-top: 8px;
-}
-
-.desc {
-  margin-top: 8px;
-  color: #999;
-  font-size: 14px;
-}
-</style>

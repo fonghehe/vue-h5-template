@@ -5,21 +5,21 @@
     pagination-color="#426543"
     auto-play="3000"
   >
-    <nut-swiper-item style="height: 100vw">
-      <img :src="details.data.imgUrl" />
+    <nut-swiper-item class="h-100vw">
+      <img class="w-full h-full" :src="details.data.imgUrl" />
     </nut-swiper-item>
   </nut-swiper>
 
-  <section class="info">
+  <section class="p-5">
     <div>
-      <span class="price">
-        ￥<em>{{ details.data?.price }}.00</em>
+      <span class="text-16px text-#f2270c">
+        ￥<em class="text-28px not-italic">{{ details.data?.price }}.00</em>
       </span>
     </div>
-    <div>
+    <div class="mt-2">
       <span>{{ details.data?.title }}</span>
     </div>
-    <div v-if="details.data?.description" class="desc">
+    <div v-if="details.data?.description" class="mt-2 text-14px text-#999">
       {{ details.data.description }}
     </div>
   </section>
@@ -50,29 +50,3 @@ watch(
   { immediate: true },
 );
 </script>
-
-<style lang="scss" scoped>
-.nut-swiper-item {
-  line-height: 200px;
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.info {
-  padding: 20px;
-
-  .price {
-    display: inline-block;
-    font-size: 16px;
-    color: #f2270c;
-
-    em {
-      font-size: 28px;
-      font-style: normal;
-    }
-  }
-}
-</style>

@@ -4,7 +4,7 @@
 
 基于 Vue 3 + TypeScript + Turborepo 的移动端 H5 开发模板
 
-[English](./README.md) | 简体中文 | [日本語](./README.ja-JP.md) | [繁體中文](./README.zh-TW.md) | [香港繁體](./README.zh-HK.md)
+[English](./README.md) | 简体中文 | [日本語](./README.ja-JP.md) | [繁體中文(台)](./README.zh-TW.md) | [繁體中文(港)](./README.zh-HK.md)
 
 </div>
 
@@ -16,31 +16,36 @@ Vue H5 Template 是一个免费开源的移动端 H5 开发模板，基于 Turbo
 
 - **Monorepo 架构**：基于 Turborepo + pnpm workspace，统一管理多个 H5 应用和共享包
 - **三套 UI 框架**：分别提供 NutUI、Vant、Varlet 版本，自由选择适合的 UI 组件库
-- **TypeScript**：全面的 TypeScript 支持
+- **TypeScript**：全面的 TypeScript 支持，配合 unplugin-vue-router 实现类型安全的文件路由
 - **Vite 构建**：基于 Vite 的构建配置，支持自动导入和组件自动注册
+- **UnoCSS**：原子化 CSS 引擎，全局使用 utility-first 风格写样式
 - **状态管理**：Pinia + 持久化插件，生产环境 AES 加密存储
 - **Mock 服务**：基于 Nitro 的 Mock 后端，提供登录认证、商品列表等接口
+- **Eruda**：内置移动端调试控制台，仅在非生产环境开启
 - **统一规范**：共享 ESLint / Prettier / Stylelint / Commitlint 配置
-- **移动适配**：postcss-px-to-viewport 移动端适配方案
+- **移动适配**：postcss-mobile-forever 移动端适配方案（设计稿宽 375px，最大显示宽 600px）
 - **国际化**：支持简体中文、繁体中文、英文、日文四种语言
 
 ## 技术栈
 
-| 技术       | 版本  | 说明          |
-| ---------- | ----- | ------------- |
-| Vue 3      | 3.5   | 前端框架      |
-| TypeScript | 6.0   | 类型安全      |
-| Vite       | 8.0   | 构建工具      |
-| Turborepo  | 2.9   | Monorepo 管理 |
-| pnpm       | 10.27 | 包管理器      |
-| Pinia      | 3.0   | 状态管理      |
-| Vue Router | 5.0   | 路由          |
-| Vue I18n   | 11.3  | 国际化        |
-| Nitro      | 2.x   | Mock 服务器   |
-| NutUI      | 4.3   | UI 组件库     |
-| Vant       | 4.9   | UI 组件库     |
-| Varlet     | 3.12  | UI 组件库     |
-| VueUse     | 14.x  | 组合式工具集  |
+| 技术                | 版本  | 说明               |
+| ------------------- | ----- | ------------------ |
+| Vue 3               | 3.5   | 前端框架           |
+| TypeScript          | 6.0   | 类型安全           |
+| Vite                | 8.0   | 构建工具           |
+| UnoCSS              | 66.x  | 原子化 CSS 引擎    |
+| Turborepo           | 2.9   | Monorepo 管理      |
+| pnpm                | 10.27 | 包管理器           |
+| Pinia               | 3.0   | 状态管理           |
+| Vue Router          | 5.0   | 路由               |
+| unplugin-vue-router | 0.19  | 类型安全的文件路由 |
+| Vue I18n            | 11.3  | 国际化             |
+| Nitro               | 2.x   | Mock 服务器        |
+| NutUI               | 4.3   | UI 组件库          |
+| Vant                | 4.9   | UI 组件库          |
+| Varlet              | 3.12  | UI 组件库          |
+| VueUse              | 14.x  | 组合式工具集       |
+| Eruda               | 3.x   | 移动端调试控制台   |
 
 ## 环境要求
 

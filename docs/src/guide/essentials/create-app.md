@@ -1,21 +1,21 @@
-# 创建应用
+# Create App
 
-使用 CLI 工具快速创建新的 H5 应用。
+Quickly scaffold a new H5 app using the CLI tool.
 
-## 使用方式
+## Usage
 
 ```bash
 pnpm create-app
 ```
 
-CLI 会交互式引导你完成：
+The CLI will interactively guide you through:
 
-1. **选择 UI 框架** — Varlet / Vant / NutUI
-2. **输入应用名称** — 如 `h5-my-app`
+1. **Select UI Framework** — Varlet / Vant / NutUI
+2. **Enter App Name** — e.g. `h5-my-app`
 
-## 生成内容
+## Generated Content
 
-执行后会在 `apps/` 目录下生成完整的应用结构：
+A complete app structure will be created under the `apps/` directory:
 
 ```
 apps/h5-my-app/
@@ -35,19 +35,19 @@ apps/h5-my-app/
 │   │   ├── list/index.vue
 │   │   ├── mine/index.vue
 │   │   └── login/index.vue
-│   ├── layout/index.vue    (从参考应用复制)
-│   ├── locales/             (从参考应用复制)
-│   ├── api/                 (从参考应用复制)
-│   └── stores/              (从参考应用复制)
+│   ├── layout/index.vue    (copied from reference app)
+│   ├── locales/             (copied from reference app)
+│   ├── api/                 (copied from reference app)
+│   └── stores/              (copied from reference app)
 └── types/
 ```
 
-## 后续步骤
+## Next Steps
 
-创建完成后：
+After creation:
 
-1. 运行 `pnpm install` 安装依赖
-2. 在根目录 `package.json` 添加启动脚本：
+1. Run `pnpm install` to install dependencies
+2. Add scripts to root `package.json`:
 
 ```json
 {
@@ -58,15 +58,15 @@ apps/h5-my-app/
 }
 ```
 
-3. 运行 `pnpm dev:h5-my-app` 开始开发
+3. Run `pnpm dev:h5-my-app` to start development
 
-## 自动配置
+## Auto Configuration
 
-生成的应用已自动配置：
+The generated app comes pre-configured with:
 
-- **Vite 代理** — `/api` 代理到 Mock 服务 `localhost:5320`
-- **共享样式** — 引入 `@vh5/styles/global`
-- **状态管理** — 使用 `@vh5/stores`（Pinia + 持久化）
-- **国际化** — 使用 `@vh5/locales`
-- **路由进度条** — 使用 `@vh5/utils` 的 NProgress
-- **UI 组件** — 根据选择的框架自动注册
+- **Vite Proxy** — `/api` proxied to Mock server at `localhost:5320`
+- **Shared Styles** — Imports `@vh5/styles/global`
+- **State Management** — Uses `@vh5/stores` (Pinia + persistence)
+- **Internationalization** — Uses `@vh5/locales`
+- **Route Progress** — NProgress from `@vh5/utils`
+- **UI Components** — Auto-registered based on selected framework

@@ -1,86 +1,78 @@
-# 快速开始
+# Quick Start
 
-## 环境要求
+## Requirements
 
 - **Node.js** >= 20.12.0
 - **pnpm** >= 10.0.0
 
-## 安装
+## Installation
 
 ```bash
-# 克隆项目
+# Clone the project
 git clone https://github.com/fonghehe/vue-h5-template.git
 cd vue-h5-template
 
-# 安装依赖
+# Install dependencies
 pnpm install
 ```
 
-## 开发
+## Development
 
 ```bash
-# 启动所有应用（交互式选择）
+# Start all apps (interactive selection)
 pnpm dev
 
-# 启动指定应用
-pnpm dev:nutui    # NutUI 版
-pnpm dev:vant     # Vant 版
-pnpm dev:varlet   # Varlet 版
+# Start a specific app
+pnpm dev:nutui    # NutUI version
+pnpm dev:vant     # Vant version
+pnpm dev:varlet   # Varlet version
 ```
 
-Mock 服务会在 `http://localhost:5320` 自动启动（通过 Nitro），前端通过 Vite proxy 代理到 `/api`。
+The mock server starts automatically at `http://localhost:5320` via Nitro, and the frontend proxies `/api` requests to it.
 
-## 构建
+## Build
 
 ```bash
-# 构建所有应用
+# Build all apps
 pnpm build
 
-# 构建指定应用
+# Build a specific app
 pnpm build:nutui
 pnpm build:vant
 pnpm build:varlet
 ```
 
-## 预览
+## Preview
 
 ```bash
-# 进入应用目录预览
 cd apps/h5-nutui
 pnpm preview
 ```
 
-## 清理
+## Cleanup
 
 ```bash
-# 清理所有 node_modules、dist、.turbo 缓存
+# Clean all node_modules, dist, .turbo cache
 pnpm clean
 
-# 同时删除 lock 文件
+# Also delete lock file
 pnpm clean --del-lock
 ```
 
-## 文档开发
+## Create New App
 
 ```bash
-cd docs
-pnpm dev
-```
-
-## 创建新应用
-
-```bash
-# 通过 CLI 交互式创建新的 H5 应用
+# Interactively create a new H5 app via CLI
 pnpm create-app
 ```
 
-支持选择 Varlet / Vant / NutUI，自动生成完整的项目结构。详见 [创建应用](/guide/essentials/create-app)。
+Supports Varlet / Vant / NutUI, auto-generates a complete project structure. See [Create App](/guide/essentials/create-app).
 
-## 测试账号
+## Test Accounts
 
-Mock 服务提供以下测试账号：
+The mock server provides these test accounts:
 
-| 用户名 | 密码   | 角色     |
-| ------ | ------ | -------- |
-| user   | 123456 | 普通用户 |
-| admin  | 123456 | 管理员   |
+| Username | Password | Role         |
+| -------- | -------- | ------------ |
+| user     | 123456   | Regular user |
+| admin    | 123456   | Admin        |

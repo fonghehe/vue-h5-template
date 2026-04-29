@@ -47,7 +47,7 @@ async function submit() {
           :rules="[{ required: true, message: '请输入密码' }]"
         />
       </van-cell-group>
-      <div style="padding: 16px">
+      <div class="p-4">
         <van-button block type="primary" :loading="loading" @click="submit"> 登录 </van-button>
       </div>
     </van-form>

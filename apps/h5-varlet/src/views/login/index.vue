@@ -28,21 +28,14 @@ async function submit() {
 </script>
 
 <template>
-  <section style="padding: 16px">
-    <div style="text-align: center; font-weight: 600; letter-spacing: 6px">登录</div>
-    <div
-      style="
-        margin-top: 16px;
-        background: var(--color-background-soft);
-        border-radius: 12px;
-        padding: 12px;
-      "
-    >
+  <section class="p-4">
+    <div class="text-center font-600 tracking-[6px]">登录</div>
+    <div class="mt-4 bg-[var(--color-background-soft)] rounded-12px p-3">
       <var-input v-model="formData.name" placeholder="请输入用户名" clearable />
-      <div style="height: 8px"></div>
+      <div class="h-2"></div>
       <var-input v-model="formData.pwd" type="password" placeholder="请输入密码" clearable />
     </div>
-    <div style="margin-top: 16px">
+    <div class="mt-4">
       <var-button block type="primary" :loading="loading" @click="submit">登录</var-button>
     </div>
   </section>

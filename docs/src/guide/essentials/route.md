@@ -1,40 +1,56 @@
-# 路由与导航
+# Routing
 
-## 路由配置
+## Route Configuration
 
-每个 H5 应用的路由定义在 `src/router/` 目录下。
+Routes are defined in each app's `src/router/` directory:
 
 ```ts
 const routes = [
   {
-    path: '/',
+    path: "/",
     component: BasicLayout,
     children: [
-      { path: 'home', component: () => import('@/views/home/index.vue'), meta: { title: '首页' } },
-      { path: 'list', component: () => import('@/views/list/index.vue'), meta: { title: '列表' } },
-      { path: 'mine', component: () => import('@/views/mine/index.vue'), meta: { title: '我的' } },
-      { path: 'example', component: () => import('@/views/example/index.vue'), meta: { title: '示例' } },
+      { path: "home", component: () => import("@/views/home/index.vue"), meta: { title: "Home" } },
+      { path: "list", component: () => import("@/views/list/index.vue"), meta: { title: "List" } },
+      { path: "mine", component: () => import("@/views/mine/index.vue"), meta: { title: "Mine" } },
+      {
+        path: "example",
+        component: () => import("@/views/example/index.vue"),
+        meta: { title: "Example" },
+      },
     ],
   },
-  { path: '/login', component: () => import('@/views/login/index.vue') },
-  { path: '/details', component: () => import('@/views/list/details/index.vue') },
+  { path: "/login", component: () => import("@/views/login/index.vue") },
+  { path: "/details", component: () => import("@/views/list/details/index.vue") },
 ];
 ```
 
-## 布局
+## Type-safe Routing
 
-`BasicLayout` 组件包含：
-- **顶部导航栏**：显示当前页面标题，非 Tab 页面显示返回按钮
-- **底部 TabBar**：首页 / 列表 / 我的 / 示例
-- **主内容区**：有 TabBar 时自动增加底部内边距避免遮挡
+The project integrates [unplugin-vue-router](https://uvr.esm.is/) which auto-scans `src/views/` to generate typed route definitions in `types/typed-router.d.ts`. You can gradually adopt file-based routing by adding `<route>` blocks in `.vue` files:
 
-## 动态标题
+```vue
+<route lang="yaml">
+meta:
+  title: Home
+</route>
+```
 
-通过 `@vueuse/core` 的 `useTitle` 实现页面标题自动跟随路由切换：
+## Layout
+
+`BasicLayout` includes:
+
+- **Top Navbar**: Shows current page title, back button on non-tab pages
+- **Bottom TabBar**: Home / List / Mine / Example
+- **Content Area**: Auto padding-bottom when tabbar is visible
+
+## Dynamic Title
+
+Page title updates automatically on route change via `@vueuse/core`:
 
 ```ts
 watchEffect(() => {
   const routeTitle = router.currentRoute.value.meta?.title;
-  useTitle(routeTitle ? `${routeTitle} - Vue H5 Template` : 'Vue H5 Template');
+  useTitle(routeTitle ? `${routeTitle} - Vue H5 Template` : "Vue H5 Template");
 });
 ```

@@ -33,13 +33,7 @@ const toDetails = (id: number) => {
     :shop-name="item.shopName"
     :shop-desc="item.shopDesc"
     :delivery="item.delivery"
+    class="py-15px border-b border-b-#e5e5e5"
     @click="(_e: any) => toDetails(item.id)"
   />
 </template>
-
-<style lang="scss" scoped>
-.nut-card {
-  padding: 15px 0;
-  border-bottom: 1px solid #e5e5e5;
-}
-</style>

@@ -34,8 +34,8 @@ const switchLanguage = async (lang: SupportedLanguagesType) => {
 </script>
 
 <template>
-  <div class="avatar-wrap">
-    <nut-avatar class="avatar" size="large">
+  <div class="flex items-center mx-5 my-5">
+    <nut-avatar size="large">
       <img
         :src="
           userStore.getUserInfo?.avatar ||
@@ -43,14 +43,16 @@ const switchLanguage = async (lang: SupportedLanguagesType) => {
         "
       />
     </nut-avatar>
-    <div class="member-detail">
-      <p class="nickname">
+    <div class="ml-5">
+      <p class="text-16px font-bold">
         <span v-if="getUserInfo">{{ getUserInfo }}</span>
         <nut-button v-else shape="square" size="small" type="default" @click="goLogin">
           {{ t("app.pleaseLogin") }}
         </nut-button>
       </p>
-      <p class="info">{{ userStore.isLoggedIn ? t("app.welcomeBack") : t("app.pleaseLogin") }}</p>
+      <p class="mt-1.5 text-12px">
+        {{ userStore.isLoggedIn ? t("app.welcomeBack") : t("app.pleaseLogin") }}
+      </p>
     </div>
   </div>
   <nut-cell-group>
@@ -58,12 +60,12 @@ const switchLanguage = async (lang: SupportedLanguagesType) => {
     <nut-cell :title="t('app.settings')" is-link />
     <nut-cell :title="t('app.about')" is-link />
   </nut-cell-group>
-  <div v-if="userStore.isLoggedIn" class="logout-wrap">
+  <div v-if="userStore.isLoggedIn" class="p-5">
     <nut-button block type="danger" @click="handleLogout">{{ t("app.logout") }}</nut-button>
   </div>
 
   <nut-action-sheet v-model:visible="showLangPicker" :title="t('app.language')">
-    <div class="lang-list">
+    <div class="p-2">
       <nut-cell
         v-for="lang in languages"
         :key="lang.value"
@@ -73,37 +75,3 @@ const switchLanguage = async (lang: SupportedLanguagesType) => {
     </div>
   </nut-action-sheet>
 </template>
-
-<style lang="scss">
-.avatar-wrap {
-  display: flex;
-  align-items: center;
-  margin: 20px;
-
-  .member-detail {
-    margin-left: 20px;
-
-    .nickname {
-      font-size: 16px;
-      font-weight: bold;
-
-      .nut-button {
-        margin-left: 5px;
-      }
-    }
-
-    .info {
-      margin-top: 5px;
-      font-size: 12px;
-    }
-  }
-}
-
-.logout-wrap {
-  padding: 20px;
-}
-
-.lang-list {
-  padding: 8px;
-}
-</style>

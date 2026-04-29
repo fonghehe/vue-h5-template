@@ -4,7 +4,7 @@
 
 基於 Vue 3 + TypeScript + Turborepo 嘅流動端 H5 開發模板
 
-[English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja-JP.md) | [繁體中文](./README.zh-TW.md) | 香港繁體
+[English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja-JP.md) | [繁體中文(台)](./README.zh-TW.md) | [繁體中文(港)]
 
 </div>
 
@@ -16,31 +16,36 @@ Vue H5 Template 係一個免費開源嘅流動端 H5 開發模板，基於 Turbo
 
 - **Monorepo 架構**：基於 Turborepo + pnpm workspace，統一管理多個 H5 應用同共享套件
 - **三套 UI 框架**：分別提供 NutUI、Vant、Varlet 版本，自由揀選適合嘅 UI 組件庫
-- **TypeScript**：全面嘅 TypeScript 支援
-- **Vite 構建**：基於 Vite 嘅構建配置，支援自動導入同組件自動註冊
+- **TypeScript**：全面嘎 TypeScript 支援，配合 unplugin-vue-router 實現類型安全的檔案路由
+- **Vite 構建**：基於 Vite 嘎構建配置，支援自動導入同組件自動註冊
+- **UnoCSS**：原子化 CSS 引擎，全局使用 utility-first 風格寫樣式
 - **狀態管理**：Pinia + 持久化插件，生產環境 AES 加密儲存
-- **Mock 服務**：基於 Nitro 嘅 Mock 後端，提供登入認證、商品列表等接口
+- **Mock 服务**：基於 Nitro 嘎 Mock 後端，提供登入認證、商品列表等接口
+- **Eruda**：內置流動端除錯控制台，僅在非生產環境開啟
 - **統一規範**：共享 ESLint / Prettier / Stylelint / Commitlint 配置
-- **流動端適配**：postcss-px-to-viewport 流動端適配方案
+- **流動端適配**：postcss-mobile-forever 流動端適配方案（設計稿寬 375px，最大顯示寬 600px）
 - **國際化**：支援簡體中文、繁體中文、英文、日文四種語言
 
 ## 技術棧
 
-| 技術       | 版本  | 說明          |
-| ---------- | ----- | ------------- |
-| Vue 3      | 3.5   | 前端框架      |
-| TypeScript | 6.0   | 類型安全      |
-| Vite       | 8.0   | 構建工具      |
-| Turborepo  | 2.9   | Monorepo 管理 |
-| pnpm       | 10.27 | 套件管理器    |
-| Pinia      | 3.0   | 狀態管理      |
-| Vue Router | 5.0   | 路由          |
-| Vue I18n   | 11.3  | 國際化        |
-| Nitro      | 2.x   | Mock 伺服器   |
-| NutUI      | 4.3   | UI 組件庫     |
-| Vant       | 4.9   | UI 組件庫     |
-| Varlet     | 3.12  | UI 組件庫     |
-| VueUse     | 14.x  | 組合式工具集  |
+| 技術                | 版本  | 說明               |
+| ------------------- | ----- | ------------------ |
+| Vue 3               | 3.5   | 前端框架           |
+| TypeScript          | 6.0   | 類型安全           |
+| Vite                | 8.0   | 構建工具           |
+| UnoCSS              | 66.x  | 原子化 CSS 引擎    |
+| Turborepo           | 2.9   | Monorepo 管理      |
+| pnpm                | 10.27 | 套件管理器         |
+| Pinia               | 3.0   | 狀態管理           |
+| Vue Router          | 5.0   | 路由               |
+| unplugin-vue-router | 0.19  | 類型安全的檔案路由 |
+| Vue I18n            | 11.3  | 國際化             |
+| Nitro               | 2.x   | Mock 伺服器        |
+| NutUI               | 4.3   | UI 組件庫          |
+| Vant                | 4.9   | UI 組件庫          |
+| Varlet              | 3.12  | UI 組件庫          |
+| VueUse              | 14.x  | 組合式工具集       |
+| Eruda               | 3.x   | 流動端除錯控制台   |
 
 ## 環境要求
 

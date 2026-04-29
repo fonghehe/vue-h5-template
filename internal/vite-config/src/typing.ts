@@ -332,6 +332,16 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
    */
   pwaOptions?: Partial<PwaPluginOptions>;
   /**
+   * 是否开启 UnoCSS
+   * @default true
+   */
+  unocss?: boolean;
+  /**
+   * 是否开启 vConsole
+   * @default true (仅非生产环境)
+   */
+  vconsole?: boolean;
+  /**
    * 是否开启 VXE Table 懒加载
    * @default false
    */

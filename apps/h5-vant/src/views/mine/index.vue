@@ -28,12 +28,12 @@ const onSelectLang = async (item: { name: string; value: string }) => {
 </script>
 
 <template>
-  <section class="mine-page">
-    <div v-if="userStore.isLoggedIn" class="avatar-wrap">
+  <section class="p-4">
+    <div v-if="userStore.isLoggedIn" class="flex items-center gap-3 mb-4">
       <van-image round width="60" height="60" :src="userStore.getUserInfo?.avatar" />
-      <div class="member-detail">
-        <p class="nickname">{{ userStore.getUserInfo?.realName }}</p>
-        <p class="info">{{ t("app.welcomeBack") }}</p>
+      <div>
+        <p class="font-600 text-16px">{{ userStore.getUserInfo?.realName }}</p>
+        <p class="text-#999 text-13px mt-1">{{ t("app.welcomeBack") }}</p>
       </div>
     </div>
     <van-empty v-else :description="t('app.notLoggedIn')">
@@ -42,13 +42,13 @@ const onSelectLang = async (item: { name: string; value: string }) => {
       </van-button>
     </van-empty>
 
-    <van-cell-group inset class="menu-group">
+    <van-cell-group inset class="mt-4">
       <van-cell :title="t('app.language')" icon="flag-o" is-link @click="showLangPicker = true" />
       <van-cell :title="t('app.settings')" icon="setting-o" is-link />
       <van-cell :title="t('app.about')" icon="info-o" is-link />
     </van-cell-group>
 
-    <div v-if="userStore.isLoggedIn" class="logout-wrap">
+    <div v-if="userStore.isLoggedIn" class="py-5">
       <van-button block type="primary" @click="handleLogout">
         {{ t("app.logout") }}
       </van-button>
@@ -62,35 +62,3 @@ const onSelectLang = async (item: { name: string; value: string }) => {
     />
   </section>
 </template>
-
-<style scoped>
-.mine-page {
-  padding: 16px;
-}
-
-.avatar-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.member-detail .nickname {
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.member-detail .info {
-  color: #999;
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.menu-group {
-  margin-top: 16px;
-}
-
-.logout-wrap {
-  padding: 20px 0;
-}
-</style>

@@ -1,10 +1,10 @@
-# 服务端交互
+# Server Interaction
 
-## Mock 服务
+## Mock Server
 
-开发环境使用基于 Nitro 的 Mock 后端，运行在 `http://localhost:5320`。
+Development uses a Nitro-based mock backend at `http://localhost:5320`.
 
-前端通过 Vite 代理将 `/api` 请求转发到 Mock 服务：
+The frontend proxies `/api` requests to the mock server via Vite:
 
 ```ts
 // vite.config.ts
@@ -18,26 +18,26 @@ server: {
 }
 ```
 
-## API 模块
+## API Modules
 
-每个应用的 `src/api/` 目录定义了 API 请求函数：
+Each app defines API request functions in `src/api/`:
 
 ```ts
 // api/product.ts
-import request from '@/utils/request';
+import request from "@/utils/request";
 
 export function getProductList(params?: { page?: number; pageSize?: number }) {
-  return request.get('/api/product/list', { params });
+  return request.get("/api/product/list", { params });
 }
 
 export function getProductDetail(id: number | string) {
-  return request.get('/api/product/detail', { params: { id } });
+  return request.get("/api/product/detail", { params: { id } });
 }
 ```
 
-## 认证流程
+## Authentication Flow
 
-1. 用户提交登录表单，调用 `POST /api/auth/login`
-2. 服务端返回 `accessToken`，同时设置 `refreshToken` 到 HttpOnly Cookie
-3. 后续请求在 Header 中携带 `Authorization: Bearer <token>`
-4. Token 过期时调用 `POST /api/auth/refresh` 刷新
+1. User submits login form → `POST /api/auth/login`
+2. Server returns `accessToken`, sets `refreshToken` in HttpOnly Cookie
+3. Subsequent requests carry `Authorization: Bearer <token>`
+4. On token expiry, call `POST /api/auth/refresh`

@@ -16,3 +16,21 @@ export default defineConfig(async () => ({
   },
 }));
 ```
+
+## 內置外掛件
+
+| 外掛件                     | 說明                       |
+| -------------------------- | -------------------------- |
+| `@vitejs/plugin-vue`       | Vue 3 SFC 支援             |
+| `@vitejs/plugin-vue-jsx`   | JSX/TSX 支援               |
+| `unplugin-auto-import`     | API 自動匯入               |
+| `unplugin-vue-components`  | 元件自動註冊               |
+| `unplugin-vue-router`      | 類型安全的檔案路由         |
+| `unocss`                   | 原子化 CSS 引擎            |
+| `vite-plugin-eruda-pro`    | 行動端除錯控制台（開發時） |
+| `vite-plugin-vue-devtools` | Vue DevTools               |
+| `postcss-mobile-forever`   | 行動端 viewport 適配       |
+| `vite-plugin-html`         | HTML 模板注入              |
+| `vite-plugin-compression`  | Gzip/Brotli 壓縮           |
+| `vite-plugin-pwa`          | PWA 支援                   |
+| `nitro-mock`               | Nitro Mock 伺服器整合      |

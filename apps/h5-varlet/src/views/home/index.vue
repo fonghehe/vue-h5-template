@@ -16,51 +16,18 @@ const techStack = [
 
 <template>
   <section>
-    <header class="header">
+    <header class="flex items-center justify-center px-5 py-2.5 text-20px">
       <img
+        class="w-45px h-45px"
         src="https://cdn.jsdelivr.net/gh/fonghehe/picture/vue-h5-template/logo.png"
         alt=""
       /><span>{{ t("app.title") }}</span>
     </header>
-    <div class="intro-header">{{ t("app.desc") }}</div>
+    <div class="flex items-center justify-center mt-2.5 text-12px">{{ t("app.desc") }}</div>
 
-    <div class="support-list">
-      <div class="support-list-title">{{ t("app.techStack") }}</div>
+    <div class="mx-2">
+      <div class="px-3 pt-15px pb-2 font-600 text-14px text-#969799">{{ t("app.techStack") }}</div>
       <var-cell v-for="item in techStack" :key="item" :title="item" icon="check" />
     </div>
   </section>
 </template>
-
-<style scoped>
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 20px;
-  font-size: 20px;
-}
-
-.header img {
-  width: 45px;
-  height: 45px;
-}
-
-.intro-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-  font-size: 12px;
-}
-
-.support-list {
-  margin: 0 8px;
-}
-
-.support-list-title {
-  padding: 15px 12px 8px;
-  font-weight: 600;
-  font-size: 14px;
-  color: #969799;
-}
-</style>

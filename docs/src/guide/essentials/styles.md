@@ -1,65 +1,65 @@
-# 样式
+# Styles
 
-## 全局样式
+## Global Styles
 
-`packages/styles` 提供全局基础样式和各 UI 库的样式入口：
+`packages/styles` provides global base styles and UI library style entries:
 
 ```ts
-import "@vh5/styles/global"; // 全局基础样式（CSS Reset + 公共组件样式）
-import "@vh5/styles/nutui"; // NutUI 主题样式（可选）
-import "@vh5/styles/vant"; // Vant 主题样式（可选）
-import "@vh5/styles/varlet"; // Varlet 主题样式（可选）
+import "@vh5/styles/global"; // Global base styles (CSS Reset + common component styles)
+import "@vh5/styles/nutui"; // NutUI theme styles (optional)
+import "@vh5/styles/vant"; // Vant theme styles (optional)
+import "@vh5/styles/varlet"; // Varlet theme styles (optional)
 ```
 
-所有应用在 `bootstrap.ts` 中统一引入 `@vh5/styles/global`。
+All apps import `@vh5/styles/global` in `bootstrap.ts`.
 
-## 按需加载策略
+## On-demand Loading Strategy
 
-三个应用均采用按需加载，策略略有差异：
+All three apps use on-demand loading, with slightly different strategies:
 
 ### Vant
 
-- **组件 JS + CSS**：通过 `VantResolver({ importStyle: true })`（默认值）完全按需加载，无需 `app.use(Vant)` 全量注册
-- **不额外导入** `vant/lib/index.css`，由 Resolver 统一管理每个组件的 CSS 注入顺序
+- **Component JS + CSS**: Fully on-demand via `VantResolver({ importStyle: true })` (default), no need for `app.use(Vant)`
+- **Do not** import `vant/lib/index.css` separately — let Resolver manage CSS injection order
 
-> **为什么不能同时导入 `vant/lib/index.css` 和使用 Resolver 按需注入？**
-> 全量 CSS 和按需 CSS 会导致同一组件的样式被注入两次，且第二次（按需）的 Popup CSS 顺序排在 Toast CSS 之后，造成白色背景覆盖深色 Toast 背景。
-> 正确做法：只用 Resolver 按需注入，不额外引入全量 CSS。
+> **Why not import `vant/lib/index.css` alongside on-demand injection?**
+> Full CSS and on-demand CSS will inject the same component's styles twice, causing Toast background to be overridden.
+> Correct approach: use Resolver only, do not import full CSS separately.
 
 ```ts
-// bootstrap.ts（vant）
+// bootstrap.ts (vant)
 import "@vh5/styles/global";
-// ✅ 不导入 vant/lib/index.css，组件 CSS 由 VantResolver 按需注入
-// ❌ 不使用 app.use(Vant) 全量注册
+// ✅ Do not import vant/lib/index.css; component CSS injected on-demand by VantResolver
+// ❌ Do not use app.use(Vant)
 ```
 
 ### Varlet
 
-- **组件 JS + CSS**：通过 `VarletImportResolver` 完全按需加载，模板中使用的组件自动注入对应 CSS
-- **Snackbar（函数式）**：在使用 Snackbar 的文件中手动导入 CSS 依赖链
+- **Component JS + CSS**: Fully on-demand via `VarletImportResolver`; components in templates auto-inject CSS
+- **Snackbar (functional)**: Manually import CSS dependency chain in files where Snackbar is used
 
 ```ts
-// 在使用 Snackbar 的组件文件中
+// In files using Snackbar
 import { Snackbar } from "@varlet/ui";
-import "@varlet/ui/es/snackbar/style/index.mjs"; // 手动导入 Snackbar CSS
+import "@varlet/ui/es/snackbar/style/index.mjs"; // Manual Snackbar CSS import
 ```
 
 ### NutUI
 
-- **组件 JS + CSS**：通过 `NutUIResolver` 完全按需加载
-- **函数式组件**（Toast/Notify/Dialog/ImagePreview）：在 `bootstrap.ts` 中手动导入 CSS
+- **Component JS + CSS**: Fully on-demand via `NutUIResolver`
+- **Functional components** (Toast/Notify/Dialog/ImagePreview): Import CSS manually in `bootstrap.ts`
 
 ```ts
-// bootstrap.ts（nutui）
+// bootstrap.ts (nutui)
 import "@nutui/nutui/dist/packages/toast/style/css";
 import "@nutui/nutui/dist/packages/notify/style/css";
 import "@nutui/nutui/dist/packages/dialog/style/css";
 import "@nutui/nutui/dist/packages/imagepreview/style/css";
 ```
 
-## NutUI SCSS 变量
+## NutUI SCSS Variables
 
-NutUI 版通过 Vite SCSS 配置函数式注入全局变量，仅作用于 app 自身的 SCSS 文件：
+NutUI uses Vite SCSS `additionalData` function-style injection, scoped to the app's own SCSS files:
 
 ```ts
 css: {
@@ -76,13 +76,41 @@ css: {
 }
 ```
 
-## 移动端适配
+## Mobile Adaptation
 
-使用 `postcss-px-to-viewport-8-plugin` 将 px 自动转换为 viewport 单位：
+Uses `postcss-mobile-forever` to convert px to viewport units:
 
-- 设计稿宽度：375px
-- 转换规则：`1px → 0.2667vw`
+- Design width: 375px
+- Max display width: 600px (auto center-constrained on large screens like tablets)
 
-## BEM 命名
+## UnoCSS
 
-样式采用 BEM 命名规范，基于 `@vh5-core/design` 设计 Token。
+The project uses [UnoCSS](https://unocss.dev/) as the atomic CSS engine. Config is at `uno.config.ts` in the project root.
+
+### Built-in Shortcuts
+
+| Shortcut          | Equivalent                                  |
+| ----------------- | ------------------------------------------- |
+| `flex-center`     | `flex items-center justify-center`          |
+| `flex-between`    | `flex items-center justify-between`         |
+| `flex-col-center` | `flex flex-col items-center justify-center` |
+
+### Usage
+
+```vue
+<template>
+  <div class="flex-center h-full text-lg text-gray-600">Hello UnoCSS</div>
+</template>
+```
+
+UnoCSS supports attributify mode:
+
+```vue
+<div flex items-center justify-center text-lg>
+  Hello UnoCSS
+</div>
+```
+
+## BEM Naming
+
+Styles follow BEM naming convention based on `@vh5-core/design` design tokens.

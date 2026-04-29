@@ -28,16 +28,16 @@ const switchLanguage = async (lang: SupportedLanguagesType) => {
 </script>
 
 <template>
-  <section class="mine-page">
-    <div v-if="userStore.isLoggedIn" class="avatar-wrap">
+  <section class="p-4">
+    <div v-if="userStore.isLoggedIn" class="flex items-center gap-3 mb-4">
       <var-image width="60" height="60" radius="50%" :src="userStore.getUserInfo?.avatar" />
-      <div class="member-detail">
-        <p class="nickname">{{ userStore.getUserInfo?.realName }}</p>
-        <p class="info">{{ t("app.welcomeBack") }}</p>
+      <div>
+        <p class="font-600 text-16px">{{ userStore.getUserInfo?.realName }}</p>
+        <p class="text-#999 text-13px mt-1">{{ t("app.welcomeBack") }}</p>
       </div>
     </div>
-    <div v-else class="not-logged-in">
-      <div class="not-logged-in-text">{{ t("app.notLoggedIn") }}</div>
+    <div v-else class="text-center py-10">
+      <div class="opacity-60 mb-3">{{ t("app.notLoggedIn") }}</div>
       <var-button type="primary" size="small" @click="goLogin">
         {{ t("app.pleaseLogin") }}
       </var-button>
@@ -47,15 +47,15 @@ const switchLanguage = async (lang: SupportedLanguagesType) => {
     <var-cell :title="t('app.settings')" />
     <var-cell :title="t('app.about')" />
 
-    <div v-if="userStore.isLoggedIn" class="logout-wrap">
+    <div v-if="userStore.isLoggedIn" class="py-5">
       <var-button block type="primary" @click="handleLogout">
         {{ t("app.logout") }}
       </var-button>
     </div>
 
     <var-popup v-model:show="showLangPicker" position="bottom">
-      <div class="lang-picker">
-        <div class="lang-picker-title">{{ t("app.language") }}</div>
+      <div class="py-2 pb-4">
+        <div class="px-4 py-3 font-600 text-16px text-center">{{ t("app.language") }}</div>
         <var-cell
           v-for="lang in languages"
           :key="lang.value"
@@ -66,52 +66,3 @@ const switchLanguage = async (lang: SupportedLanguagesType) => {
     </var-popup>
   </section>
 </template>
-
-<style scoped>
-.mine-page {
-  padding: 16px;
-}
-
-.avatar-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.member-detail .nickname {
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.member-detail .info {
-  color: #999;
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-.not-logged-in {
-  text-align: center;
-  padding: 40px 0;
-}
-
-.not-logged-in-text {
-  opacity: 0.6;
-  margin-bottom: 12px;
-}
-
-.logout-wrap {
-  padding: 20px 0;
-}
-
-.lang-picker {
-  padding: 8px 0 16px;
-}
-
-.lang-picker-title {
-  padding: 12px 16px;
-  font-weight: 600;
-  font-size: 16px;
-  text-align: center;
-}
-</style>

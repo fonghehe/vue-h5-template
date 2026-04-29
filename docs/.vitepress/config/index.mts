@@ -11,11 +11,11 @@ export default defineConfig({
   ...shared,
   locales: {
     root: {
-      label: "简体中文",
-      lang: "zh-CN",
-      ...zh,
+      label: "English",
+      lang: "en-US",
+      ...en,
     },
-    en: { ...en },
+    zh: { ...zh },
     ja: { ...ja },
     "zh-TW": { ...zhTW },
     "zh-HK": { ...zhHK },

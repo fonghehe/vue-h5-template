@@ -42,15 +42,13 @@ function toDetails(id: number) {
   </section>
 </template>
 
-<style scoped lang="scss">
-.product-list {
-  :deep(.van-cell) {
-    padding: 12px 16px;
-    align-items: flex-start;
-  }
+<style scoped>
+.product-list :deep(.van-cell) {
+  padding: 12px 16px;
+  align-items: flex-start;
+}
 
-  :deep(.van-cell__left-icon) {
-    margin-right: 12px;
-  }
+.product-list :deep(.van-cell__left-icon) {
+  margin-right: 12px;
 }
 </style>

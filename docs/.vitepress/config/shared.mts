@@ -2,7 +2,7 @@ import type { DefaultTheme } from "vitepress";
 
 export const shared = {
   title: "Vue H5 Template",
-  description: "Vue 3 移动端 H5 模板 Monorepo",
+  description: "Vue 3 Mobile H5 Template Monorepo",
   base: "/vue-h5-template/",
   srcDir: "src",
   lastUpdated: true,

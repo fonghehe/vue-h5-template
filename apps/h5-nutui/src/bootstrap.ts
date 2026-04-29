@@ -8,6 +8,7 @@ import App from "./App.vue";
 import { setupI18n } from "./locales";
 import router from "./router";
 
+import "virtual:uno.css";
 import "@vh5/styles/global";
 
 import "@nutui/nutui/dist/packages/toast/style/css";

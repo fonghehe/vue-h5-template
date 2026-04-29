@@ -1,43 +1,43 @@
-# 项目更新
+# Project Update
 
-## 同步最新代码
+## Syncing Latest Code
 
 ```bash
-# 获取最新变更
+# Fetch latest changes
 git fetch origin
 git pull origin main
 
-# 重新安装依赖（以防 lockfile 有变更）
+# Reinstall dependencies (in case of lockfile changes)
 pnpm install
 ```
 
-## 依赖更新
+## Dependency Updates
 
 ```bash
-# 检查过时的依赖
+# Check outdated dependencies
 pnpm outdated -r
 
-# 交互式更新所有依赖到最新版本
+# Update all dependencies interactively
 pnpm update -r --interactive --latest
 ```
 
-## 清理缓存
+## Cleaning Cache
 
-如果更新后遇到构建问题，尝试清理缓存：
+If you encounter build issues after updating, try cleaning the cache:
 
 ```bash
-# 清理所有缓存、node_modules 和 dist
+# Clean all caches, node_modules, and dist
 pnpm clean
 
-# 完整重装
+# Full reinstall
 pnpm reinstall
 ```
 
-## 处理破坏性变更
+## Handling Breaking Changes
 
-更新依赖的大版本时：
+When updating major versions of dependencies:
 
-1. 查看 UI 框架迁移指南（NutUI / Vant / Varlet）
-2. 查看 Vite 发布说明了解破坏性变更
-3. 更新后测试所有三个应用变体
-4. 如果插件 API 变更，更新共享 Vite 配置
+1. Check the UI framework migration guide (NutUI / Vant / Varlet)
+2. Review Vite release notes for breaking changes
+3. Test all three app variants after updating
+4. Update shared Vite config if plugin APIs changed
