@@ -1,56 +1,141 @@
 # Routing
 
-## Route Configuration
+Routes are **owned by features**, not by apps. The application shell composes
+each feature's `routes` export into a single router instance.
 
-Routes are defined in each app's `src/router/` directory:
+## 1. The Router Instance
+
+`@vh5/app-shell` creates the router once. Adapter apps do not configure
+routes.
 
 ```ts
-const routes = [
+// packages/app-shell/src/router/index.ts
+import { createRouter, createWebHistory } from "vue-router";
+import { mergeRouteModules } from "@vh5/utils";
+import { authRoutes } from "@vh5/feature-auth";
+import { homeRoutes } from "@vh5/feature-home";
+import { productRoutes } from "@vh5/feature-product";
+import { userRoutes } from "@vh5/feature-user";
+import { BasicLayout } from "../layouts/BasicLayout.vue";
+
+const featureRoutes = mergeRouteModules([...homeRoutes, ...productRoutes, ...userRoutes]);
+
+export const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    { path: "/", component: BasicLayout, children: featureRoutes },
+    ...authRoutes, // /login, /forgot
+    { path: "/:pathMatch(.*)*", component: () => import("../views/NotFound.vue") },
+  ],
+});
+```
+
+## 2. Defining a Feature's Routes
+
+```ts
+// packages/features/product/src/routes.ts
+import type { RouteRecordRaw } from "vue-router";
+
+export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/",
-    component: BasicLayout,
-    children: [
-      { path: "home", component: () => import("@/views/home/index.vue"), meta: { title: "Home" } },
-      { path: "list", component: () => import("@/views/list/index.vue"), meta: { title: "List" } },
-      { path: "mine", component: () => import("@/views/mine/index.vue"), meta: { title: "Mine" } },
-      {
-        path: "example",
-        component: () => import("@/views/example/index.vue"),
-        meta: { title: "Example" },
-      },
-    ],
+    path: "product",
+    name: "product-list",
+    component: () => import("./views/List.vue"),
+    meta: {
+      title: "Products",
+      authority: ["user", "admin"], // role-based access
+      tab: true, // show in BasicLayout tabbar
+    },
   },
-  { path: "/login", component: () => import("@/views/login/index.vue") },
-  { path: "/details", component: () => import("@/views/list/details/index.vue") },
+  {
+    path: "product/:id",
+    name: "product-detail",
+    component: () => import("./views/Detail.vue"),
+    meta: { title: "Product Detail", authority: ["user", "admin"] },
+  },
 ];
 ```
 
-## Type-safe Routing
+`meta` keys recognised by the shell:
 
-The project integrates [unplugin-vue-router](https://uvr.esm.is/) which auto-scans `src/views/` to generate typed route definitions in `types/typed-router.d.ts`. You can gradually adopt file-based routing by adding `<route>` blocks in `.vue` files:
+| Key         | Type       | Purpose                                                   |
+| ----------- | ---------- | --------------------------------------------------------- |
+| `title`     | `string`   | Document title + navbar title                             |
+| `authority` | `string[]` | Roles allowed to access (omit ⇒ public for authenticated) |
+| `public`    | `boolean`  | Accessible without login                                  |
+| `tab`       | `boolean`  | Render entry in the bottom tab bar                        |
+| `keepAlive` | `boolean`  | Wrap the view in `<KeepAlive>`                            |
 
-```vue
-<route lang="yaml">
-meta:
-  title: Home
-</route>
+## 3. Permission Pipeline
+
+A single global `beforeEach` guard is registered in
+`@vh5/app-shell/router/guards.ts`:
+
+```ts
+router.beforeEach(async (to) => {
+  startProgress();
+
+  if (to.meta.public) return true;
+
+  const auth = useAuthStore();
+  if (!auth.isAuthenticated) {
+    return { name: "login", query: { redirect: to.fullPath } };
+  }
+
+  if (Array.isArray(to.meta.authority) && !to.meta.authority.some(auth.hasRole)) {
+    return { name: "forbidden" };
+  }
+
+  return true;
+});
+
+router.afterEach(() => stopProgress());
 ```
 
-## Layout
+Frontend filtering is delegated to `generateRoutesByFrontend()` from
+`@vh5/utils` for screens that show a dynamic menu (e.g. an admin section).
 
-`BasicLayout` includes:
+## 4. Type-safe Names
 
-- **Top Navbar**: Shows current page title, back button on non-tab pages
-- **Bottom TabBar**: Home / List / Mine / Example
-- **Content Area**: Auto padding-bottom when tabbar is visible
+`unplugin-vue-router` generates `types/typed-router.d.ts`. Inside features
+prefer named navigation:
 
-## Dynamic Title
+```ts
+router.push({ name: "product-detail", params: { id } });
+```
 
-Page title updates automatically on route change via `@vueuse/core`:
+## 5. Backend-Driven Routes (Optional)
+
+For apps that load their menu from the server:
+
+```ts
+import { generateRoutesByBackend } from "@vh5/utils";
+import { fetchMenuListAsync } from "@vh5/services";
+
+const routes = await generateRoutesByBackend({
+  fetchMenuListAsync,
+  layoutMap: { BasicLayout },
+  pageMap: import.meta.glob("@/features/**/views/*.vue"),
+});
+
+router.addRoute({ path: "/", component: BasicLayout, children: routes });
+```
+
+The same `meta.authority` filtering applies to backend routes.
+
+## 6. Layout & Title
+
+`BasicLayout` provides:
+
+- top navbar with `meta.title`
+- bottom tab bar built from routes whose `meta.tab === true`
+- a slot for the active view
+
+Document title is updated by the shell:
 
 ```ts
 watchEffect(() => {
-  const routeTitle = router.currentRoute.value.meta?.title;
-  useTitle(routeTitle ? `${routeTitle} - Vue H5 Template` : "Vue H5 Template");
+  const title = router.currentRoute.value.meta?.title as string | undefined;
+  useTitle(title ? `${title} - Vue H5 Template` : "Vue H5 Template");
 });
 ```

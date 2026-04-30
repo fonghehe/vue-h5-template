@@ -1,56 +1,67 @@
 # 路由與導覽
 
-## 路由設定
+路由由**特性套件**管理，而非各應用。應用外殼將每個特性的 `routes` 匯出組合成一個路由實例。
 
-每個 H5 應用的路由定義在 `src/router/` 目錄下。
+## 1. 路由實例
+
+`@vh5/app-shell` 統一建立路由，適配應用無需設定路由。
 
 ```ts
-const routes = [
+const featureRoutes = mergeRouteModules([...homeRoutes, ...productRoutes, ...userRoutes]);
+
+export const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    { path: "/", component: BasicLayout, redirect: "/home", children: featureRoutes },
+    ...authRoutes,
+    { path: "/:pathMatch(.*)*", component: () => import("../views/NotFound.vue") },
+  ],
+});
+```
+
+## 2. 特性路由模組
+
+```ts
+export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/",
-    component: BasicLayout,
-    children: [
-      { path: "home", component: () => import("@/views/home/index.vue"), meta: { title: "首頁" } },
-      { path: "list", component: () => import("@/views/list/index.vue"), meta: { title: "列表" } },
-      { path: "mine", component: () => import("@/views/mine/index.vue"), meta: { title: "我的" } },
-      {
-        path: "example",
-        component: () => import("@/views/example/index.vue"),
-        meta: { title: "範例" },
-      },
-    ],
+    path: "product",
+    name: "product-list",
+    component: () => import("./views/List.vue"),
+    meta: { title: "商品列表", authority: ["user", "admin"], tab: true },
   },
-  { path: "/login", component: () => import("@/views/login/index.vue") },
-  { path: "/details", component: () => import("@/views/list/details/index.vue") },
 ];
 ```
 
-## 類型安全路由
+`meta` 欄位說明：
 
-專案集成了 [unplugin-vue-router](https://uvr.esm.is/)，自動掃描 `src/views/` 目錄生成類型化路由定義到 `types/typed-router.d.ts`。可以透過在 `.vue` 檔案中添加 `<route>` 塊逐步採用檔案路由：
+| 欄位        | 型別       | 說明                                    |
+| ----------- | ---------- | --------------------------------------- |
+| `title`     | `string`   | 文件標題 + 導覽列標題                   |
+| `authority` | `string[]` | 允許存取的角色（省略 ⇒ 已登入即可存取） |
+| `public`    | `boolean`  | 不需登入即可存取                        |
+| `tab`       | `boolean`  | 在底部 TabBar 顯示入口                  |
+| `keepAlive` | `boolean`  | 以 `<KeepAlive>` 包裹視圖               |
 
-```vue
-<route lang="yaml">
-meta:
-  title: 首頁
-</route>
+## 3. 權限守衛
+
+```ts
+router.beforeEach((to) => {
+  startProgress();
+  if (to.meta.public) return true;
+  const auth = useAuthStore();
+  if (!auth.isAuthenticated) return { name: "login", query: { redirect: to.fullPath } };
+  const required = to.meta.authority as string[] | undefined;
+  if (required && !required.some(auth.hasRole)) return { name: "forbidden" };
+  return true;
+});
+router.afterEach(() => stopProgress());
 ```
 
-## 版面配置
-
-`BasicLayout` 元件包含：
-
-- **頂部導覽列**：顯示當前頁面標題，非 Tab 頁面顯示返回按鈕
-- **底部 TabBar**：首頁 / 列表 / 我的 / 範例
-- **主內容區**：有 TabBar 時自動増加底部內邊距避免遠擋
-
-## 動態標題
-
-透過 `@vueuse/core` 的 `useTitle` 實現頁面標題自動跟隨路由切換：
+## 4. 動態標題
 
 ```ts
 watchEffect(() => {
-  const routeTitle = router.currentRoute.value.meta?.title;
-  useTitle(routeTitle ? `${routeTitle} - Vue H5 Template` : "Vue H5 Template");
+  const title = router.currentRoute.value.meta?.title as string | undefined;
+  useTitle(title ? `${title} - Vue H5 Template` : "Vue H5 Template");
 });
 ```

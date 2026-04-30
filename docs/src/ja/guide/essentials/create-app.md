@@ -23,6 +23,9 @@ apps/h5-my-app/
 ├── package.json
 ├── vite.config.ts
 ├── tsconfig.json
+├── tsconfig.node.json
+├── env.d.ts
+├── .env
 ├── .env.development
 ├── public/
 ├── src/
@@ -35,6 +38,7 @@ apps/h5-my-app/
 │   │   ├── list/index.vue
 │   │   ├── mine/index.vue
 │   │   └── login/index.vue
+│   ├── components/
 │   ├── layout/index.vue    (参照アプリからコピー)
 │   ├── locales/             (参照アプリからコピー)
 │   ├── api/                 (参照アプリからコピー)
@@ -65,8 +69,11 @@ apps/h5-my-app/
 生成されたアプリは以下が事前設定済みです：
 
 - **Vite プロキシ** — `/api` を Mock サーバー `localhost:5320` にプロキシ
-- **共有スタイル** — `@vh5/styles/global` をインポート
-- **状態管理** — `@vh5/stores`（Pinia + 永続化）
+- **共有スタイル** — `virtual:uno.css`（UnoCSS）と `@vh5/styles/global` をインポート
+- **状態管理** — `@vh5/stores`（Pinia + 永続化）を使用；namespace は `VITE_APP_NAMESPACE` + バージョン + 環境から生成
 - **国際化** — `@vh5/locales` を使用
-- **ルート進捗バー** — `@vh5/utils` の NProgress
-- **UI コンポーネント** — 選択したフレームワークに基づき自動登録
+- **ルートプログレスバー** — `@vh5/utils` の NProgress
+- **UI コンポーネント** — 選択したフレームワークに基づき自動登録：
+  - **NutUI**：Toast / Notify / Dialog / ImagePreview の CSS は `bootstrap.ts` で手動インポート、その他はオンデマンド
+  - **Vant**：コンポーネント CSS は `VantResolver` によりオンデマンドで注入、全量インポート不要
+  - **Varlet**：コンポーネント CSS は `VarletImportResolver` でオンデマンド、関数型コンポーネント（`Snackbar` 等）は呼び出し元で手動インポート

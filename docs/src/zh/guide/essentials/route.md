@@ -1,56 +1,101 @@
 # 路由与导航
 
-## 路由配置
+路由由**特性包**管理，而非各应用。应用外壳将每个特性的 `routes` 导出组合成一个路由实例。
 
-每个 H5 应用的路由定义在 `src/router/` 目录下。
+## 1. 路由实例
+
+`@vh5/app-shell` 统一创建路由，适配应用无需配置路由。
 
 ```ts
-const routes = [
+// packages/app-shell/src/router/index.ts
+import { mergeRouteModules } from "@vh5/utils";
+import { authRoutes } from "@vh5/feature-auth";
+import { homeRoutes } from "@vh5/feature-home";
+import { productRoutes } from "@vh5/feature-product";
+import { userRoutes } from "@vh5/feature-user";
+
+const featureRoutes = mergeRouteModules([...homeRoutes, ...productRoutes, ...userRoutes]);
+
+export const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    { path: "/", component: BasicLayout, redirect: "/home", children: featureRoutes },
+    ...authRoutes,
+    { path: "/:pathMatch(.*)*", component: () => import("../views/NotFound.vue") },
+  ],
+});
+```
+
+## 2. 特性路由模块
+
+```ts
+// packages/features/product/src/routes.ts
+export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/",
-    component: BasicLayout,
-    children: [
-      { path: "home", component: () => import("@/views/home/index.vue"), meta: { title: "首页" } },
-      { path: "list", component: () => import("@/views/list/index.vue"), meta: { title: "列表" } },
-      { path: "mine", component: () => import("@/views/mine/index.vue"), meta: { title: "我的" } },
-      {
-        path: "example",
-        component: () => import("@/views/example/index.vue"),
-        meta: { title: "示例" },
-      },
-    ],
+    path: "product",
+    name: "product-list",
+    component: () => import("./views/List.vue"),
+    meta: { title: "商品列表", authority: ["user", "admin"], tab: true },
   },
-  { path: "/login", component: () => import("@/views/login/index.vue") },
-  { path: "/details", component: () => import("@/views/list/details/index.vue") },
+  {
+    path: "product/:id",
+    name: "product-detail",
+    component: () => import("./views/Detail.vue"),
+    meta: { title: "商品详情", authority: ["user", "admin"] },
+  },
 ];
 ```
 
-## 类型安全路由
+`meta` 字段说明：
 
-项目集成了 [unplugin-vue-router](https://uvr.esm.is/)，自动扫描 `src/views/` 目录生成类型化路由定义到 `types/typed-router.d.ts`。可以通过在 `.vue` 文件中添加 `<route>` 块逐步采用文件路由：
+| 字段        | 类型       | 说明                                    |
+| ----------- | ---------- | --------------------------------------- |
+| `title`     | `string`   | 文档标题 + 导航栏标题                   |
+| `authority` | `string[]` | 允许访问的角色（省略 ⇒ 已登录即可访问） |
+| `public`    | `boolean`  | 无需登录即可访问                        |
+| `tab`       | `boolean`  | 在底部 TabBar 显示入口                  |
+| `keepAlive` | `boolean`  | 用 `<KeepAlive>` 包裹视图               |
 
-```vue
-<route lang="yaml">
-meta:
-  title: 首页
-</route>
+## 3. 权限守卫
+
+`@vh5/app-shell/router/guards.ts` 中注册的单一全局守卫：
+
+```ts
+router.beforeEach((to) => {
+  startProgress();
+  if (to.meta.public) return true;
+  const auth = useAuthStore();
+  if (!auth.isAuthenticated) return { name: "login", query: { redirect: to.fullPath } };
+  const required = to.meta.authority as string[] | undefined;
+  if (required && !required.some(auth.hasRole)) return { name: "forbidden" };
+  return true;
+});
+router.afterEach(() => stopProgress());
 ```
 
-## 布局
+## 4. 类型安全导航
 
-`BasicLayout` 组件包含：
+`unplugin-vue-router` 生成 `types/typed-router.d.ts`，推荐使用命名导航：
 
-- **顶部导航栏**：显示当前页面标题，非 Tab 页面显示返回按钮
-- **底部 TabBar**：首页 / 列表 / 我的 / 示例
-- **主内容区**：有 TabBar 时自动增加底部内边距避免遮挡
+```ts
+router.push({ name: "product-detail", params: { id } });
+```
 
-## 动态标题
+## 5. 后端驱动路由（可选）
 
-通过 `@vueuse/core` 的 `useTitle` 实现页面标题自动跟随路由切换：
+```ts
+import { generateRoutesByBackend } from "@vh5/utils";
+const routes = await generateRoutesByBackend({ fetchMenuListAsync, layoutMap, pageMap });
+router.addRoute({ path: "/", component: BasicLayout, children: routes });
+```
+
+## 6. 布局与标题
+
+`BasicLayout` 包含顶部导航栏（`meta.title`）和底部 TabBar（`meta.tab === true` 的路由）。文档标题在外壳中自动更新：
 
 ```ts
 watchEffect(() => {
-  const routeTitle = router.currentRoute.value.meta?.title;
-  useTitle(routeTitle ? `${routeTitle} - Vue H5 Template` : "Vue H5 Template");
+  const title = router.currentRoute.value.meta?.title as string | undefined;
+  useTitle(title ? `${title} - Vue H5 Template` : "Vue H5 Template");
 });
 ```

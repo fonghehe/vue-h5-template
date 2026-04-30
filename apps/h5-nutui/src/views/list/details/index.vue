@@ -5,7 +5,7 @@
     pagination-color="#426543"
     auto-play="3000"
   >
-    <nut-swiper-item class="h-100vw">
+    <nut-swiper-item class="!h-100vw">
       <img class="w-full h-full" :src="details.data.imgUrl" />
     </nut-swiper-item>
   </nut-swiper>

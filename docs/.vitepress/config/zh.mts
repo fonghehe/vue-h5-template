@@ -40,14 +40,18 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: "构建部署", link: "/zh/guide/essentials/build" },
             { text: "路由与导航", link: "/zh/guide/essentials/route" },
             { text: "服务端交互", link: "/zh/guide/essentials/server" },
+            { text: "HTTP 与 API 层", link: "/zh/guide/essentials/api" },
+            { text: "状态管理", link: "/zh/guide/essentials/state" },
             { text: "国际化", link: "/zh/guide/essentials/locale" },
             { text: "样式", link: "/zh/guide/essentials/styles" },
             { text: "创建应用", link: "/zh/guide/essentials/create-app" },
+            { text: "新增特性", link: "/zh/guide/essentials/contributing-features" },
           ],
         },
         {
           text: "工程",
           items: [
+            { text: "系统架构", link: "/zh/guide/project/architecture" },
             { text: "目录结构", link: "/zh/guide/project/dir" },
             { text: "Vite 配置", link: "/zh/guide/project/vite" },
             { text: "代码规范", link: "/zh/guide/project/standard" },

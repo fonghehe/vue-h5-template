@@ -23,6 +23,9 @@ apps/h5-my-app/
 ├── package.json
 ├── vite.config.ts
 ├── tsconfig.json
+├── tsconfig.node.json
+├── env.d.ts
+├── .env
 ├── .env.development
 ├── public/
 ├── src/
@@ -35,6 +38,7 @@ apps/h5-my-app/
 │   │   ├── list/index.vue
 │   │   ├── mine/index.vue
 │   │   └── login/index.vue
+│   ├── components/
 │   ├── layout/index.vue    (從參考應用複製)
 │   ├── locales/             (從參考應用複製)
 │   ├── api/                 (從參考應用複製)
@@ -65,8 +69,11 @@ apps/h5-my-app/
 生成的應用已自動配置：
 
 - **Vite 代理** — `/api` 代理到 Mock 服務 `localhost:5320`
-- **共享樣式** — 引入 `@vh5/styles/global`
-- **狀態管理** — 使用 `@vh5/stores`（Pinia + 持久化）
+- **共享樣式** — 引入 `virtual:uno.css`（UnoCSS）與 `@vh5/styles/global`
+- **狀態管理** — 使用 `@vh5/stores`（Pinia + 持久化）；namespace 由 `VITE_APP_NAMESPACE` + 版本號 + 環境拼接
 - **國際化** — 使用 `@vh5/locales`
-- **路由進度條** — 使用 `@vh5/utils` 的 NProgress
-- **UI 元件** — 根據選擇的框架自動註冊
+- **路由進度条** — 使用 `@vh5/utils` 的 NProgress
+- **UI 元件** — 根據選擇的框架自動按需註冊：
+  - **NutUI**：Toast / Notify / Dialog / ImagePreview 的 CSS 在 `bootstrap.ts` 中手動引入，其他元件按需載入
+  - **Vant**：元件 CSS 由 `VantResolver` 按需注入，`bootstrap.ts` 無需手動引入全量樣式
+  - **Varlet**：元件 CSS 由 `VarletImportResolver` 按需載入；函數式元件（如 `Snackbar`）需在呼叫處手動引入

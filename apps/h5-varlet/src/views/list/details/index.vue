@@ -27,7 +27,7 @@ watch(
 <template>
   <section>
     <var-swipe :autoplay="3000" :loop="false" :initial-index="page">
-      <var-swipe-item class="h-100vw">
+      <var-swipe-item class="!h-100vw">
         <var-image :src="details.data.imgUrl" fit="cover" width="100%" height="100%" />
       </var-swipe-item>
     </var-swipe>

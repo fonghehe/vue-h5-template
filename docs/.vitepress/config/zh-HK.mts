@@ -40,14 +40,18 @@ export const zhHK: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: "構建部署", link: "/zh-HK/guide/essentials/build" },
             { text: "路由同導覽", link: "/zh-HK/guide/essentials/route" },
             { text: "伺服端互動", link: "/zh-HK/guide/essentials/server" },
+            { text: "HTTP 同 API 層", link: "/zh-HK/guide/essentials/api" },
+            { text: "狀態管理", link: "/zh-HK/guide/essentials/state" },
             { text: "國際化", link: "/zh-HK/guide/essentials/locale" },
             { text: "樣式", link: "/zh-HK/guide/essentials/styles" },
             { text: "建立應用", link: "/zh-HK/guide/essentials/create-app" },
+            { text: "新增特性", link: "/zh-HK/guide/essentials/contributing-features" },
           ],
         },
         {
           text: "工程",
           items: [
+            { text: "系統架構", link: "/zh-HK/guide/project/architecture" },
             { text: "目錄結構", link: "/zh-HK/guide/project/dir" },
             { text: "Vite 配置", link: "/zh-HK/guide/project/vite" },
             { text: "代碼規範", link: "/zh-HK/guide/project/standard" },

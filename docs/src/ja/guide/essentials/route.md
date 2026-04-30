@@ -1,68 +1,67 @@
 # ルーティング
 
-## ルート設定
+ルートは各アプリではなく**特性パッケージ**が管理します。アプリケーションシェルが各特性の `routes` エクスポートを 1 つのルーターインスタンスに合成します。
 
-各アプリの `src/router/` でルートを定義します：
+## 1. ルーターインスタンス
+
+`@vh5/app-shell` がルーターを一元作成します。アダプターアプリはルートを設定しません。
 
 ```ts
-const routes = [
+const featureRoutes = mergeRouteModules([...homeRoutes, ...productRoutes, ...userRoutes]);
+
+export const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    { path: "/", component: BasicLayout, redirect: "/home", children: featureRoutes },
+    ...authRoutes,
+    { path: "/:pathMatch(.*)*", component: () => import("../views/NotFound.vue") },
+  ],
+});
+```
+
+## 2. 特性ルートモジュール
+
+```ts
+export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/",
-    component: BasicLayout,
-    children: [
-      {
-        path: "home",
-        component: () => import("@/views/home/index.vue"),
-        meta: { title: "ホーム" },
-      },
-      {
-        path: "list",
-        component: () => import("@/views/list/index.vue"),
-        meta: { title: "リスト" },
-      },
-      {
-        path: "mine",
-        component: () => import("@/views/mine/index.vue"),
-        meta: { title: "マイページ" },
-      },
-      {
-        path: "example",
-        component: () => import("@/views/example/index.vue"),
-        meta: { title: "サンプル" },
-      },
-    ],
+    path: "product",
+    name: "product-list",
+    component: () => import("./views/List.vue"),
+    meta: { title: "商品一覧", authority: ["user", "admin"], tab: true },
   },
-  { path: "/login", component: () => import("@/views/login/index.vue") },
-  { path: "/details", component: () => import("@/views/list/details/index.vue") },
 ];
 ```
 
-## 型安全ルーティング
+`meta` フィールドの説明：
 
-[unplugin-vue-router](https://uvr.esm.is/) を統合し、`src/views/` を自動スキャンして `types/typed-router.d.ts` に型付きルート定義を生成します。`.vue` ファイルに `<route>` ブロックを追加して段階的にファイルベースルーティングを源用できます：
+| フィールド  | 型         | 説明                                              |
+| ----------- | ---------- | ------------------------------------------------- |
+| `title`     | `string`   | ドキュメントタイトル + ナビバータイトル           |
+| `authority` | `string[]` | アクセス可能なロール（省略 ⇒ 認証済みであれば可） |
+| `public`    | `boolean`  | ログイン不要でアクセス可能                        |
+| `tab`       | `boolean`  | 下部タブバーにエントリを表示                      |
+| `keepAlive` | `boolean`  | `<KeepAlive>` で View をラップ                    |
 
-```vue
-<route lang="yaml">
-meta:
-  title: ホーム
-</route>
+## 3. 権限ガード
+
+```ts
+router.beforeEach((to) => {
+  startProgress();
+  if (to.meta.public) return true;
+  const auth = useAuthStore();
+  if (!auth.isAuthenticated) return { name: "login", query: { redirect: to.fullPath } };
+  const required = to.meta.authority as string[] | undefined;
+  if (required && !required.some(auth.hasRole)) return { name: "forbidden" };
+  return true;
+});
+router.afterEach(() => stopProgress());
 ```
 
-## レイアウト
-
-`BasicLayout` には以下が含まれます：
-
-- **上部ナビバー**：ページタイトル表示、非タブページでは戻るボタンを表示
-- **下部タブバー**：ホーム / リスト / マイページ / サンプル
-- **コンテンツエリア**：タブバー表示時に自動でパディングを追加
-
-## 動的タイトル
-
-`@vueuse/core` の `useTitle` でパス切り替時にページタイトルを自動更新：
+## 4. 動的タイトル
 
 ```ts
 watchEffect(() => {
-  const routeTitle = router.currentRoute.value.meta?.title;
-  useTitle(routeTitle ? `${routeTitle} - Vue H5 Template` : "Vue H5 Template");
+  const title = router.currentRoute.value.meta?.title as string | undefined;
+  useTitle(title ? `${title} - Vue H5 Template` : "Vue H5 Template");
 });
 ```

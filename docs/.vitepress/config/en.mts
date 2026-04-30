@@ -3,7 +3,7 @@ import type { DefaultTheme, LocaleSpecificConfig } from "vitepress";
 export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
   label: "English",
   lang: "en-US",
-  
+
   themeConfig: {
     editLink: {
       pattern: "https://github.com/fonghehe/vue-h5-template/edit/main/docs/src/:path",
@@ -30,14 +30,18 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: "Build & Deploy", link: "/guide/essentials/build" },
             { text: "Routing", link: "/guide/essentials/route" },
             { text: "Server Interaction", link: "/guide/essentials/server" },
+            { text: "HTTP & API Layer", link: "/guide/essentials/api" },
+            { text: "State Management", link: "/guide/essentials/state" },
             { text: "Internationalization", link: "/guide/essentials/locale" },
             { text: "Styles", link: "/guide/essentials/styles" },
             { text: "Create App", link: "/guide/essentials/create-app" },
+            { text: "Adding a Feature", link: "/guide/essentials/contributing-features" },
           ],
         },
         {
           text: "Project",
           items: [
+            { text: "System Architecture", link: "/guide/project/architecture" },
             { text: "Directory Structure", link: "/guide/project/dir" },
             { text: "Vite Config", link: "/guide/project/vite" },
             { text: "Code Standards", link: "/guide/project/standard" },

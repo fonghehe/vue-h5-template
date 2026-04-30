@@ -32,8 +32,8 @@ const UI_TEMPLATES: Record<UILibrary, AppTemplate> = {
   },
   vant: {
     devPort: 5781,
-    // Vant 按需加载：移除全量注册，CSS 全量导入避免函数式组件顺序问题，VantResolver({ importStyle: false }) 防止双重注入
-    uiImport: "import 'vant/lib/index.css';",
+    // VantResolver 按需注入组件 CSS，bootstrap.ts 无需手动导入
+    uiImport: "",
     uiLib: "vant",
     uiPackage: '"vant": "catalog:"',
     uiSetup: "",
@@ -85,7 +85,7 @@ function generatePackageJson(name: string, ui: UILibrary, template: AppTemplate)
 `;
 }
 
-function generateViteConfig(ui: UILibrary): string {
+function generateViteConfig(ui: UILibrary, name: string): string {
   const scssBlock =
     ui === "nutui"
       ? `
@@ -94,7 +94,7 @@ function generateViteConfig(ui: UILibrary): string {
           scss: {
             // 仅对 app 自身的 scss 文件注入 nutui 变量，避免污染 packages/styles 等第三方包
             additionalData: (source: string, filename: string) => {
-              if (filename.includes('/apps/${"${name}"}/src/')) {
+              if (filename.includes('/apps/${name}/src/')) {
                 return \`@use "@nutui/nutui/dist/styles/variables.scss" as *;\\n\${source}\`;
               }
               return source;
@@ -146,6 +146,7 @@ import App from './App.vue';
 import { setupI18n } from './locales';
 import router from './router';
 
+import 'virtual:uno.css';
 import '@vh5/styles/global';
 ${template.cssImports ? `${template.cssImports}\n` : ""}
 async function bootstrap(namespace: string) {
@@ -167,10 +168,21 @@ export { bootstrap };
 `;
 }
 
-function generateMainTs(name: string): string {
-  return `import { bootstrap } from './bootstrap';
+function generateMainTs(): string {
+  return `import { unmountGlobalLoading } from '@vh5/utils';
 
-bootstrap('${name}');
+async function initApplication() {
+  const env = import.meta.env.PROD ? 'prod' : 'dev';
+  const appVersion = import.meta.env.VITE_APP_VERSION;
+  const namespace = \`\${import.meta.env.VITE_APP_NAMESPACE}-\${appVersion}-\${env}\`;
+
+  const { bootstrap } = await import('./bootstrap');
+  await bootstrap(namespace);
+
+  unmountGlobalLoading();
+}
+
+initApplication();
 `;
 }
 
@@ -183,14 +195,14 @@ function generateAppVue(): string {
 `;
 }
 
-function generateIndexHtml(name: string): string {
+function generateIndexHtml(): string {
   return `<!doctype html>
-<html lang="zh-CN">
+<html lang="">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <title>Vue H5 Template - ${name}</title>
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
   </head>
   <body>
     <div id="app"></div>
@@ -201,11 +213,21 @@ function generateIndexHtml(name: string): string {
 }
 
 function generateEnvDevelopment(port: number): string {
-  return `VITE_PORT=${port}
+  return `# 端口号
+VITE_PORT=${port}
+
 VITE_BASE=/
+
+# 接口地址
 VITE_GLOB_API_URL=/api
+
+# 是否开启 Nitro Mock服务，true 为开启，false 为关闭
 VITE_NITRO_MOCK=true
+
+# 是否打开 devtools，true 为打开，false 为关闭
 VITE_DEVTOOLS=false
+
+# 是否注入全局loading
 VITE_INJECT_APP_LOADING=true
 `;
 }
@@ -267,16 +289,38 @@ export default router;
 
 function generateTsconfig(): string {
   return `{
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@vh5/tsconfig/web-app.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "#/*": ["types/*"]
+      "@/*": ["./src/*"],
+      "#/*": ["./types/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "types/**/*.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*.d.ts"]
 }
+`;
+}
+
+function generateTsconfigNode(): string {
+  return `{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@vh5/tsconfig/node.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
+  },
+  "include": ["vite.config.ts"]
+}
+`;
+}
+
+function generateEnvDts(): string {
+  return `/// <reference types="vite/client" />\n`;
+}
+
+function generateEnv(name: string): string {
+  return `# 应用标识（用于 Store namespace 隔离）
+VITE_APP_NAMESPACE=vh5-web-${name}
 `;
 }
 
@@ -351,6 +395,7 @@ export function defineCreateAppCommand(cli: CAC) {
         "src/views/mine",
         "src/views/login",
         "src/layout",
+        "src/components",
         "src/api",
         "src/stores",
         "src/locales",
@@ -366,11 +411,14 @@ export function defineCreateAppCommand(cli: CAC) {
       // Generate files
       const files: Record<string, string> = {
         "package.json": generatePackageJson(appName, uiType, template),
-        "vite.config.ts": generateViteConfig(uiType),
+        "vite.config.ts": generateViteConfig(uiType, appName),
         "tsconfig.json": generateTsconfig(),
-        "index.html": generateIndexHtml(appName),
+        "tsconfig.node.json": generateTsconfigNode(),
+        "env.d.ts": generateEnvDts(),
+        "index.html": generateIndexHtml(),
+        ".env": generateEnv(appName),
         ".env.development": generateEnvDevelopment(template.devPort),
-        "src/main.ts": generateMainTs(appName),
+        "src/main.ts": generateMainTs(),
         "src/bootstrap.ts": generateBootstrap(uiType, template),
         "src/App.vue": generateAppVue(),
         "src/router/index.ts": generateRouter(),
@@ -405,10 +453,12 @@ export function defineCreateAppCommand(cli: CAC) {
         cpSync(refApi, resolve(appDir, "src/api"), { recursive: true });
       }
 
-      // Copy stores from the reference app
-      const refStores = resolve(refApp, "src/stores");
-      if (existsSync(refStores)) {
-        cpSync(refStores, resolve(appDir, "src/stores"), { recursive: true });
+      // Copy stores from the reference app (nutui uses src/store, others use src/stores)
+      const refStoresPath = existsSync(resolve(refApp, "src/stores"))
+        ? resolve(refApp, "src/stores")
+        : resolve(refApp, "src/store");
+      if (existsSync(refStoresPath)) {
+        cpSync(refStoresPath, resolve(appDir, "src/stores"), { recursive: true });
       }
 
       consola.success(colors.green(`\n✅ App created: apps/${appName}`));

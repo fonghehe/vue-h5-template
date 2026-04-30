@@ -40,14 +40,18 @@ export const zhTW: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: "建置部署", link: "/zh-TW/guide/essentials/build" },
             { text: "路由與導覽", link: "/zh-TW/guide/essentials/route" },
             { text: "伺服端互動", link: "/zh-TW/guide/essentials/server" },
+            { text: "HTTP 與 API 層", link: "/zh-TW/guide/essentials/api" },
+            { text: "狀態管理", link: "/zh-TW/guide/essentials/state" },
             { text: "國際化", link: "/zh-TW/guide/essentials/locale" },
             { text: "樣式", link: "/zh-TW/guide/essentials/styles" },
             { text: "建立應用", link: "/zh-TW/guide/essentials/create-app" },
+            { text: "新增特性", link: "/zh-TW/guide/essentials/contributing-features" },
           ],
         },
         {
           text: "工程",
           items: [
+            { text: "系統架構", link: "/zh-TW/guide/project/architecture" },
             { text: "目錄結構", link: "/zh-TW/guide/project/dir" },
             { text: "Vite 設定", link: "/zh-TW/guide/project/vite" },
             { text: "程式碼規範", link: "/zh-TW/guide/project/standard" },

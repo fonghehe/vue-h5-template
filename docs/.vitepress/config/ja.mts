@@ -40,14 +40,18 @@ export const ja: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: "ビルドとデプロイ", link: "/ja/guide/essentials/build" },
             { text: "ルーティング", link: "/ja/guide/essentials/route" },
             { text: "サーバー連携", link: "/ja/guide/essentials/server" },
+            { text: "HTTP と API 層", link: "/ja/guide/essentials/api" },
+            { text: "状態管理", link: "/ja/guide/essentials/state" },
             { text: "国際化", link: "/ja/guide/essentials/locale" },
             { text: "スタイル", link: "/ja/guide/essentials/styles" },
             { text: "アプリ作成", link: "/ja/guide/essentials/create-app" },
+            { text: "特性の追加", link: "/ja/guide/essentials/contributing-features" },
           ],
         },
         {
           text: "プロジェクト",
           items: [
+            { text: "システムアーキテクチャ", link: "/ja/guide/project/architecture" },
             { text: "ディレクトリ構成", link: "/ja/guide/project/dir" },
             { text: "Vite 設定", link: "/ja/guide/project/vite" },
             { text: "コード規約", link: "/ja/guide/project/standard" },
