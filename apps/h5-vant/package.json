@@ -36,7 +36,6 @@
     "@vue/tsconfig": "catalog:",
     "eslint": "catalog:",
     "eslint-plugin-vue": "catalog:",
-    "jiti": "catalog:",
     "npm-run-all2": "catalog:",
     "oxlint": "catalog:",
     "prettier": "catalog:",
