@@ -21,7 +21,7 @@ pnpm dev:vant
 ```ts
 // bootstrap.ts
 // ✅ グローバル基本スタイルのみインポート、Vant コンポーネント CSS は VantResolver が自動注入
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ❌ app.use(Vant) による全量登録は使用しない
 // ❌ vant/lib/index.css の追加インポートは不要
 ```

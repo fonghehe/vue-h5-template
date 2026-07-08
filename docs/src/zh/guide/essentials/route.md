@@ -8,20 +8,32 @@
 
 ```ts
 // packages/app-shell/src/router/index.ts
-import { mergeRouteModules } from "@vh5/utils";
-import { authRoutes } from "@vh5/feature-auth";
-import { homeRoutes } from "@vh5/feature-home";
-import { productRoutes } from "@vh5/feature-product";
-import { userRoutes } from "@vh5/feature-user";
+import { mergeRouteModules } from '@vh5/utils';
+import { authRoutes } from '@vh5/feature-auth';
+import { homeRoutes } from '@vh5/feature-home';
+import { productRoutes } from '@vh5/feature-product';
+import { userRoutes } from '@vh5/feature-user';
 
-const featureRoutes = mergeRouteModules([...homeRoutes, ...productRoutes, ...userRoutes]);
+const featureRoutes = mergeRouteModules([
+  ...homeRoutes,
+  ...productRoutes,
+  ...userRoutes,
+]);
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/", component: BasicLayout, redirect: "/home", children: featureRoutes },
+    {
+      path: '/',
+      component: BasicLayout,
+      redirect: '/home',
+      children: featureRoutes,
+    },
     ...authRoutes,
-    { path: "/:pathMatch(.*)*", component: () => import("../views/NotFound.vue") },
+    {
+      path: '/:pathMatch(.*)*',
+      component: () => import('../views/NotFound.vue'),
+    },
   ],
 });
 ```
@@ -32,16 +44,16 @@ export const router = createRouter({
 // packages/features/product/src/routes.ts
 export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "product",
-    name: "product-list",
-    component: () => import("./views/List.vue"),
-    meta: { title: "商品列表", authority: ["user", "admin"], tab: true },
+    path: 'product',
+    name: 'product-list',
+    component: () => import('./views/List.vue'),
+    meta: { title: '商品列表', authority: ['user', 'admin'], tab: true },
   },
   {
-    path: "product/:id",
-    name: "product-detail",
-    component: () => import("./views/Detail.vue"),
-    meta: { title: "商品详情", authority: ["user", "admin"] },
+    path: 'product/:id',
+    name: 'product-detail',
+    component: () => import('./views/Detail.vue'),
+    meta: { title: '商品详情', authority: ['user', 'admin'] },
   },
 ];
 ```
@@ -65,9 +77,10 @@ router.beforeEach((to) => {
   startProgress();
   if (to.meta.public) return true;
   const auth = useAuthStore();
-  if (!auth.isAuthenticated) return { name: "login", query: { redirect: to.fullPath } };
+  if (!auth.isAuthenticated)
+    return { name: 'login', query: { redirect: to.fullPath } };
   const required = to.meta.authority as string[] | undefined;
-  if (required && !required.some(auth.hasRole)) return { name: "forbidden" };
+  if (required && !required.some(auth.hasRole)) return { name: 'forbidden' };
   return true;
 });
 router.afterEach(() => stopProgress());
@@ -78,15 +91,19 @@ router.afterEach(() => stopProgress());
 `unplugin-vue-router` 生成 `types/typed-router.d.ts`，推荐使用命名导航：
 
 ```ts
-router.push({ name: "product-detail", params: { id } });
+router.push({ name: 'product-detail', params: { id } });
 ```
 
 ## 5. 后端驱动路由（可选）
 
 ```ts
-import { generateRoutesByBackend } from "@vh5/utils";
-const routes = await generateRoutesByBackend({ fetchMenuListAsync, layoutMap, pageMap });
-router.addRoute({ path: "/", component: BasicLayout, children: routes });
+import { generateRoutesByBackend } from '@vh5/utils';
+const routes = await generateRoutesByBackend({
+  fetchMenuListAsync,
+  layoutMap,
+  pageMap,
+});
+router.addRoute({ path: '/', component: BasicLayout, children: routes });
 ```
 
 ## 6. 布局与标题
@@ -96,6 +113,6 @@ router.addRoute({ path: "/", component: BasicLayout, children: routes });
 ```ts
 watchEffect(() => {
   const title = router.currentRoute.value.meta?.title as string | undefined;
-  useTitle(title ? `${title} - Vue H5 Template` : "Vue H5 Template");
+  useTitle(title ? `${title} - Vue H5 Template` : 'Vue H5 Template');
 });
 ```

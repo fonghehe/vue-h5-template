@@ -17,11 +17,11 @@
 
 ```ts
 // vite.config.mts
-import { defineConfig } from "@vh5/vite-config";
+import { defineConfig } from '@vh5/vite-config';
 
 export default defineConfig(async () => ({
   application: {
-    uiLibrary: "nut", // 'nut' | 'vant' | 'varlet'
+    uiLibrary: 'nut', // 'nut' | 'vant' | 'varlet'
   },
   vite: {
     server: { port: 3000 },

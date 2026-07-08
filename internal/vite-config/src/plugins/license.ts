@@ -1,22 +1,28 @@
-import type { Plugin } from "vite";
+import type { Plugin } from 'vite';
 
-import { EOL } from "node:os";
+import { EOL } from 'node:os';
 
-import { dateUtil, readPackageJSON } from "@vh5/node-utils";
+import { dateUtil, readPackageJSON } from '@vh5/node-utils';
 
 /**
  * 用于注入版权信息
  * @returns
  */
 
-async function viteLicensePlugin(root = process.cwd()): Promise<Plugin | undefined> {
-  const { description = "", homepage = "", version = "" } = await readPackageJSON(root);
+async function viteLicensePlugin(
+  root = process.cwd(),
+): Promise<Plugin | undefined> {
+  const {
+    description = '',
+    homepage = '',
+    version = '',
+  } = await readPackageJSON(root);
 
   return {
-    apply: "build",
-    enforce: "post",
+    apply: 'build',
+    enforce: 'post',
     generateBundle(_options, bundle) {
-      const date = dateUtil().format("YYYY-MM-DD ");
+      const date = dateUtil().format('YYYY-MM-DD ');
       const copyrightText = `/*!
   * Vue H5 Template
   * Version: ${version}
@@ -31,7 +37,7 @@ async function viteLicensePlugin(root = process.cwd()): Promise<Plugin | undefin
       `.trim();
 
       for (const [, fileContent] of Object.entries(bundle)) {
-        if (fileContent.type === "chunk" && fileContent.isEntry) {
+        if (fileContent.type === 'chunk' && fileContent.isEntry) {
           // 插入版权信息
           const content = (fileContent as any).code as string;
           const updatedContent = `${copyrightText}${EOL}${content}`;
@@ -41,7 +47,7 @@ async function viteLicensePlugin(root = process.cwd()): Promise<Plugin | undefin
         }
       }
     },
-    name: "vite:license",
+    name: 'vite:license',
   };
 }
 

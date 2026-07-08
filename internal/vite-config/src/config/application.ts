@@ -1,16 +1,15 @@
-import type { CSSOptions, UserConfig } from "vite";
+import type { CSSOptions, UserConfig } from 'vite';
 
-import type { DefineApplicationOptions } from "../typing";
-import { defineConfig, loadEnv, mergeConfig } from "vite";
+import type { DefineApplicationOptions } from '../typing';
 
-import autoprefixer from "autoprefixer";
+import autoprefixer from 'autoprefixer';
+import viewport from 'postcss-mobile-forever';
+import { defineConfig, loadEnv, mergeConfig } from 'vite';
 
-import viewport from "postcss-mobile-forever";
-
-import { defaultImportmapOptions, getDefaultPwaOptions } from "../options";
-import { loadApplicationPlugins } from "../plugins";
-import { loadAndConvertEnv } from "../utils/env";
-import { getCommonConfig } from "./common";
+import { defaultImportmapOptions, getDefaultPwaOptions } from '../options';
+import { loadApplicationPlugins } from '../plugins';
+import { loadAndConvertEnv } from '../utils/env';
+import { getCommonConfig } from './common';
 
 function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
   return defineConfig(async (config) => {
@@ -19,13 +18,13 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
     const { command, mode } = config;
     const { application = {}, vite = {} } = options || {};
     const root = process.cwd();
-    const isBuild = command === "build";
+    const isBuild = command === 'build';
     const env = loadEnv(mode, root);
     const plugins = await loadApplicationPlugins({
       archiver: true,
       archiverPluginOptions: {},
       compress: false,
-      compressTypes: ["brotli", "gzip"],
+      compressTypes: ['brotli', 'gzip'],
       devtools: true,
       env,
       extraAppConfig: true,
@@ -43,7 +42,7 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       pwa: true,
       pwaOptions: getDefaultPwaOptions(appTitle),
       unocss: true,
-      vconsole: !isBuild,
+      eruda: !isBuild,
       vxeTableLazyImport: true,
       ...envConfig,
       ...application,
@@ -57,9 +56,9 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       build: {
         rolldownOptions: {
           output: {
-            assetFileNames: "[ext]/[name]-[hash].[ext]",
-            chunkFileNames: "js/[name]-[hash].js",
-            entryFileNames: "jse/index-[name]-[hash].js",
+            assetFileNames: '[ext]/[name]-[hash].[ext]',
+            chunkFileNames: 'js/[name]-[hash].js',
+            entryFileNames: 'jse/index-[name]-[hash].js',
             minify: isBuild
               ? {
                   compress: {
@@ -69,17 +68,17 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
               : false,
           },
         },
-        target: "es2015",
+        target: 'es2015',
       },
       css: cssOptions,
       esbuild: {
         drop: isBuild
           ? [
               // 'console',
-              "debugger",
+              'debugger',
             ]
           : [],
-        legalComments: "none",
+        legalComments: 'none',
       },
       plugins,
       server: {
@@ -88,15 +87,18 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
         warmup: {
           // 预热文件
           clientFiles: [
-            "./index.html",
-            "./src/bootstrap.ts",
-            "./src/{views,layouts,router,store,api,adapter}/*",
+            './index.html',
+            './src/bootstrap.ts',
+            './src/{views,layouts,router,store,api,adapter}/*',
           ],
         },
       },
     };
 
-    const mergedCommonConfig = mergeConfig(await getCommonConfig(), applicationConfig);
+    const mergedCommonConfig = mergeConfig(
+      await getCommonConfig(),
+      applicationConfig,
+    );
     // 合并 css 配置，确保我们的 postcss 配置不会被覆盖
     if (vite.css) {
       mergedCommonConfig.css = {
@@ -109,17 +111,20 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
   });
 }
 
-function createCssOptions(pxToViewport = true, pxToViewportOptions?: any): CSSOptions {
+function createCssOptions(
+  pxToViewport = true,
+  pxToViewportOptions?: any,
+): CSSOptions {
   const baseViewportOpts = {
-    appSelector: "#app",
+    appSelector: '#app',
     viewportWidth: 375,
     unitPrecision: 3,
     maxDisplayWidth: 600,
-    propList: ["*"],
-    selectorBlackList: [".ignore", "keep-px"],
-    valueBlackList: ["1px solid"],
-    mobileUnit: "vw",
-    rootContainingBlockSelectorList: ["van-popup--bottom"],
+    propList: ['*'],
+    selectorBlackList: ['.ignore', 'keep-px'],
+    valueBlackList: ['1px solid'],
+    mobileUnit: 'vw',
+    rootContainingBlockSelectorList: ['van-popup--bottom'],
     ...pxToViewportOptions,
   };
   return {

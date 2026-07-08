@@ -21,10 +21,10 @@ pnpm dev:nutui
 `showToast`、`showNotify`、`showDialog`、`showImagePreview` などの関数型コンポーネントは Resolver で自動インポートできないため、`bootstrap.ts` で手動インポートが必要です：
 
 ```ts
-import "@nutui/nutui/dist/packages/toast/style/css";
-import "@nutui/nutui/dist/packages/notify/style/css";
-import "@nutui/nutui/dist/packages/dialog/style/css";
-import "@nutui/nutui/dist/packages/imagepreview/style/css";
+import '@nutui/nutui/dist/packages/toast/style/css';
+import '@nutui/nutui/dist/packages/notify/style/css';
+import '@nutui/nutui/dist/packages/dialog/style/css';
+import '@nutui/nutui/dist/packages/imagepreview/style/css';
 ```
 
 ## SCSS 設定

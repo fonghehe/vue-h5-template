@@ -42,11 +42,11 @@ apps/h5-nutui/src/locales/
 
 ```vue
 <template>
-  <div>{{ t("app.home") }}</div>
+  <div>{{ t('app.home') }}</div>
 </template>
 
 <script setup>
-import { t } from "@/locales";
+import { t } from '@/locales';
 </script>
 ```
 
@@ -57,9 +57,9 @@ Each app's `locales/index.ts` dynamically loads locale files via `import.meta.gl
 ## Switching Language
 
 ```ts
-import { loadLocaleMessages } from "@vh5/locales";
+import { loadLocaleMessages } from '@vh5/locales';
 
-await loadLocaleMessages("en-US");
+await loadLocaleMessages('en-US');
 ```
 
 A built-in language switcher is available on the "Mine" page.
@@ -83,10 +83,10 @@ Replace each app's `src/locales/index.ts` with a simple string map:
 
 ```ts
 const messages: Record<string, string> = {
-  "app.home": "Home",
-  "app.list": "List",
-  "app.mine": "Mine",
-  "app.example": "Example",
+  'app.home': 'Home',
+  'app.list': 'List',
+  'app.mine': 'Mine',
+  'app.example': 'Example',
 };
 
 export function t(key: string): string {

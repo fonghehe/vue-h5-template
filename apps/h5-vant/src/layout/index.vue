@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { t } from "@/locales";
+import { t } from '@/locales';
 
 const router = useRouter();
 const route = useRoute();
 const tabItem = [
-  { key: "home", icon: "home-o" },
-  { key: "list", icon: "todo-list-o" },
-  { key: "mine", icon: "user-o" },
-  { key: "example", icon: "apps-o" },
+  { key: 'home', icon: 'home-o' },
+  { key: 'list', icon: 'todo-list-o' },
+  { key: 'mine', icon: 'user-o' },
+  { key: 'example', icon: 'apps-o' },
 ];
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
@@ -15,7 +15,7 @@ const showBorder = ref(true);
 watch(
   () => router,
   () => {
-    const path = router.currentRoute.value.path.replace("/", "");
+    const path = router.currentRoute.value.path.replace('/', '');
     const judgeRoute = tabItem.some((item) => item.key === path);
     activeTab.value = tabItem.findIndex((item) => item.key === path);
     tabbarVisible.value = judgeRoute;
@@ -26,19 +26,19 @@ watch(
 const tabSwitch = (_item: any, index: number) => {
   switch (index) {
     case 0: {
-      router.push("/home");
+      router.push('/home');
       break;
     }
     case 1: {
-      router.push("/list");
+      router.push('/list');
       break;
     }
     case 2: {
-      router.push("/mine");
+      router.push('/mine');
       break;
     }
     case 3: {
-      router.push("/example");
+      router.push('/example');
       break;
     }
   }
@@ -47,7 +47,9 @@ const tabSwitch = (_item: any, index: number) => {
 const goBack = () => {
   router.go(-1);
 };
-const navTitle = computed(() => (router.currentRoute.value.meta?.title as string) || "首页");
+const navTitle = computed(
+  () => (router.currentRoute.value.meta?.title as string) || '首页',
+);
 </script>
 
 <template>
@@ -58,7 +60,10 @@ const navTitle = computed(() => (router.currentRoute.value.meta?.title as string
       safe-area-inset-top
       @click-left="goBack"
     />
-    <div class="flex-1 min-h-0 overflow-hidden overflow-y-auto" :class="{ 'px-15px': showBorder }">
+    <div
+      class="flex-1 min-h-0 overflow-hidden overflow-y-auto"
+      :class="{ 'px-15px': showBorder }"
+    >
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />

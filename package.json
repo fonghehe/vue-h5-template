@@ -1,6 +1,7 @@
 {
   "name": "vue-h5-template-monorepo",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 turbo build",
     "build:analyze": "turbo build:analyze",
@@ -17,31 +18,34 @@
     "dev:nutui": "pnpm -F @vh5/h5-nutui run dev",
     "dev:varlet": "pnpm -F @vh5/h5-varlet run dev",
     "dev:vant": "pnpm -F @vh5/h5-vant run dev",
-    "lint": "turbo lint",
-    "postinstall": "pnpm -r run stub --if-present",
+    "format": "vsh lint --format",
+    "lint": "vsh lint",
+    "postinstall": "pnpm -r run --if-present stub",
     "preinstall": "npx only-allow pnpm",
-    "reinstall": "pnpm clean --del-lock && pnpm install",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "publint": "vsh publint",
+    "reinstall": "pnpm run clean -- --del-lock && pnpm install",
     "version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile",
     "catalog": "pnpm dlx codemod pnpm/catalog"
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@unocss/preset-rem-to-px": "catalog:",
     "@vh5/commitlint-config": "workspace:*",
     "@vh5/eslint-config": "workspace:*",
+    "@vh5/oxfmt-config": "workspace:*",
     "@vh5/oxlint-config": "workspace:*",
-    "@vh5/prettier-config": "workspace:*",
     "@vh5/stylelint-config": "workspace:*",
     "@vh5/tsconfig": "workspace:*",
     "@vh5/turbo-run": "workspace:*",
     "@vh5/vite-config": "workspace:*",
+    "@vh5/vsh": "workspace:*",
     "cross-env": "catalog:",
+    "eslint": "catalog:",
+    "oxfmt": "catalog:",
     "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
     "tsdown": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:",
-    "unbuild": "catalog:",
     "unocss": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
@@ -49,8 +53,8 @@
     "vue-tsc": "catalog:"
   },
   "engines": {
-    "node": ">=20.12.0",
-    "pnpm": ">=10.0.0"
+    "node": "^22.18.0 || ^24.0.0",
+    "pnpm": ">=11.0.0"
   },
-  "packageManager": "pnpm@10.27.0"
+  "packageManager": "pnpm@11.10.0"
 }

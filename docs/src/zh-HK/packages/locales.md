@@ -5,7 +5,7 @@
 ## 支援語言
 
 ```ts
-type SupportedLanguagesType = "en-US" | "ja-JP" | "zh-CN" | "zh-TW";
+type SupportedLanguagesType = 'en-US' | 'ja-JP' | 'zh-CN' | 'zh-TW';
 ```
 
 ## 目錄結構

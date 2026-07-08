@@ -20,7 +20,7 @@ pnpm dev:varlet
 
 ```ts
 // bootstrap.ts — 无需全量注册，VarletImportResolver 自动处理
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ❌ 不再使用 app.use(Varlet) 和全量 CSS 导入
 ```
 

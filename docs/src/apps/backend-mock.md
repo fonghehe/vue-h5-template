@@ -31,10 +31,10 @@ pnpm start
 
 ### Products
 
-| Method | Path                  | Description                                   |
-| ------ | --------------------- | --------------------------------------------- |
-| GET    | `/api/product/list`   | Product list (supports `?page=1&pageSize=10`) |
-| GET    | `/api/product/detail` | Product detail (`?id=1`)                      |
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/api/product/list` | Product list (supports `?page=1&pageSize=10`) |
+| GET | `/api/product/detail` | Product detail (`?id=1`) |
 
 ### Upload
 

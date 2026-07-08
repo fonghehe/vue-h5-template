@@ -20,7 +20,7 @@ Default port: `5779`
 
 ```ts
 // bootstrap.ts — no global registration needed, VarletImportResolver handles everything
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ❌ No longer using app.use(Varlet) or full CSS import
 ```
 

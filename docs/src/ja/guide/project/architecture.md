@@ -65,19 +65,19 @@
 
 ## 3. モジュールの責務
 
-| レイヤー          | パッケージ                                        | 所有するもの                                                                          | インポート可能                                     |
-| ----------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| UI アダプター     | `apps/h5-nutui`・`apps/h5-vant`・`apps/h5-varlet` | コンポーネントライブラリグルーコード・アプリエントリー・テーマ                        | app-shell・features・@core・services・request・api |
-| アプリシェル      | `@vh5/app-shell`                                  | ブートストラップ・レイアウト・Router インスタンス・グローバルガード・エラーバウンダリ | features・services・request・@core                 |
-| 特性モジュール    | `@vh5/feature-*`                                  | View・ルートモジュール・特性 Store・特性 Composable                                   | services・@core・locales・request 型               |
-| ドメインサービス  | `@vh5/services`                                   | ドメインモデル・変換関数・ビジネスルール                                              | api・@core/base                                    |
-| HTTP クライアント | `@vh5/request`                                    | 型付き fetch ラッパー・インターセプター・エラーマッピング                             | @core/base                                         |
-| API SDK           | `@vh5/api`                                        | エンドポイント URL・リクエスト/レスポンス DTO                                         | @core/base（型のみ）                               |
-| Core Base         | `@vh5/core-base`                                  | tree/date/dom ユーティリティ・キャッシュ・定数・`to()`                                | （なし——純粋関数）                                 |
-| Composables       | `@vh5/composables`                                | フレームワーク非依存の Vue Composable                                                 | @core/base                                         |
-| Stores            | `@vh5/stores`                                     | Pinia 初期化 + 永続化プラグイン                                                       | @core/base                                         |
-| Locales           | `@vh5/locales`                                    | i18n 初期化・共有文字列                                                               | @core/base                                         |
-| Styles            | `@vh5/styles`                                     | グローバル SCSS・デザイントークン・各ライブラリスタイルオーバーライド                 | （なし）                                           |
+| レイヤー | パッケージ | 所有するもの | インポート可能 |
+| --- | --- | --- | --- |
+| UI アダプター | `apps/h5-nutui`・`apps/h5-vant`・`apps/h5-varlet` | コンポーネントライブラリグルーコード・アプリエントリー・テーマ | app-shell・features・@core・services・request・api |
+| アプリシェル | `@vh5/app-shell` | ブートストラップ・レイアウト・Router インスタンス・グローバルガード・エラーバウンダリ | features・services・request・@core |
+| 特性モジュール | `@vh5/feature-*` | View・ルートモジュール・特性 Store・特性 Composable | services・@core・locales・request 型 |
+| ドメインサービス | `@vh5/services` | ドメインモデル・変換関数・ビジネスルール | api・@core/base |
+| HTTP クライアント | `@vh5/request` | 型付き fetch ラッパー・インターセプター・エラーマッピング | @core/base |
+| API SDK | `@vh5/api` | エンドポイント URL・リクエスト/レスポンス DTO | @core/base（型のみ） |
+| Core Base | `@vh5/core-base` | tree/date/dom ユーティリティ・キャッシュ・定数・`to()` | （なし——純粋関数） |
+| Composables | `@vh5/composables` | フレームワーク非依存の Vue Composable | @core/base |
+| Stores | `@vh5/stores` | Pinia 初期化 + 永続化プラグイン | @core/base |
+| Locales | `@vh5/locales` | i18n 初期化・共有文字列 | @core/base |
+| Styles | `@vh5/styles` | グローバル SCSS・デザイントークン・各ライブラリスタイルオーバーライド | （なし） |
 
 ## 4. データフロー
 
@@ -112,11 +112,11 @@ LoginView
 
 ## 6. 状態管理
 
-| ティア                 | 場所                         | 永続化      | 例                                   |
-| ---------------------- | ---------------------------- | ----------- | ------------------------------------ |
-| **サーバーキャッシュ** | Composable + `useAsyncState` | なし        | 商品リスト・商品詳細                 |
-| **セッション状態**     | `useAuthStore`（特性）       | あり（AES） | Access Token・ユーザー情報・ロール   |
-| **アプリ設定**         | `useAppStore`（app-shell）   | あり        | ロケール・テーマ・最後に訪問したタブ |
+| ティア | 場所 | 永続化 | 例 |
+| --- | --- | --- | --- |
+| **サーバーキャッシュ** | Composable + `useAsyncState` | なし | 商品リスト・商品詳細 |
+| **セッション状態** | `useAuthStore`（特性） | あり（AES） | Access Token・ユーザー情報・ロール |
+| **アプリ設定** | `useAppStore`（app-shell） | あり | ロケール・テーマ・最後に訪問したタブ |
 
 ## 7. HTTP 層
 

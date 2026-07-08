@@ -24,14 +24,14 @@ server: {
 
 ```ts
 // api/product.ts
-import request from "@/utils/request";
+import request from '@/utils/request';
 
 export function getProductList(params?: { page?: number; pageSize?: number }) {
-  return request.get("/api/product/list", { params });
+  return request.get('/api/product/list', { params });
 }
 
 export function getProductDetail(id: number | string) {
-  return request.get("/api/product/detail", { params: { id } });
+  return request.get('/api/product/detail', { params: { id } });
 }
 ```
 

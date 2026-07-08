@@ -37,7 +37,7 @@ Nginx 設定模板位於 `scripts/deploy/nginx.conf`。
 on:
   push:
     branches: [main]
-    paths: ["docs/**"]
+    paths: ['docs/**']
 ```
 
 觸發條件：push 到 `main` 且 `docs/**` 有變更，或手動觸發 `workflow_dispatch`。

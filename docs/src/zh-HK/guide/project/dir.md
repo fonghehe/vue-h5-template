@@ -49,11 +49,11 @@ packages/
 
 ## 4. 快速查找表
 
-| 我想添加……              | 放喺……                                                          |
-| ----------------------- | --------------------------------------------------------------- |
-| 新頁面                  | `packages/features/<feature>/src/views/`                        |
-| 新 API 接口             | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
-| 新 Pinia Store          | `packages/features/<feature>/src/store.ts`                      |
-| 新共享 Composable       | `packages/@core/composables/src/`                               |
-| 新語言字串              | `packages/features/<feature>/src/locales/<lang>.json`           |
-| 新全局樣式 / 設計 Token | `packages/styles/src/global/`                                   |
+| 我想添加…… | 放喺…… |
+| --- | --- |
+| 新頁面 | `packages/features/<feature>/src/views/` |
+| 新 API 接口 | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
+| 新 Pinia Store | `packages/features/<feature>/src/store.ts` |
+| 新共享 Composable | `packages/@core/composables/src/` |
+| 新語言字串 | `packages/features/<feature>/src/locales/<lang>.json` |
+| 新全局樣式 / 設計 Token | `packages/styles/src/global/` |

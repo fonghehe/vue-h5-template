@@ -1,6 +1,6 @@
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from 'vue-router';
 
-import { filterTree, mapTree } from "@vh5-core/shared/utils";
+import { filterTree, mapTree } from '@vh5-core/shared/utils';
 
 /**
  * 动态生成路由 - 前端方式
@@ -8,7 +8,7 @@ import { filterTree, mapTree } from "@vh5-core/shared/utils";
 async function generateRoutesByFrontend(
   routes: RouteRecordRaw[],
   roles: string[],
-  forbiddenComponent?: RouteRecordRaw["component"],
+  forbiddenComponent?: RouteRecordRaw['component'],
 ): Promise<RouteRecordRaw[]> {
   // 根据角色标识过滤路由表,判断当前用户是否拥有指定权限
   const finalRoutes = filterTree(routes, (route) => {
@@ -38,7 +38,9 @@ function hasAuthority(route: RouteRecordRaw, access: string[]) {
   if (!authority) {
     return true;
   }
-  const canAccess = access.some((value) => (authority as string[]).includes(value));
+  const canAccess = access.some((value) =>
+    (authority as string[]).includes(value),
+  );
 
   return canAccess || (!canAccess && menuHasVisibleWithForbidden(route));
 }
@@ -50,7 +52,7 @@ function hasAuthority(route: RouteRecordRaw, access: string[]) {
 function menuHasVisibleWithForbidden(route: RouteRecordRaw) {
   return (
     !!route.meta?.authority &&
-    Reflect.has(route.meta || {}, "menuVisibleWithForbidden") &&
+    Reflect.has(route.meta || {}, 'menuVisibleWithForbidden') &&
     !!route.meta?.menuVisibleWithForbidden
   );
 }

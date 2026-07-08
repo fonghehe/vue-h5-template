@@ -12,7 +12,7 @@ export async function run(options: RunOptions) {
     console.error('Please enter the command to run');
     process.exit(1);
   }
-  const { packages }:{ packages:Package[] } = await getPackages();
+  const { packages }: { packages: Package[] } = await getPackages();
 
   // 只显示有对应命令的包
   const selectPkgs = packages.filter((pkg) => {
@@ -46,4 +46,3 @@ export async function run(options: RunOptions) {
     stdio: 'inherit',
   });
 }
-

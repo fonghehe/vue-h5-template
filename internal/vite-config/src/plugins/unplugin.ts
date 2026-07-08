@@ -1,19 +1,13 @@
-import type { PluginOption } from "vite";
-import Components from "unplugin-vue-components/vite";
-import AutoImport from "unplugin-auto-import/vite";
-import { VueUseComponentsResolver } from "unplugin-vue-components/resolvers";
-import { VantResolver } from "@vant/auto-import-resolver";
-import { VarletImportResolver } from "@varlet/import-resolver";
-import NutUIResolver from "@nutui/auto-import-resolver";
+import type { PluginOption } from 'vite';
+
+import NutUIResolver from '@nutui/auto-import-resolver';
+import { VantResolver } from '@vant/auto-import-resolver';
+import { VarletImportResolver } from '@varlet/import-resolver';
+import AutoImport from 'unplugin-auto-import/vite';
+import { VueUseComponentsResolver } from 'unplugin-vue-components/resolvers';
+import Components from 'unplugin-vue-components/vite';
 
 export interface UnPluginOptions {
-  /**
-   * UI 库类型
-   * - vant: Vant UI 库
-   * - nut: NutUI 库
-   * - varlet: Varlet UI 库
-   */
-  uiLibrary: "vant" | "nut" | "varlet";
   /**
    * 是否启用自动导入
    * @default true
@@ -24,6 +18,13 @@ export interface UnPluginOptions {
    * @default true
    */
   components?: boolean;
+  /**
+   * UI 库类型
+   * - vant: Vant UI 库
+   * - nut: NutUI 库
+   * - varlet: Varlet UI 库
+   */
+  uiLibrary: 'nut' | 'vant' | 'varlet';
 }
 
 /**
@@ -36,34 +37,37 @@ export function viteUnpluginPlugin(options: UnPluginOptions): PluginOption[] {
   const plugins: PluginOption[] = [];
 
   // 根据 UI 库类型获取对应的 resolver
-  let componentResolvers: any[] = [VueUseComponentsResolver()];
-  let autoImportResolvers: any[] = [];
+  const componentResolvers: any[] = [VueUseComponentsResolver()];
+  const autoImportResolvers: any[] = [];
 
   switch (uiLibrary) {
-    case "vant":
+    case 'nut': {
+      componentResolvers.push(NutUIResolver());
+      break;
+    }
+    case 'vant': {
       componentResolvers.push(VantResolver());
       autoImportResolvers.push(VantResolver());
       break;
-    case "nut":
-      componentResolvers.push(NutUIResolver());
-      break;
-    case "varlet":
+    }
+    case 'varlet': {
       componentResolvers.push(VarletImportResolver());
       autoImportResolvers.push(VarletImportResolver({ autoImport: true }));
       break;
+    }
   }
 
   // 自动导入插件
   if (autoImport) {
     plugins.push(
       AutoImport({
-        dts: "./types/auto-imports.d.ts",
+        dts: './types/auto-imports.d.ts',
         imports: [
-          "vue",
-          "pinia",
-          "vue-router",
+          'vue',
+          'pinia',
+          'vue-router',
           {
-            "@vueuse/core": [],
+            '@vueuse/core': [],
           },
         ],
         eslintrc: {
@@ -78,15 +82,19 @@ export function viteUnpluginPlugin(options: UnPluginOptions): PluginOption[] {
   if (components) {
     plugins.push(
       Components({
-        dirs: ["src/components"],
-        extensions: ["vue", "md"],
+        dirs: ['src/components'],
+        extensions: ['vue', 'md'],
         deep: true,
-        dts: "./types/components.d.ts",
+        dts: './types/components.d.ts',
         directoryAsNamespace: false,
         globalNamespaces: [],
         directives: true,
         include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-        exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/],
+        exclude: [
+          /[\\/]node_modules[\\/]/,
+          /[\\/]\.git[\\/]/,
+          /[\\/]\.nuxt[\\/]/,
+        ],
         resolvers: componentResolvers,
       }),
     );

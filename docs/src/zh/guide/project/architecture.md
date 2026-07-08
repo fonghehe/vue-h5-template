@@ -65,19 +65,19 @@
 
 ## 3. 模块职责
 
-| 层          | 包                                                | 拥有                                            | 可以引用                                           |
-| ----------- | ------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------- |
-| UI 适配层   | `apps/h5-nutui`、`apps/h5-vant`、`apps/h5-varlet` | 组件库胶水代码、应用入口、主题配置              | app-shell、features、@core、services、request、api |
-| 应用外壳    | `@vh5/app-shell`                                  | 启动、布局、Router 实例、全局路由守卫、错误边界 | features、services、request、@core                 |
-| 特性模块    | `@vh5/feature-*`                                  | 视图、路由模块、特性 Store、特性 Composable     | services、@core、locales、request 类型             |
-| 领域服务    | `@vh5/services`                                   | 领域模型、转换函数、业务规则                    | api、@core/base                                    |
-| HTTP 客户端 | `@vh5/request`                                    | 类型化 fetch 封装、拦截器、错误映射             | @core/base                                         |
-| API SDK     | `@vh5/api`                                        | 接口 URL、请求/响应 DTO                         | @core/base（仅类型）                               |
-| Core Base   | `@vh5/core-base`                                  | tree/date/dom 工具、缓存、常量、`to()`          | （无——纯函数）                                     |
-| Composables | `@vh5/composables`                                | 与框架无关的 Vue Composable                     | @core/base                                         |
-| Stores      | `@vh5/stores`                                     | Pinia 初始化 + 持久化插件                       | @core/base                                         |
-| Locales     | `@vh5/locales`                                    | i18n 初始化、共享字符串                         | @core/base                                         |
-| Styles      | `@vh5/styles`                                     | 全局 SCSS、设计 Token、各组件库样式覆盖         | （无）                                             |
+| 层 | 包 | 拥有 | 可以引用 |
+| --- | --- | --- | --- |
+| UI 适配层 | `apps/h5-nutui`、`apps/h5-vant`、`apps/h5-varlet` | 组件库胶水代码、应用入口、主题配置 | app-shell、features、@core、services、request、api |
+| 应用外壳 | `@vh5/app-shell` | 启动、布局、Router 实例、全局路由守卫、错误边界 | features、services、request、@core |
+| 特性模块 | `@vh5/feature-*` | 视图、路由模块、特性 Store、特性 Composable | services、@core、locales、request 类型 |
+| 领域服务 | `@vh5/services` | 领域模型、转换函数、业务规则 | api、@core/base |
+| HTTP 客户端 | `@vh5/request` | 类型化 fetch 封装、拦截器、错误映射 | @core/base |
+| API SDK | `@vh5/api` | 接口 URL、请求/响应 DTO | @core/base（仅类型） |
+| Core Base | `@vh5/core-base` | tree/date/dom 工具、缓存、常量、`to()` | （无——纯函数） |
+| Composables | `@vh5/composables` | 与框架无关的 Vue Composable | @core/base |
+| Stores | `@vh5/stores` | Pinia 初始化 + 持久化插件 | @core/base |
+| Locales | `@vh5/locales` | i18n 初始化、共享字符串 | @core/base |
+| Styles | `@vh5/styles` | 全局 SCSS、设计 Token、各组件库样式覆盖 | （无） |
 
 ## 4. 数据流
 
@@ -124,11 +124,11 @@ LoginView
 
 三层清晰区分：
 
-| 层级           | 位置                         | 是否持久化 | 示例                         |
-| -------------- | ---------------------------- | ---------- | ---------------------------- |
-| **服务端缓存** | Composable + `useAsyncState` | 否         | 商品列表、商品详情           |
-| **会话状态**   | `useAuthStore`（特性）       | 是（AES）  | Access Token、当前用户、角色 |
-| **应用偏好**   | `useAppStore`（app-shell）   | 是         | 语言、主题、最后访问的 Tab   |
+| 层级 | 位置 | 是否持久化 | 示例 |
+| --- | --- | --- | --- |
+| **服务端缓存** | Composable + `useAsyncState` | 否 | 商品列表、商品详情 |
+| **会话状态** | `useAuthStore`（特性） | 是（AES） | Access Token、当前用户、角色 |
+| **应用偏好** | `useAppStore`（app-shell） | 是 | 语言、主题、最后访问的 Tab |
 
 ## 7. HTTP 层
 

@@ -5,10 +5,10 @@
 `packages/styles` provides global base styles and UI library style entries:
 
 ```ts
-import "@vh5/styles/global"; // Global base styles (CSS Reset + common component styles)
-import "@vh5/styles/nutui"; // NutUI theme styles (optional)
-import "@vh5/styles/vant"; // Vant theme styles (optional)
-import "@vh5/styles/varlet"; // Varlet theme styles (optional)
+import '@vh5/styles/global'; // Global base styles (CSS Reset + common component styles)
+import '@vh5/styles/nutui'; // NutUI theme styles (optional)
+import '@vh5/styles/vant'; // Vant theme styles (optional)
+import '@vh5/styles/varlet'; // Varlet theme styles (optional)
 ```
 
 All apps import `@vh5/styles/global` in `bootstrap.ts`.
@@ -22,13 +22,11 @@ All three apps use on-demand loading, with slightly different strategies:
 - **Component JS + CSS**: Fully on-demand via `VantResolver({ importStyle: true })` (default), no need for `app.use(Vant)`
 - **Do not** import `vant/lib/index.css` separately — let Resolver manage CSS injection order
 
-> **Why not import `vant/lib/index.css` alongside on-demand injection?**
-> Full CSS and on-demand CSS will inject the same component's styles twice, causing Toast background to be overridden.
-> Correct approach: use Resolver only, do not import full CSS separately.
+> **Why not import `vant/lib/index.css` alongside on-demand injection?** Full CSS and on-demand CSS will inject the same component's styles twice, causing Toast background to be overridden. Correct approach: use Resolver only, do not import full CSS separately.
 
 ```ts
 // bootstrap.ts (vant)
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ✅ Do not import vant/lib/index.css; component CSS injected on-demand by VantResolver
 // ❌ Do not use app.use(Vant)
 ```
@@ -40,8 +38,8 @@ import "@vh5/styles/global";
 
 ```ts
 // In files using Snackbar
-import { Snackbar } from "@varlet/ui";
-import "@varlet/ui/es/snackbar/style/index.mjs"; // Manual Snackbar CSS import
+import { Snackbar } from '@varlet/ui';
+import '@varlet/ui/es/snackbar/style/index.mjs'; // Manual Snackbar CSS import
 ```
 
 ### NutUI
@@ -51,10 +49,10 @@ import "@varlet/ui/es/snackbar/style/index.mjs"; // Manual Snackbar CSS import
 
 ```ts
 // bootstrap.ts (nutui)
-import "@nutui/nutui/dist/packages/toast/style/css";
-import "@nutui/nutui/dist/packages/notify/style/css";
-import "@nutui/nutui/dist/packages/dialog/style/css";
-import "@nutui/nutui/dist/packages/imagepreview/style/css";
+import '@nutui/nutui/dist/packages/toast/style/css';
+import '@nutui/nutui/dist/packages/notify/style/css';
+import '@nutui/nutui/dist/packages/dialog/style/css';
+import '@nutui/nutui/dist/packages/imagepreview/style/css';
 ```
 
 ## NutUI SCSS Variables

@@ -37,7 +37,7 @@ Nginx 設定テンプレート：`scripts/deploy/nginx.conf`。
 on:
   push:
     branches: [main]
-    paths: ["docs/**"]
+    paths: ['docs/**']
 ```
 
 トリガー条件：`main` へのプッシュで `docs/**` に変更がある場合、または手動で `workflow_dispatch`。

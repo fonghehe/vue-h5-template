@@ -1,12 +1,13 @@
 <script lang="ts" setup name="BasicLayoutPage">
-import { t } from "@/locales";
-import { Home, Horizontal, Location, My } from "@nutui/icons-vue";
+import { Home, Horizontal, Location, My } from '@nutui/icons-vue';
+
+import { t } from '@/locales';
 
 const tabItem = [
-  { key: "home", icon: Home, label: () => t("app.home") },
-  { key: "list", icon: Horizontal, label: () => t("app.list") },
-  { key: "mine", icon: My, label: () => t("app.mine") },
-  { key: "example", icon: Location, label: () => t("app.example") },
+  { key: 'home', icon: Home, label: () => t('app.home') },
+  { key: 'list', icon: Horizontal, label: () => t('app.list') },
+  { key: 'mine', icon: My, label: () => t('app.mine') },
+  { key: 'example', icon: Location, label: () => t('app.example') },
 ];
 
 const route = useRoute();
@@ -17,16 +18,16 @@ const tabbarVisible = ref(true);
 
 const showBorder = ref(true);
 
-const navTitle = computed(() => (route.meta.title as string) || "默认标题");
+const navTitle = computed(() => (route.meta.title as string) || '默认标题');
 
 watch(
   () => router,
   () => {
     const judgeRoute = tabItem.some(
-      (item) => item.key === router.currentRoute.value.path.replace("/", ""),
+      (item) => item.key === router.currentRoute.value.path.replace('/', ''),
     );
     activeTab.value = tabItem.findIndex(
-      (item) => item.key === router.currentRoute.value.path.replace("/", ""),
+      (item) => item.key === router.currentRoute.value.path.replace('/', ''),
     );
     tabbarVisible.value = judgeRoute;
     showBorder.value = judgeRoute;
@@ -37,19 +38,19 @@ watch(
 const tabSwitch = (_item: any, index: number) => {
   switch (index) {
     case 0: {
-      router.push("/home");
+      router.push('/home');
       break;
     }
     case 1: {
-      router.push("/list");
+      router.push('/list');
       break;
     }
     case 2: {
-      router.push("/mine");
+      router.push('/mine');
       break;
     }
     case 3: {
-      router.push("/example");
+      router.push('/example');
       break;
     }
   }
@@ -63,9 +64,16 @@ const goBack = () => {
 
 <template>
   <div class="flex flex-col w-100dvw h-100dvh">
-    <nut-navbar :title="navTitle" :left-show="!tabbarVisible" @click-back="goBack" />
+    <nut-navbar
+      :title="navTitle"
+      :left-show="!tabbarVisible"
+      @click-back="goBack"
+    />
 
-    <div class="flex-1 min-h-0 overflow-hidden overflow-y-auto" :class="{ 'px-15px': showBorder }">
+    <div
+      class="flex-1 min-h-0 overflow-hidden overflow-y-auto"
+      :class="{ 'px-15px': showBorder }"
+    >
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />

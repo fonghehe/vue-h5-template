@@ -4,11 +4,11 @@
 
 ## 1. 三层模型
 
-| 层级            | 工具                    | 生命周期   | 是否持久化 | 示例                             |
-| --------------- | ----------------------- | ---------- | ---------- | -------------------------------- |
-| 本地 UI 状态    | `ref` / `reactive`      | 组件内     | 否         | 表单输入、对话框开关             |
-| 服务端缓存      | 特性 Composable + `ref` | 视图作用域 | 否         | 商品列表、商品详情               |
-| 应用 / 会话状态 | Pinia Store             | 应用会话   | 是（AES）  | Auth Token、用户信息、语言、主题 |
+| 层级 | 工具 | 生命周期 | 是否持久化 | 示例 |
+| --- | --- | --- | --- | --- |
+| 本地 UI 状态 | `ref` / `reactive` | 组件内 | 否 | 表单输入、对话框开关 |
+| 服务端缓存 | 特性 Composable + `ref` | 视图作用域 | 否 | 商品列表、商品详情 |
+| 应用 / 会话状态 | Pinia Store | 应用会话 | 是（AES） | Auth Token、用户信息、语言、主题 |
 
 经验法则：**如果数据只归属一个视图，就不应放入 Pinia。**
 
@@ -24,8 +24,10 @@
 
 ```ts
 // apps/h5-nutui/src/main.ts
-import { initStores } from "@vh5/stores";
-await initStores(app, { namespace: `${VITE_APP_NAMESPACE}-${appVersion}-${env}` });
+import { initStores } from '@vh5/stores';
+await initStores(app, {
+  namespace: `${VITE_APP_NAMESPACE}-${appVersion}-${env}`,
+});
 ```
 
 ## 3. 定义特性 Store
@@ -34,8 +36,8 @@ await initStores(app, { namespace: `${VITE_APP_NAMESPACE}-${appVersion}-${env}` 
 
 ```ts
 // packages/features/auth/store.ts
-import { defineStore } from "pinia";
-import { AuthService } from "@vh5/services";
+import { defineStore } from 'pinia';
+import { AuthService } from '@vh5/services';
 
 interface AuthState {
   accessToken: string;
@@ -43,8 +45,8 @@ interface AuthState {
   roles: string[];
 }
 
-export const useAuthStore = defineStore("auth", {
-  state: (): AuthState => ({ accessToken: "", user: null, roles: [] }),
+export const useAuthStore = defineStore('auth', {
+  state: (): AuthState => ({ accessToken: '', user: null, roles: [] }),
 
   getters: {
     isAuthenticated: (s) => !!s.accessToken,
@@ -71,7 +73,7 @@ export const useAuthStore = defineStore("auth", {
 
   // 选择性持久化：不持久化临时标志
   persist: {
-    pick: ["accessToken", "user", "roles"],
+    pick: ['accessToken', 'user', 'roles'],
   },
 });
 ```
@@ -88,13 +90,13 @@ export const useAuthStore = defineStore("auth", {
 跨特性的偏好设置存放在 `@vh5/app-shell/store/app.ts`：
 
 ```ts
-export const useAppStore = defineStore("app", {
-  state: () => ({ locale: "zh-CN", theme: "light" as "light" | "dark" }),
+export const useAppStore = defineStore('app', {
+  state: () => ({ locale: 'zh-CN', theme: 'light' as 'light' | 'dark' }),
   actions: {
     setLocale(locale: SupportedLanguage) {
       this.locale = locale;
     },
-    setTheme(theme: "light" | "dark") {
+    setTheme(theme: 'light' | 'dark') {
       this.theme = theme;
     },
   },
@@ -120,9 +122,9 @@ const data = computed(() => productStore.detail);
 ## 6. 重置状态
 
 ```ts
-import { resetAllStores } from "@vh5/stores";
+import { resetAllStores } from '@vh5/stores';
 
 await AuthService.logout();
 resetAllStores();
-router.replace("/login");
+router.replace('/login');
 ```

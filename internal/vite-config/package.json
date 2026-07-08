@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "stub": "pnpm exec tsdown"
+  },
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -16,11 +19,11 @@
       "default": "./dist/index.mjs"
     }
   },
-  "scripts": {
-    "stub": "pnpm unbuild --stub"
-  },
   "dependencies": {
     "@jspm/generator": "catalog:",
+    "@unocss/transformer-directives": "catalog:",
+    "@unocss/transformer-variant-group": "catalog:",
+    "@vant/auto-import-resolver": "catalog:",
     "archiver": "catalog:",
     "cheerio": "catalog:",
     "get-port": "catalog:",
@@ -37,8 +40,11 @@
     "@pnpm/workspace.read-manifest": "catalog:",
     "@types/archiver": "catalog:",
     "@types/html-minifier-terser": "catalog:",
-    "@vant/auto-import-resolver": "catalog:",
+    "@unocss/preset-attributify": "catalog:",
+    "@unocss/preset-icons": "catalog:",
+    "@unocss/preset-wind4": "catalog:",
     "@varlet/import-resolver": "catalog:",
+    "@varlet/preset-unocss": "catalog:",
     "@vh5/node-utils": "workspace:*",
     "@vitejs/plugin-vue": "catalog:",
     "@vitejs/plugin-vue-jsx": "catalog:",
@@ -46,7 +52,6 @@
     "dayjs": "catalog:",
     "dotenv": "catalog:",
     "postcss-mobile-forever": "catalog:",
-    "rolldown": "catalog:",
     "rollup-plugin-visualizer": "catalog:",
     "sass": "catalog:",
     "unplugin-auto-import": "catalog:",

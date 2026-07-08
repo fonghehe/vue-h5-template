@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "stub": "pnpm exec tsdown"
+  },
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -15,9 +18,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     }
-  },
-  "scripts": {
-    "stub": "pnpm exec tsdown"
   },
   "dependencies": {
     "@eslint/js": "catalog:",
@@ -29,7 +29,6 @@
     "eslint-plugin-n": "catalog:",
     "eslint-plugin-perfectionist": "catalog:",
     "eslint-plugin-pnpm": "catalog:",
-    "eslint-plugin-unicorn": "catalog:",
     "eslint-plugin-unused-imports": "catalog:",
     "eslint-plugin-vue": "catalog:",
     "eslint-plugin-yml": "catalog:",

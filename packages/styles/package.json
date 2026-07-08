@@ -9,12 +9,15 @@
       "default": "./src/index.ts"
     },
     "./nutui": {
+      "types": "./src/style-exports.d.ts",
       "default": "./src/nutui/index.css"
     },
     "./vant": {
+      "types": "./src/style-exports.d.ts",
       "default": "./src/vant/index.css"
     },
     "./varlet": {
+      "types": "./src/style-exports.d.ts",
       "default": "./src/varlet/index.css"
     },
     "./global": {

@@ -15,6 +15,4 @@ Vue Vben Admin 是一個基於 Vue 3、Vite、TypeScript 的中後台管理系�
 
 在此特別感謝 Vue Vben Admin 團隊和所有貢獻者的開源精神！
 
-::: tip 推薦
-如果您正在尋找一套完整的中後台管理解決方案，強烈推薦 [Vue Vben Admin](https://github.com/vbenjs/vue-vben-admin)。
-:::
+::: tip 推薦如果您正在尋找一套完整的中後台管理解決方案，強烈推薦 [Vue Vben Admin](https://github.com/vbenjs/vue-vben-admin)。:::

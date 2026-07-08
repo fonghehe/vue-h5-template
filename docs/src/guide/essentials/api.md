@@ -2,11 +2,11 @@
 
 The HTTP stack is split into three packages so each has a single responsibility:
 
-| Package         | Responsibility                                                          |
-| --------------- | ----------------------------------------------------------------------- |
-| `@vh5/request`  | Typed `fetch` wrapper, interceptors, refresh-token, error normalisation |
-| `@vh5/api`      | Endpoint definitions and request/response DTOs (no side effects)        |
-| `@vh5/services` | Domain services that consume `@vh5/api` and return domain models        |
+| Package | Responsibility |
+| --- | --- |
+| `@vh5/request` | Typed `fetch` wrapper, interceptors, refresh-token, error normalisation |
+| `@vh5/api` | Endpoint definitions and request/response DTOs (no side effects) |
+| `@vh5/services` | Domain services that consume `@vh5/api` and return domain models |
 
 Apps and features never call `fetch` directly.
 
@@ -14,18 +14,18 @@ Apps and features never call `fetch` directly.
 
 ```ts
 // packages/request/src/client.ts
-import { createRequest } from "./core";
-import { useAuthStore } from "@vh5/feature-auth/store";
+import { createRequest } from './core';
+import { useAuthStore } from '@vh5/feature-auth/store';
 
 export const request = createRequest({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? "/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   timeout: 15_000,
 });
 
 // Inject access token
 request.interceptors.request.use((config) => {
   const token = useAuthStore().accessToken;
-  if (token) config.headers.set("Authorization", `Bearer ${token}`);
+  if (token) config.headers.set('Authorization', `Bearer ${token}`);
   return config;
 });
 
@@ -54,7 +54,7 @@ class RequestError extends Error {
 Per-call options:
 
 ```ts
-request.get<Product>("/product/detail", {
+request.get<Product>('/product/detail', {
   params: { id },
   silent: true, // suppress global toast
   retry: { count: 2 }, // exponential backoff
@@ -68,7 +68,7 @@ Endpoints are pure declarations — no Vue, no Pinia, no toasts.
 
 ```ts
 // packages/api/src/auth.ts
-import { request } from "@vh5/request";
+import { request } from '@vh5/request';
 
 export interface LoginPayload {
   username: string;
@@ -84,11 +84,12 @@ export interface LoginResponseDTO {
 }
 
 export const authApi = {
-  login: (payload: LoginPayload) => request.post<LoginResponseDTO>("/auth/login", payload),
+  login: (payload: LoginPayload) =>
+    request.post<LoginResponseDTO>('/auth/login', payload),
 
-  logout: () => request.post<void>("/auth/logout"),
+  logout: () => request.post<void>('/auth/logout'),
 
-  refresh: () => request.post<{ accessToken: string }>("/auth/refresh"),
+  refresh: () => request.post<{ accessToken: string }>('/auth/refresh'),
 };
 ```
 
@@ -104,20 +105,22 @@ export interface ProductDTO {
 
 export const productApi = {
   list: (params: { page: number; size: number }) =>
-    request.get<{ items: ProductDTO[]; total: number }>("/product/list", { params }),
+    request.get<{ items: ProductDTO[]; total: number }>('/product/list', {
+      params,
+    }),
 
-  detail: (id: number) => request.get<ProductDTO>("/product/detail", { params: { id } }),
+  detail: (id: number) =>
+    request.get<ProductDTO>('/product/detail', { params: { id } }),
 };
 ```
 
 ## 3. Domain Services (`@vh5/services`)
 
-A service translates DTOs into domain models and centralises business rules.
-Views and stores depend on services, never on `@vh5/api` directly.
+A service translates DTOs into domain models and centralises business rules. Views and stores depend on services, never on `@vh5/api` directly.
 
 ```ts
 // packages/services/src/product.service.ts
-import { productApi, type ProductDTO } from "@vh5/api";
+import { productApi, type ProductDTO } from '@vh5/api';
 
 export interface Product {
   id: number;
@@ -132,7 +135,7 @@ const toProduct = (dto: ProductDTO): Product => ({
   title: dto.title,
   price: Number(dto.price),
   imgUrl: dto.imgUrl,
-  description: dto.description ?? "",
+  description: dto.description ?? '',
 });
 
 export const ProductService = {
@@ -149,13 +152,12 @@ export const ProductService = {
 
 ## 4. Consuming a Service in a View
 
-Use a feature composable instead of calling the service from the template
-directly. The composable owns `loading`, `error`, cancellation and refresh.
+Use a feature composable instead of calling the service from the template directly. The composable owns `loading`, `error`, cancellation and refresh.
 
 ```ts
 // packages/features/product/composables/use-product-detail.ts
-import { ProductService } from "@vh5/services";
-import { tryOnScopeDispose } from "@vueuse/core";
+import { ProductService } from '@vh5/services';
+import { tryOnScopeDispose } from '@vueuse/core';
 
 export function useProductDetail(id: MaybeRef<number>) {
   const data = ref<Product | null>(null);
@@ -188,8 +190,6 @@ export function useProductDetail(id: MaybeRef<number>) {
 ## 5. Adding a New Endpoint
 
 1. Add the DTO + endpoint to `packages/api/src/<domain>.ts`.
-2. If a domain transform is needed, add it to
-   `packages/services/src/<domain>.service.ts`.
-3. Expose it via a composable in the feature
-   (`packages/features/<domain>/composables/`).
+2. If a domain transform is needed, add it to `packages/services/src/<domain>.service.ts`.
+3. Expose it via a composable in the feature (`packages/features/<domain>/composables/`).
 4. Use the composable in views.

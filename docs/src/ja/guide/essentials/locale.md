@@ -6,19 +6,19 @@
 
 ```vue
 <template>
-  <div>{{ t("app.home") }}</div>
+  <div>{{ t('app.home') }}</div>
 </template>
 
 <script setup>
-import { t } from "@/locales";
+import { t } from '@/locales';
 </script>
 ```
 
 ## 言語切り替え
 
 ```ts
-import { loadLocaleMessages } from "@vh5/locales";
-await loadLocaleMessages("ja-JP");
+import { loadLocaleMessages } from '@vh5/locales';
+await loadLocaleMessages('ja-JP');
 ```
 
 「マイページ」に言語切り替え機能が内蔵されており、アプリ内で直接言語を切り替えることができます。

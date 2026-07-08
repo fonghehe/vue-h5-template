@@ -5,11 +5,11 @@
 ## Usage
 
 ```ts
-import { defineConfig } from "@vh5/vite-config";
+import { defineConfig } from '@vh5/vite-config';
 
 export default defineConfig(async () => ({
   application: {
-    uiLibrary: "nut", // 'nut' | 'vant' | 'varlet'
+    uiLibrary: 'nut', // 'nut' | 'vant' | 'varlet'
   },
   vite: {
     // Custom Vite config

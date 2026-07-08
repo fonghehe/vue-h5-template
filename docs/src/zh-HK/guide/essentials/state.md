@@ -4,11 +4,11 @@
 
 ## 1. 三層模型
 
-| 層級            | 工具                    | 生命週期   | 係咪持久化 | 示例                             |
-| --------------- | ----------------------- | ---------- | ---------- | -------------------------------- |
-| 本地 UI 狀態    | `ref` / `reactive`      | 組件內     | 否         | 表單輸入、對話框開關             |
-| 服務端緩存      | 特性 Composable + `ref` | 視圖作用域 | 否         | 商品列表、商品詳情               |
-| 應用 / 會話狀態 | Pinia Store             | 應用會話   | 係（AES）  | Auth Token、用戶信息、語言、主題 |
+| 層級 | 工具 | 生命週期 | 係咪持久化 | 示例 |
+| --- | --- | --- | --- | --- |
+| 本地 UI 狀態 | `ref` / `reactive` | 組件內 | 否 | 表單輸入、對話框開關 |
+| 服務端緩存 | 特性 Composable + `ref` | 視圖作用域 | 否 | 商品列表、商品詳情 |
+| 應用 / 會話狀態 | Pinia Store | 應用會話 | 係（AES） | Auth Token、用戶信息、語言、主題 |
 
 **經驗法則**：如果數據只歸屬一個視圖，就唔應該放入 Pinia。
 
@@ -21,8 +21,8 @@
 ## 3. 定義特性 Store
 
 ```ts
-export const useAuthStore = defineStore("auth", {
-  state: (): AuthState => ({ accessToken: "", user: null, roles: [] }),
+export const useAuthStore = defineStore('auth', {
+  state: (): AuthState => ({ accessToken: '', user: null, roles: [] }),
   getters: {
     isAuthenticated: (s) => !!s.accessToken,
     hasRole: (s) => (role: string) => s.roles.includes(role),
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore("auth", {
       this.$reset();
     },
   },
-  persist: { pick: ["accessToken", "user", "roles"] },
+  persist: { pick: ['accessToken', 'user', 'roles'] },
 });
 ```
 
@@ -55,13 +55,13 @@ export const useAuthStore = defineStore("auth", {
 跨特性嘅偏好設置存放喺 `@vh5/app-shell/store/app.ts`：
 
 ```ts
-export const useAppStore = defineStore("app", {
-  state: () => ({ locale: "zh-HK", theme: "light" as "light" | "dark" }),
+export const useAppStore = defineStore('app', {
+  state: () => ({ locale: 'zh-HK', theme: 'light' as 'light' | 'dark' }),
   actions: {
     setLocale(locale: SupportedLanguage) {
       this.locale = locale;
     },
-    setTheme(theme: "light" | "dark") {
+    setTheme(theme: 'light' | 'dark') {
       this.theme = theme;
     },
   },
@@ -83,9 +83,9 @@ const data = computed(() => productStore.detail);
 ## 6. 重置狀態
 
 ```ts
-import { resetAllStores } from "@vh5/stores";
+import { resetAllStores } from '@vh5/stores';
 
 await AuthService.logout();
 resetAllStores();
-router.replace("/login");
+router.replace('/login');
 ```

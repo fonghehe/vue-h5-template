@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { showToast } from "vant";
+import { showToast } from 'vant';
 
-import { t } from "@/locales";
+import { t } from '@/locales';
 
 function demo() {
-  showToast(t("app.toastDemo"));
+  showToast(t('app.toastDemo'));
 }
 
 const switchValue = ref(false);
-const inputValue = ref("");
-const radioValue = ref("1");
+const inputValue = ref('');
+const radioValue = ref('1');
 const checkboxValue = ref(false);
 const rate = ref(3);
 const sliderValue = ref(40);
@@ -22,11 +22,13 @@ const stepperValue = ref(1);
     <div class="font-600 mb-3">Button 按钮</div>
     <van-space direction="vertical" fill>
       <van-space wrap>
-        <van-button type="primary" @click="demo">{{ t("app.buttonPrimary") }}</van-button>
-        <van-button type="success">{{ t("app.buttonSuccess") }}</van-button>
-        <van-button type="default">{{ t("app.buttonDefault") }}</van-button>
-        <van-button type="danger">{{ t("app.buttonDanger") }}</van-button>
-        <van-button type="warning">{{ t("app.buttonWarning") }}</van-button>
+        <van-button type="primary" @click="demo">
+          {{ t('app.buttonPrimary') }}
+        </van-button>
+        <van-button type="success">{{ t('app.buttonSuccess') }}</van-button>
+        <van-button type="default">{{ t('app.buttonDefault') }}</van-button>
+        <van-button type="danger">{{ t('app.buttonDanger') }}</van-button>
+        <van-button type="warning">{{ t('app.buttonWarning') }}</van-button>
       </van-space>
       <van-space wrap>
         <van-button type="primary" plain>Plain</van-button>

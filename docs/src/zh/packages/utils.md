@@ -21,12 +21,12 @@
 消除 try/catch 嵌套，将 Promise 转为 `[error, data]` 元组，使异步错误处理更简洁。
 
 ```ts
-import { to } from "@vh5/utils";
+import { to } from '@vh5/utils';
 
 // 替代 try/catch
 const [err, data] = await to(getProductList());
 if (err) {
-  console.error("请求失败", err);
+  console.error('请求失败', err);
   return;
 }
 console.log(data);
@@ -38,7 +38,7 @@ console.log(data);
 // apps/h5-vant/src/views/list/index.vue
 const [err, data] = await to(getProductList());
 if (err) {
-  console.error("获取商品列表失败", err);
+  console.error('获取商品列表失败', err);
   return;
 }
 if (data.code === 0) {
@@ -53,7 +53,7 @@ if (data.code === 0) {
 动态加载 NProgress，在路由导航时显示顶部进度条。
 
 ```ts
-import { startProgress, stopProgress } from "@vh5/utils";
+import { startProgress, stopProgress } from '@vh5/utils';
 
 router.beforeEach(() => startProgress());
 router.afterEach(() => stopProgress());
@@ -66,7 +66,7 @@ router.afterEach(() => stopProgress());
 移除 HTML 中注入的全局骨架屏 loading，带 fade-out 过渡。在应用挂载后调用：
 
 ```ts
-import { unmountGlobalLoading } from "@vh5/utils";
+import { unmountGlobalLoading } from '@vh5/utils';
 
 // main.ts
 unmountGlobalLoading();
@@ -79,10 +79,10 @@ unmountGlobalLoading();
 基于 dayjs，支持时区处理：
 
 ```ts
-import { formatDate, formatDateTime } from "@vh5/utils";
+import { formatDate, formatDateTime } from '@vh5/utils';
 
 formatDate(new Date()); // '2024-01-01'
-formatDate(new Date(), "YYYY-MM-DD HH:mm"); // '2024-01-01 12:00'
+formatDate(new Date(), 'YYYY-MM-DD HH:mm'); // '2024-01-01 12:00'
 formatDateTime(new Date()); // '2024-01-01 12:00:00'
 ```
 
@@ -93,15 +93,15 @@ formatDateTime(new Date()); // '2024-01-01 12:00:00'
 带前缀和过期时间的 localStorage/sessionStorage 封装：
 
 ```ts
-import { StorageManager } from "@vh5/utils";
+import { StorageManager } from '@vh5/utils';
 
-const storage = new StorageManager({ prefix: "my-app-" });
+const storage = new StorageManager({ prefix: 'my-app-' });
 
 // 设置（带过期时间，单位毫秒）
-storage.setItem("token", "xxx", 7 * 24 * 60 * 60 * 1000);
+storage.setItem('token', 'xxx', 7 * 24 * 60 * 60 * 1000);
 
 // 获取（过期自动返回 null）
-const token = storage.getItem("token");
+const token = storage.getItem('token');
 
 // 清除所有带前缀的 key
 storage.clear();
@@ -113,16 +113,23 @@ storage.clearExpiredItems();
 ## 文件下载
 
 ```ts
-import { downloadFileFromUrl, downloadFileFromBase64, downloadFileFromBlob } from "@vh5/utils";
+import {
+  downloadFileFromUrl,
+  downloadFileFromBase64,
+  downloadFileFromBlob,
+} from '@vh5/utils';
 
 // 通过 URL 下载
-await downloadFileFromUrl({ source: "https://example.com/file.pdf", fileName: "report.pdf" });
+await downloadFileFromUrl({
+  source: 'https://example.com/file.pdf',
+  fileName: 'report.pdf',
+});
 
 // 通过 Blob 下载
-downloadFileFromBlob({ source: blob, fileName: "export.xlsx" });
+downloadFileFromBlob({ source: blob, fileName: 'export.xlsx' });
 
 // 通过 Base64 下载
-downloadFileFromBase64({ source: base64String, fileName: "image.png" });
+downloadFileFromBase64({ source: base64String, fileName: 'image.png' });
 ```
 
 ## 其他工具

@@ -14,18 +14,18 @@ HTTP 栈拆分为三个包，每个包职责单一：
 
 ```ts
 // packages/request/src/client.ts
-import { createRequest } from "./core";
-import { useAuthStore } from "@vh5/feature-auth/store";
+import { createRequest } from './core';
+import { useAuthStore } from '@vh5/feature-auth/store';
 
 export const request = createRequest({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? "/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   timeout: 15_000,
 });
 
 // 注入 Access Token
 request.interceptors.request.use((config) => {
   const token = useAuthStore().accessToken;
-  if (token) config.headers.set("Authorization", `Bearer ${token}`);
+  if (token) config.headers.set('Authorization', `Bearer ${token}`);
   return config;
 });
 
@@ -54,7 +54,7 @@ class RequestError extends Error {
 单请求可配置项：
 
 ```ts
-request.get<Product>("/product/detail", {
+request.get<Product>('/product/detail', {
   params: { id },
   silent: true, // 不触发全局 Toast
   retry: { count: 2 }, // 指数退避重试
@@ -68,7 +68,7 @@ request.get<Product>("/product/detail", {
 
 ```ts
 // packages/api/src/auth.ts
-import { request } from "@vh5/request";
+import { request } from '@vh5/request';
 
 export interface LoginPayload {
   username: string;
@@ -84,9 +84,10 @@ export interface LoginResponseDTO {
 }
 
 export const authApi = {
-  login: (payload: LoginPayload) => request.post<LoginResponseDTO>("/auth/login", payload),
-  logout: () => request.post<void>("/auth/logout"),
-  refresh: () => request.post<{ accessToken: string }>("/auth/refresh"),
+  login: (payload: LoginPayload) =>
+    request.post<LoginResponseDTO>('/auth/login', payload),
+  logout: () => request.post<void>('/auth/logout'),
+  refresh: () => request.post<{ accessToken: string }>('/auth/refresh'),
 };
 ```
 
@@ -102,8 +103,11 @@ export interface ProductDTO {
 
 export const productApi = {
   list: (params: { page: number; size: number }) =>
-    request.get<{ items: ProductDTO[]; total: number }>("/product/list", { params }),
-  detail: (id: number) => request.get<ProductDTO>("/product/detail", { params: { id } }),
+    request.get<{ items: ProductDTO[]; total: number }>('/product/list', {
+      params,
+    }),
+  detail: (id: number) =>
+    request.get<ProductDTO>('/product/detail', { params: { id } }),
 };
 ```
 
@@ -113,7 +117,7 @@ export const productApi = {
 
 ```ts
 // packages/services/src/product.service.ts
-import { productApi, type ProductDTO } from "@vh5/api";
+import { productApi, type ProductDTO } from '@vh5/api';
 
 export interface Product {
   id: number;
@@ -128,7 +132,7 @@ const toProduct = (dto: ProductDTO): Product => ({
   title: dto.title,
   price: Number(dto.price),
   imgUrl: dto.imgUrl,
-  description: dto.description ?? "",
+  description: dto.description ?? '',
 });
 
 export const ProductService = {
@@ -148,8 +152,8 @@ export const ProductService = {
 
 ```ts
 // packages/features/product/composables/use-product-detail.ts
-import { ProductService } from "@vh5/services";
-import { tryOnScopeDispose } from "@vueuse/core";
+import { ProductService } from '@vh5/services';
+import { tryOnScopeDispose } from '@vueuse/core';
 
 export function useProductDetail(id: MaybeRef<number>) {
   const data = ref<Product | null>(null);

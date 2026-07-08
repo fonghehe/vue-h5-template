@@ -21,10 +21,10 @@ Default port: `5777`
 NutUI functional components like `showToast`, `showNotify`, `showDialog`, `showImagePreview` cannot be auto-imported by the Resolver. Import their styles manually in `bootstrap.ts`:
 
 ```ts
-import "@nutui/nutui/dist/packages/toast/style/css";
-import "@nutui/nutui/dist/packages/notify/style/css";
-import "@nutui/nutui/dist/packages/dialog/style/css";
-import "@nutui/nutui/dist/packages/imagepreview/style/css";
+import '@nutui/nutui/dist/packages/toast/style/css';
+import '@nutui/nutui/dist/packages/notify/style/css';
+import '@nutui/nutui/dist/packages/dialog/style/css';
+import '@nutui/nutui/dist/packages/imagepreview/style/css';
 ```
 
 ## SCSS Configuration

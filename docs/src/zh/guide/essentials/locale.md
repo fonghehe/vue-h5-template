@@ -44,11 +44,11 @@ apps/h5-nutui/src/locales/
 
 ```vue
 <template>
-  <div>{{ t("app.home") }}</div>
+  <div>{{ t('app.home') }}</div>
 </template>
 
 <script setup>
-import { t } from "@/locales";
+import { t } from '@/locales';
 </script>
 ```
 
@@ -59,9 +59,9 @@ import { t } from "@/locales";
 ## 切换语言
 
 ```ts
-import { loadLocaleMessages } from "@vh5/locales";
+import { loadLocaleMessages } from '@vh5/locales';
 
-await loadLocaleMessages("en-US");
+await loadLocaleMessages('en-US');
 ```
 
 在"我的"页面中已内置语言切换功能，用户可以直接在应用内切换语言。
@@ -91,10 +91,10 @@ rm -rf apps/h5-varlet/src/locales/langs/
 ```ts
 // src/locales/index.ts
 const messages: Record<string, string> = {
-  "app.home": "首页",
-  "app.list": "列表",
-  "app.mine": "我的",
-  "app.example": "示例",
+  'app.home': '首页',
+  'app.list': '列表',
+  'app.mine': '我的',
+  'app.example': '示例',
   // ... 其他文案
 };
 

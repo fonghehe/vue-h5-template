@@ -1,8 +1,6 @@
 # Adding a Feature
 
-A feature is a self-contained slice of business logic. It lives in its own
-package under `packages/features/<name>` and bundles its views, composables,
-store and route module together.
+A feature is a self-contained slice of business logic. It lives in its own package under `packages/features/<name>` and bundles its views, composables, store and route module together.
 
 ## 1. Folder Conventions
 
@@ -92,7 +90,7 @@ export function useProductDetail(id: MaybeRef<number>) {
 ```vue
 <!-- packages/features/product/src/views/Detail.vue -->
 <script setup lang="ts">
-import { useProductDetail } from "../composables/use-product-detail";
+import { useProductDetail } from '../composables/use-product-detail';
 
 const route = useRoute();
 const { data, loading, error } = useProductDetail(() => Number(route.query.id));
@@ -109,28 +107,26 @@ const { data, loading, error } = useProductDetail(() => Number(route.query.id));
 </template>
 ```
 
-Use **`<AppButton>`, `<AppCell>`, `<AppToast>` adapters** from
-`@vh5/app-shell/ui`. Never import `nut-button` / `van-button` / `var-button`
-inside a feature — that would couple it to one app.
+Use **`<AppButton>`, `<AppCell>`, `<AppToast>` adapters** from `@vh5/app-shell/ui`. Never import `nut-button` / `van-button` / `var-button` inside a feature — that would couple it to one app.
 
 ### Step 5 — Route Module
 
 ```ts
 // packages/features/product/src/routes.ts
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from 'vue-router';
 
 export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/product",
-    name: "product-list",
-    component: () => import("./views/List.vue"),
-    meta: { title: "Products", authority: ["user", "admin"] },
+    path: '/product',
+    name: 'product-list',
+    component: () => import('./views/List.vue'),
+    meta: { title: 'Products', authority: ['user', 'admin'] },
   },
   {
-    path: "/product/:id",
-    name: "product-detail",
-    component: () => import("./views/Detail.vue"),
-    meta: { title: "Detail", authority: ["user", "admin"] },
+    path: '/product/:id',
+    name: 'product-detail',
+    component: () => import('./views/Detail.vue'),
+    meta: { title: 'Detail', authority: ['user', 'admin'] },
   },
 ];
 ```
@@ -139,21 +135,25 @@ export const productRoutes: RouteRecordRaw[] = [
 
 ```ts
 // packages/features/product/src/index.ts
-export { productRoutes } from "./routes";
-export { useProductStore } from "./store"; // if any
-export * from "./composables/use-product-detail";
+export { productRoutes } from './routes';
+export { useProductStore } from './store'; // if any
+export * from './composables/use-product-detail';
 ```
 
 ### Step 7 — Register in the App Shell
 
 ```ts
 // packages/app-shell/src/router/index.ts
-import { productRoutes } from "@vh5/feature-product";
-import { authRoutes } from "@vh5/feature-auth";
-import { userRoutes } from "@vh5/feature-user";
-import { mergeRouteModules } from "@vh5/utils";
+import { productRoutes } from '@vh5/feature-product';
+import { authRoutes } from '@vh5/feature-auth';
+import { userRoutes } from '@vh5/feature-user';
+import { mergeRouteModules } from '@vh5/utils';
 
-export const routes = mergeRouteModules([...authRoutes, ...productRoutes, ...userRoutes]);
+export const routes = mergeRouteModules([
+  ...authRoutes,
+  ...productRoutes,
+  ...userRoutes,
+]);
 ```
 
 Each app already mounts the shared shell; no per-app wiring required.

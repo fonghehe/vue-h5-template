@@ -1,8 +1,6 @@
 # Project Structure
 
-The repository is a Turborepo + pnpm monorepo organised by **layer** and
-**feature**. See [System Architecture](./architecture.md) for the layering
-rules.
+The repository is a Turborepo + pnpm monorepo organised by **layer** and **feature**. See [System Architecture](./architecture.md) for the layering rules.
 
 ## 1. Top Level
 
@@ -17,8 +15,7 @@ vue-h5-template/
 
 ## 2. `apps/` — UI Adapter Layer
 
-Each H5 app is a thin shell over `@vh5/app-shell`. Its only job is to wire one
-UI component library and that library's locale / theme.
+Each H5 app is a thin shell over `@vh5/app-shell`. Its only job is to wire one UI component library and that library's locale / theme.
 
 ```
 apps/
@@ -41,8 +38,7 @@ apps/h5-nutui/
     └── styles.scss      # Library-specific theme overrides only
 ```
 
-Adapter apps **must not** contain views, stores, API calls, or routes — those
-live in features and the shell.
+Adapter apps **must not** contain views, stores, API calls, or routes — those live in features and the shell.
 
 ## 3. `packages/` — Layered Libraries
 
@@ -70,8 +66,7 @@ packages/
     └── home/            # @vh5/feature-home     landing page
 ```
 
-Layering rule (enforced by lint): a package may import only from packages
-above it in the table in [Architecture §3](./architecture.md).
+Layering rule (enforced by lint): a package may import only from packages above it in the table in [Architecture §3](./architecture.md).
 
 ### A Feature Package
 
@@ -148,19 +143,18 @@ Inside an adapter app:
 | `#/`     | `apps/<app>/types/` | App-local types            |
 | `@vh5/*` | workspace package   | Everything else            |
 
-In features and packages there is no `@/` alias — packages import other
-packages by name (`@vh5/...`) only.
+In features and packages there is no `@/` alias — packages import other packages by name (`@vh5/...`) only.
 
 ## 8. Where Things Live (Cheat Sheet)
 
-| I want to add…                    | Put it in…                                                      |
-| --------------------------------- | --------------------------------------------------------------- |
-| A new page                        | `packages/features/<feature>/src/views/`                        |
-| A new API endpoint                | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
-| A new Pinia store                 | `packages/features/<feature>/src/store.ts`                      |
-| A new shared composable           | `packages/@core/composables/src/`                               |
-| A new shared utility              | `packages/@core/base/shared/src/utils/`                         |
-| A new locale string               | `packages/features/<feature>/src/locales/<lang>.json`           |
-| A new global style / design token | `packages/styles/src/global/`                                   |
-| A new build plugin                | `internal/vite-config/src/plugins/`                             |
-| A new UI-library adapter app      | `apps/h5-<lib>/` + register in `pnpm-workspace.yaml`            |
+| I want to add… | Put it in… |
+| --- | --- |
+| A new page | `packages/features/<feature>/src/views/` |
+| A new API endpoint | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
+| A new Pinia store | `packages/features/<feature>/src/store.ts` |
+| A new shared composable | `packages/@core/composables/src/` |
+| A new shared utility | `packages/@core/base/shared/src/utils/` |
+| A new locale string | `packages/features/<feature>/src/locales/<lang>.json` |
+| A new global style / design token | `packages/styles/src/global/` |
+| A new build plugin | `internal/vite-config/src/plugins/` |
+| A new UI-library adapter app | `apps/h5-<lib>/` + register in `pnpm-workspace.yaml` |

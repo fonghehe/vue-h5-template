@@ -4,11 +4,11 @@
 
 ## 1. 3 ティアモデル
 
-| ティア                  | ツール                  | ライフタイム     | 永続化      | 例                               |
-| ----------------------- | ----------------------- | ---------------- | ----------- | -------------------------------- |
-| ローカル UI 状態        | `ref` / `reactive`      | コンポーネント内 | なし        | フォーム入力・ダイアログ開閉     |
-| サーバーキャッシュ      | 特性 Composable + `ref` | View スコープ    | なし        | 商品リスト・商品詳細             |
-| アプリ / セッション状態 | Pinia Store             | アプリセッション | あり（AES） | Auth Token・ユーザー情報・ロール |
+| ティア | ツール | ライフタイム | 永続化 | 例 |
+| --- | --- | --- | --- | --- |
+| ローカル UI 状態 | `ref` / `reactive` | コンポーネント内 | なし | フォーム入力・ダイアログ開閉 |
+| サーバーキャッシュ | 特性 Composable + `ref` | View スコープ | なし | 商品リスト・商品詳細 |
+| アプリ / セッション状態 | Pinia Store | アプリセッション | あり（AES） | Auth Token・ユーザー情報・ロール |
 
 **経験則**：データがただ 1 つの View だけに属するなら Pinia には入れません。
 
@@ -21,8 +21,8 @@
 ## 3. 特性 Store の定義
 
 ```ts
-export const useAuthStore = defineStore("auth", {
-  state: (): AuthState => ({ accessToken: "", user: null, roles: [] }),
+export const useAuthStore = defineStore('auth', {
+  state: (): AuthState => ({ accessToken: '', user: null, roles: [] }),
   getters: {
     isAuthenticated: (s) => !!s.accessToken,
     hasRole: (s) => (role: string) => s.roles.includes(role),
@@ -40,7 +40,7 @@ export const useAuthStore = defineStore("auth", {
       this.$reset();
     },
   },
-  persist: { pick: ["accessToken", "user", "roles"] },
+  persist: { pick: ['accessToken', 'user', 'roles'] },
 });
 ```
 
@@ -55,13 +55,13 @@ export const useAuthStore = defineStore("auth", {
 特性横断の設定は `@vh5/app-shell/store/app.ts` に置きます：
 
 ```ts
-export const useAppStore = defineStore("app", {
-  state: () => ({ locale: "ja", theme: "light" as "light" | "dark" }),
+export const useAppStore = defineStore('app', {
+  state: () => ({ locale: 'ja', theme: 'light' as 'light' | 'dark' }),
   actions: {
     setLocale(locale: SupportedLanguage) {
       this.locale = locale;
     },
-    setTheme(theme: "light" | "dark") {
+    setTheme(theme: 'light' | 'dark') {
       this.theme = theme;
     },
   },
@@ -83,9 +83,9 @@ const data = computed(() => productStore.detail);
 ## 6. 状態のリセット
 
 ```ts
-import { resetAllStores } from "@vh5/stores";
+import { resetAllStores } from '@vh5/stores';
 
 await AuthService.logout();
 resetAllStores();
-router.replace("/login");
+router.replace('/login');
 ```

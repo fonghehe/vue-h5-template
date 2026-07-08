@@ -85,7 +85,7 @@ export function useProductDetail(id: MaybeRef<number>) {
 ```vue
 <!-- packages/features/product/src/views/Detail.vue -->
 <script setup lang="ts">
-import { useProductDetail } from "../composables/use-product-detail";
+import { useProductDetail } from '../composables/use-product-detail';
 
 const route = useRoute();
 const { data, loading, error } = useProductDetail(() => Number(route.query.id));
@@ -108,20 +108,20 @@ const { data, loading, error } = useProductDetail(() => Number(route.query.id));
 
 ```ts
 // packages/features/product/src/routes.ts
-import type { RouteRecordRaw } from "vue-router";
+import type { RouteRecordRaw } from 'vue-router';
 
 export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/product",
-    name: "product-list",
-    component: () => import("./views/List.vue"),
-    meta: { title: "商品列表", authority: ["user", "admin"] },
+    path: '/product',
+    name: 'product-list',
+    component: () => import('./views/List.vue'),
+    meta: { title: '商品列表', authority: ['user', 'admin'] },
   },
   {
-    path: "/product/:id",
-    name: "product-detail",
-    component: () => import("./views/Detail.vue"),
-    meta: { title: "商品详情", authority: ["user", "admin"] },
+    path: '/product/:id',
+    name: 'product-detail',
+    component: () => import('./views/Detail.vue'),
+    meta: { title: '商品详情', authority: ['user', 'admin'] },
   },
 ];
 ```
@@ -130,21 +130,25 @@ export const productRoutes: RouteRecordRaw[] = [
 
 ```ts
 // packages/features/product/src/index.ts
-export { productRoutes } from "./routes";
-export { useProductStore } from "./store";
-export * from "./composables/use-product-detail";
+export { productRoutes } from './routes';
+export { useProductStore } from './store';
+export * from './composables/use-product-detail';
 ```
 
 ### 第七步 — 注册到应用外壳
 
 ```ts
 // packages/app-shell/src/router/index.ts
-import { productRoutes } from "@vh5/feature-product";
-import { authRoutes } from "@vh5/feature-auth";
-import { userRoutes } from "@vh5/feature-user";
-import { mergeRouteModules } from "@vh5/utils";
+import { productRoutes } from '@vh5/feature-product';
+import { authRoutes } from '@vh5/feature-auth';
+import { userRoutes } from '@vh5/feature-user';
+import { mergeRouteModules } from '@vh5/utils';
 
-export const routes = mergeRouteModules([...authRoutes, ...productRoutes, ...userRoutes]);
+export const routes = mergeRouteModules([
+  ...authRoutes,
+  ...productRoutes,
+  ...userRoutes,
+]);
 ```
 
 每个适配应用都已挂载共享外壳，无需每个应用单独配置。

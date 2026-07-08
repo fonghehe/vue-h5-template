@@ -11,8 +11,8 @@
 ## 使用
 
 ```ts
-import { useUserStore } from "@vh5/stores";
+import { useUserStore } from '@vh5/stores';
 
 const userStore = useUserStore();
-await userStore.login({ username: "user", password: "123456" });
+await userStore.login({ username: 'user', password: '123456' });
 ```

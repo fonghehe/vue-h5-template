@@ -1,16 +1,16 @@
-import type { PluginOption } from "vite";
+import type { PluginOption } from 'vite';
 
-import { colors, generatorContentHash, readPackageJSON } from "@vh5/node-utils";
+import { colors, generatorContentHash, readPackageJSON } from '@vh5/node-utils';
 
-import { loadEnv } from "../utils/env";
+import { loadEnv } from '../utils/env';
 
 interface PluginOptions {
   isBuild: boolean;
   root: string;
 }
 
-const GLOBAL_CONFIG_FILE_NAME = "_app.config.js";
-const Vh5_APP_CONF = "_Vh5_APP_CONF_";
+const GLOBAL_CONFIG_FILE_NAME = '_app.config.js';
+const Vh5_APP_CONF = '_Vh5_APP_CONF_';
 
 /**
  * 用于将配置文件抽离出来并注入到项目中
@@ -28,7 +28,7 @@ async function viteExtraAppConfigPlugin({
     return;
   }
 
-  const { version = "" } = await readPackageJSON(root);
+  const { version = '' } = await readPackageJSON(root);
 
   return {
     async configResolved(config) {
@@ -40,17 +40,19 @@ async function viteExtraAppConfigPlugin({
         this.emitFile({
           fileName: GLOBAL_CONFIG_FILE_NAME,
           source,
-          type: "asset",
+          type: 'asset',
         });
 
         console.log(colors.cyan(`✨configuration file is build successfully!`));
       } catch (error) {
         console.log(
-          colors.red(`configuration file configuration file failed to package:\n${error}`),
+          colors.red(
+            `configuration file configuration file failed to package:\n${error}`,
+          ),
         );
       }
     },
-    name: "vite:extra-app-config",
+    name: 'vite:extra-app-config',
     async transformIndexHtml(html) {
       const hash = `v=${version}-${generatorContentHash(source, 8)}`;
 
@@ -58,7 +60,7 @@ async function viteExtraAppConfigPlugin({
 
       return {
         html,
-        tags: [{ attrs: { src: appConfigSrc }, tag: "script" }],
+        tags: [{ attrs: { src: appConfigSrc }, tag: 'script' }],
       };
     },
   };
@@ -75,12 +77,12 @@ async function getConfigSource() {
       configurable: false,
       writable: false,
     });
-  `.replaceAll(/\s/g, "");
+  `.replaceAll(/\s/g, '');
   return source;
 }
 
 function ensureTrailingSlash(path: string) {
-  return path.endsWith("/") ? path : `${path}/`;
+  return path.endsWith('/') ? path : `${path}/`;
 }
 
 export { viteExtraAppConfigPlugin };

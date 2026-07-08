@@ -93,10 +93,10 @@ const { data, loading, error } = useProductDetail(() => Number(route.query.id));
 ```ts
 export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/product",
-    name: "product-list",
-    component: () => import("./views/List.vue"),
-    meta: { title: "商品一覧", authority: ["user", "admin"] },
+    path: '/product',
+    name: 'product-list',
+    component: () => import('./views/List.vue'),
+    meta: { title: '商品一覧', authority: ['user', 'admin'] },
   },
 ];
 ```
@@ -105,19 +105,23 @@ export const productRoutes: RouteRecordRaw[] = [
 
 ```ts
 // packages/features/product/src/index.ts
-export { productRoutes } from "./routes";
-export { useProductStore } from "./store";
-export * from "./composables/use-product-detail";
+export { productRoutes } from './routes';
+export { useProductStore } from './store';
+export * from './composables/use-product-detail';
 ```
 
 ### ステップ 7 — アプリシェルに登録
 
 ```ts
 // packages/app-shell/src/router/index.ts
-import { productRoutes } from "@vh5/feature-product";
-import { mergeRouteModules } from "@vh5/utils";
+import { productRoutes } from '@vh5/feature-product';
+import { mergeRouteModules } from '@vh5/utils';
 
-export const routes = mergeRouteModules([...authRoutes, ...productRoutes, ...userRoutes]);
+export const routes = mergeRouteModules([
+  ...authRoutes,
+  ...productRoutes,
+  ...userRoutes,
+]);
 ```
 
 各アダプターアプリは共有シェルをマウント済みです。各アプリで個別に設定する必要はありません。

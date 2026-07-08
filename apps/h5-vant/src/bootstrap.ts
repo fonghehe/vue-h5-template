@@ -1,27 +1,32 @@
-import { createApp, watchEffect } from "vue";
+import { createApp, watchEffect } from 'vue';
 
-import { initStores } from "@vh5/stores";
+import { initStores } from '@vh5/stores';
+import '@vh5/styles/global';
+import '@vh5/styles/vant';
 
-import { useTitle } from "@vueuse/core";
+import { useTitle } from '@vueuse/core';
 
-import App from "./App.vue";
-import { setupI18n } from "./locales";
-import router from "./router";
+import App from './App.vue';
+import { setupI18n } from './locales';
+import router from './router';
 
-import "virtual:uno.css";
-import "@vh5/styles/global";
+import 'virtual:uno.css';
 
 async function bootstrap(namespace: string) {
   const app = createApp(App);
   await setupI18n(app);
   await initStores(app, { namespace });
   app.use(router);
-  app.mount("#app");
+  app.mount('#app');
 
   // 动态标题
   watchEffect(() => {
-    const routeTitle = router.currentRoute.value.meta?.title as string | undefined;
-    const pageTitle = routeTitle ? `${routeTitle} - Vue H5 Template` : "Vue H5 Template";
+    const routeTitle = router.currentRoute.value.meta?.title as
+      | string
+      | undefined;
+    const pageTitle = routeTitle
+      ? `${routeTitle} - Vue H5 Template`
+      : 'Vue H5 Template';
     useTitle(pageTitle);
   });
 }

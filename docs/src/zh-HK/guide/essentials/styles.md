@@ -5,10 +5,10 @@
 `packages/styles` 提供全域基礎樣式和各 UI 庫的樣式入口：
 
 ```ts
-import "@vh5/styles/global"; // 全域基礎樣式
-import "@vh5/styles/nutui"; // NutUI 主題樣式（可選）
-import "@vh5/styles/vant"; // Vant 主題樣式（可選）
-import "@vh5/styles/varlet"; // Varlet 主題樣式（可選）
+import '@vh5/styles/global'; // 全域基礎樣式
+import '@vh5/styles/nutui'; // NutUI 主題樣式（可選）
+import '@vh5/styles/vant'; // Vant 主題樣式（可選）
+import '@vh5/styles/varlet'; // Varlet 主題樣式（可選）
 ```
 
 ## 按需載入策略
@@ -20,7 +20,7 @@ import "@vh5/styles/varlet"; // Varlet 主題樣式（可選）
 
 ```ts
 // bootstrap.ts方vant）
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ✅ 不導入 vant/lib/index.css，元件 CSS 由 VantResolver 按需注入
 // ❌ 不使用 app.use(Vant) 全量註冊
 ```
@@ -31,8 +31,8 @@ import "@vh5/styles/global";
 - **Snackbar（函式）**：在使用 Snackbar 的檔案中手動導入 CSS
 
 ```ts
-import { Snackbar } from "@varlet/ui";
-import "@varlet/ui/es/snackbar/style/index.mjs";
+import { Snackbar } from '@varlet/ui';
+import '@varlet/ui/es/snackbar/style/index.mjs';
 ```
 
 ### NutUI
@@ -41,10 +41,10 @@ import "@varlet/ui/es/snackbar/style/index.mjs";
 - **函式元件**（Toast/Notify/Dialog/ImagePreview）：在 `bootstrap.ts` 手動導入 CSS
 
 ```ts
-import "@nutui/nutui/dist/packages/toast/style/css";
-import "@nutui/nutui/dist/packages/notify/style/css";
-import "@nutui/nutui/dist/packages/dialog/style/css";
-import "@nutui/nutui/dist/packages/imagepreview/style/css";
+import '@nutui/nutui/dist/packages/toast/style/css';
+import '@nutui/nutui/dist/packages/notify/style/css';
+import '@nutui/nutui/dist/packages/dialog/style/css';
+import '@nutui/nutui/dist/packages/imagepreview/style/css';
 ```
 
 ## 行動端適配

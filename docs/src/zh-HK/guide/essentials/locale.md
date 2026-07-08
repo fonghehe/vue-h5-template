@@ -16,20 +16,20 @@
 
 ```vue
 <template>
-  <div>{{ t("app.home") }}</div>
+  <div>{{ t('app.home') }}</div>
 </template>
 
 <script setup>
-import { t } from "@/locales";
+import { t } from '@/locales';
 </script>
 ```
 
 ## 切換語言
 
 ```ts
-import { loadLocaleMessages } from "@vh5/locales";
+import { loadLocaleMessages } from '@vh5/locales';
 
-await loadLocaleMessages("zh-TW");
+await loadLocaleMessages('zh-TW');
 ```
 
 在「我的」頁面中已內建語言切換功能，使用者可以直接在應用內切換語言。

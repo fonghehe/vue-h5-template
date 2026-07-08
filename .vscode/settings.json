@@ -1,6 +1,4 @@
 {
-  "tailwindCSS.experimental.configFile": "internal/tailwind-config/src/theme.css",
-  "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
   // workbench
   "workbench.list.smoothScrolling": true,
   "workbench.startupEditor": "newUntitledFile",
@@ -105,7 +103,6 @@
     "**/bower_components": true,
     "**/.turbo": true,
     "**/.idea": true,
-    "**/.vitepress": true,
     "**/tmp": true,
     "**/.git": true,
     "**/.svn": true,
@@ -126,9 +123,6 @@
     "**/dist/**": true,
     "**/yarn.lock": true
   },
-
-  "typescript.tsserver.exclude": ["**/node_modules", "**/dist", "**/.turbo"],
-
   // search
   "search.searchEditor.singleClickBehaviour": "peekDefinition",
   "search.followSymlinks": false,
@@ -199,7 +193,9 @@
     "yaml"
   ],
 
-  "tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
 
   "github.copilot.enable": {
     "*": true,
@@ -235,8 +231,5 @@
     "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,.gitattributes,.gitignore,.gitpod.yml,.npmrc,.browserslistrc,.node-version,.git*,.tazerc.json",
     "oxlint.config.ts": ".eslintignore,.stylelintignore,.commitlintrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,lefthook.yml,oxfmt.config.*,eslint.config.*"
   },
-  "commentTranslate.hover.enabled": false,
-  "commentTranslate.multiLineMerge": true,
-  "vue.server.hybridMode": true,
-  "cSpell.words": ["fonghehe", "unocss", "vant"]
+  "cSpell.words": ["unocss", "vant"]
 }

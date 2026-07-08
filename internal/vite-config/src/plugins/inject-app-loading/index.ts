@@ -17,21 +17,24 @@ async function viteInjectAppLoadingPlugin(
   loadingTemplate = 'loading.html',
 ): Promise<PluginOption | undefined> {
   let loadingHtml: string | undefined;
-  let packageVersion = '0.0.0';
+  let packageVersion: string;
 
   try {
     loadingHtml = await getLoadingRawByHtmlTemplate(loadingTemplate);
     const packageData = await readPackageJSON(process.cwd());
     packageVersion = packageData.version || '0.0.0';
   } catch (error) {
-    console.log(error)
+    console.log(error);
     console.warn('Failed to load loading template or package.json:', error);
     return undefined;
   }
 
   const envRaw = isBuild ? 'prod' : 'dev';
   // 转义环境变量以防止XSS攻击
-  const namespace = (env.VITE_APP_NAMESPACE || 'app').replace(/[^a-zA-Z0-9-_]/g, '');
+  const namespace = (env.VITE_APP_NAMESPACE || 'app').replaceAll(
+    /[^a-zA-Z0-9-_]/g,
+    '',
+  );
   const cacheName = `'${namespace}-${packageVersion}-${envRaw}-preferences-theme'`;
 
   // 获取缓存的主题
@@ -69,7 +72,9 @@ async function viteInjectAppLoadingPlugin(
 /**
  * 用于获取loading的html模板
  */
-async function getLoadingRawByHtmlTemplate(loadingTemplate: string): Promise<string | undefined> {
+async function getLoadingRawByHtmlTemplate(
+  loadingTemplate: string,
+): Promise<string | undefined> {
   // 支持在app内自定义loading模板，模版参考default-loading.html即可
   let appLoadingPath = join(process.cwd(), loadingTemplate);
 
@@ -81,7 +86,10 @@ async function getLoadingRawByHtmlTemplate(loadingTemplate: string): Promise<str
   try {
     return await fsp.readFile(appLoadingPath, 'utf8');
   } catch (error) {
-    console.warn(`Failed to read loading template from ${appLoadingPath}:`, error);
+    console.warn(
+      `Failed to read loading template from ${appLoadingPath}:`,
+      error,
+    );
     return undefined;
   }
 }

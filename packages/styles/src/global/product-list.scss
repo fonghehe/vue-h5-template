@@ -6,21 +6,21 @@
   }
 
   .product-img {
+    flex-shrink: 0;
     width: 90px;
     height: 90px;
     object-fit: cover;
     border-radius: 8px;
-    flex-shrink: 0;
   }
 
   .product-title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
     font-size: 14px;
     font-weight: 500;
     line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .product-desc {
@@ -36,8 +36,8 @@
   }
 
   .product-price {
-    color: #f2270c;
     font-size: 12px;
+    color: #f2270c;
 
     em {
       font-size: 18px;
@@ -49,8 +49,8 @@
   .product-origin-price {
     margin-left: 6px;
     font-size: 12px;
-    text-decoration: line-through;
     color: #bbb;
+    text-decoration: line-through;
   }
 
   .product-shop {

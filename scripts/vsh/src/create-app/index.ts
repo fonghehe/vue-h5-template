@@ -1,29 +1,30 @@
-import type { CAC } from "cac";
+import type { CAC } from 'cac';
 
-import { resolve } from "node:path";
-import { existsSync, mkdirSync, writeFileSync, cpSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
-import { colors, consola, findMonorepoRoot } from "@vh5/node-utils";
-import { cancel, isCancel, select, text } from "@clack/prompts";
+import { colors, consola, findMonorepoRoot } from '@vh5/node-utils';
 
-type UILibrary = "nutui" | "vant" | "varlet";
+import { cancel, isCancel, select, text } from '@clack/prompts';
+
+type UILibrary = 'nutui' | 'vant' | 'varlet';
 
 interface AppTemplate {
+  cssImports?: string;
   devPort: number;
   uiImport: string;
   uiLib: string;
   uiPackage: string;
   uiSetup: string;
-  cssImports?: string;
 }
 
 const UI_TEMPLATES: Record<UILibrary, AppTemplate> = {
   nutui: {
     devPort: 5780,
-    uiImport: "",
-    uiLib: "nut",
+    uiImport: '',
+    uiLib: 'nut',
     uiPackage: '"@nutui/nutui": "catalog:", "@nutui/icons-vue": "catalog:"',
-    uiSetup: "",
+    uiSetup: '',
     cssImports:
       "import '@nutui/nutui/dist/packages/toast/style/css';\n" +
       "import '@nutui/nutui/dist/packages/notify/style/css';\n" +
@@ -33,22 +34,26 @@ const UI_TEMPLATES: Record<UILibrary, AppTemplate> = {
   vant: {
     devPort: 5781,
     // VantResolver 按需注入组件 CSS，bootstrap.ts 无需手动导入
-    uiImport: "",
-    uiLib: "vant",
+    uiImport: '',
+    uiLib: 'vant',
     uiPackage: '"vant": "catalog:"',
-    uiSetup: "",
+    uiSetup: '',
   },
   varlet: {
     devPort: 5782,
     // Varlet 按需加载：移除全量注册，VarletImportResolver 处理模板组件 CSS，Snackbar 在使用处手动导入
-    uiImport: "",
-    uiLib: "varlet",
+    uiImport: '',
+    uiLib: 'varlet',
     uiPackage: '"@varlet/ui": "catalog:"',
-    uiSetup: "",
+    uiSetup: '',
   },
 };
 
-function generatePackageJson(name: string, ui: UILibrary, template: AppTemplate): string {
+function generatePackageJson(
+  name: string,
+  ui: UILibrary,
+  template: AppTemplate,
+): string {
   return `{
   "name": "@vh5/${name}",
   "version": "1.0.0",
@@ -87,7 +92,7 @@ function generatePackageJson(name: string, ui: UILibrary, template: AppTemplate)
 
 function generateViteConfig(ui: UILibrary, name: string): string {
   const scssBlock =
-    ui === "nutui"
+    ui === 'nutui'
       ? `
       css: {
         preprocessorOptions: {
@@ -103,7 +108,7 @@ function generateViteConfig(ui: UILibrary, name: string): string {
           },
         },
       },`
-      : "";
+      : '';
 
   return `import { fileURLToPath } from 'node:url';
 
@@ -141,14 +146,14 @@ function generateBootstrap(ui: UILibrary, template: AppTemplate): string {
 
 import { initStores } from '@vh5/stores';
 import { useTitle } from '@vueuse/core';
-${template.uiImport ? `\n${template.uiImport}\n` : ""}
+${template.uiImport ? `\n${template.uiImport}\n` : ''}
 import App from './App.vue';
 import { setupI18n } from './locales';
 import router from './router';
 
 import 'virtual:uno.css';
 import '@vh5/styles/global';
-${template.cssImports ? `${template.cssImports}\n` : ""}
+${template.cssImports ? `${template.cssImports}\n` : ''}
 async function bootstrap(namespace: string) {
   const app = createApp(App);
   await setupI18n(app);
@@ -345,33 +350,37 @@ function generateSimpleView(name: string): string {
 
 export function defineCreateAppCommand(cli: CAC) {
   cli
-    .command("create-app", "Create a new H5 app with the specified UI framework")
+    .command(
+      'create-app',
+      'Create a new H5 app with the specified UI framework',
+    )
     .action(async () => {
       const ui = await select<string>({
-        message: "Select UI framework:",
+        message: 'Select UI framework:',
         options: [
-          { label: "Varlet (Material Design)", value: "varlet" },
-          { label: "Vant (WeChat style)", value: "vant" },
-          { label: "NutUI (JD style)", value: "nutui" },
+          { label: 'Varlet (Material Design)', value: 'varlet' },
+          { label: 'Vant (WeChat style)', value: 'vant' },
+          { label: 'NutUI (JD style)', value: 'nutui' },
         ],
       });
 
       if (isCancel(ui)) {
-        cancel("Operation cancelled");
+        cancel('Operation cancelled');
         process.exit(0);
       }
 
       const name = await text({
-        message: "App name (e.g. h5-my-app):",
+        message: 'App name (e.g. h5-my-app):',
         placeholder: `h5-${ui as string}`,
         validate(value) {
-          if (!value) return "Name is required";
-          if (!/^[\w-]+$/.test(value)) return "Name should only contain letters, numbers, - and _";
+          if (!value) return 'Name is required';
+          if (!/^[\w-]+$/.test(value))
+            return 'Name should only contain letters, numbers, - and _';
         },
       });
 
       if (isCancel(name)) {
-        cancel("Operation cancelled");
+        cancel('Operation cancelled');
         process.exit(0);
       }
 
@@ -379,29 +388,31 @@ export function defineCreateAppCommand(cli: CAC) {
       const uiType = ui as UILibrary;
       const template = UI_TEMPLATES[uiType];
       const root = findMonorepoRoot();
-      const appDir = resolve(root, "apps", appName);
+      const appDir = resolve(root, 'apps', appName);
 
       if (existsSync(appDir)) {
-        consola.error(colors.red(`App directory already exists: apps/${appName}`));
+        consola.error(
+          colors.red(`App directory already exists: apps/${appName}`),
+        );
         process.exit(1);
       }
 
       // Create directory structure
       const dirs = [
-        "",
-        "src",
-        "src/views/home",
-        "src/views/list",
-        "src/views/mine",
-        "src/views/login",
-        "src/layout",
-        "src/components",
-        "src/api",
-        "src/stores",
-        "src/locales",
-        "src/assets",
-        "public",
-        "types",
+        '',
+        'src',
+        'src/views/home',
+        'src/views/list',
+        'src/views/mine',
+        'src/views/login',
+        'src/layout',
+        'src/components',
+        'src/api',
+        'src/stores',
+        'src/locales',
+        'src/assets',
+        'public',
+        'types',
       ];
 
       for (const dir of dirs) {
@@ -410,65 +421,73 @@ export function defineCreateAppCommand(cli: CAC) {
 
       // Generate files
       const files: Record<string, string> = {
-        "package.json": generatePackageJson(appName, uiType, template),
-        "vite.config.ts": generateViteConfig(uiType, appName),
-        "tsconfig.json": generateTsconfig(),
-        "tsconfig.node.json": generateTsconfigNode(),
-        "env.d.ts": generateEnvDts(),
-        "index.html": generateIndexHtml(),
-        ".env": generateEnv(appName),
-        ".env.development": generateEnvDevelopment(template.devPort),
-        "src/main.ts": generateMainTs(),
-        "src/bootstrap.ts": generateBootstrap(uiType, template),
-        "src/App.vue": generateAppVue(),
-        "src/router/index.ts": generateRouter(),
-        "src/views/home/index.vue": generateHomeView(),
-        "src/views/list/index.vue": generateSimpleView("List"),
-        "src/views/mine/index.vue": generateSimpleView("Mine"),
-        "src/views/login/index.vue": generateSimpleView("Login"),
+        'package.json': generatePackageJson(appName, uiType, template),
+        'vite.config.ts': generateViteConfig(uiType, appName),
+        'tsconfig.json': generateTsconfig(),
+        'tsconfig.node.json': generateTsconfigNode(),
+        'env.d.ts': generateEnvDts(),
+        'index.html': generateIndexHtml(),
+        '.env': generateEnv(appName),
+        '.env.development': generateEnvDevelopment(template.devPort),
+        'src/main.ts': generateMainTs(),
+        'src/bootstrap.ts': generateBootstrap(uiType, template),
+        'src/App.vue': generateAppVue(),
+        'src/router/index.ts': generateRouter(),
+        'src/views/home/index.vue': generateHomeView(),
+        'src/views/list/index.vue': generateSimpleView('List'),
+        'src/views/mine/index.vue': generateSimpleView('Mine'),
+        'src/views/login/index.vue': generateSimpleView('Login'),
       };
 
       for (const [filePath, content] of Object.entries(files)) {
         const fullPath = resolve(appDir, filePath);
-        mkdirSync(resolve(fullPath, ".."), { recursive: true });
-        writeFileSync(fullPath, content, "utf-8");
+        mkdirSync(resolve(fullPath, '..'), { recursive: true });
+        writeFileSync(fullPath, content, 'utf8');
       }
 
       // Copy layout from the reference app
-      const refApp = resolve(root, "apps", `h5-${uiType}`);
-      const refLayout = resolve(refApp, "src/layout/index.vue");
+      const refApp = resolve(root, 'apps', `h5-${uiType}`);
+      const refLayout = resolve(refApp, 'src/layout/index.vue');
       if (existsSync(refLayout)) {
-        cpSync(refLayout, resolve(appDir, "src/layout/index.vue"));
+        cpSync(refLayout, resolve(appDir, 'src/layout/index.vue'));
       }
 
       // Copy locales from the reference app
-      const refLocales = resolve(refApp, "src/locales");
+      const refLocales = resolve(refApp, 'src/locales');
       if (existsSync(refLocales)) {
-        cpSync(refLocales, resolve(appDir, "src/locales"), { recursive: true });
+        cpSync(refLocales, resolve(appDir, 'src/locales'), { recursive: true });
       }
 
       // Copy api from the reference app
-      const refApi = resolve(refApp, "src/api");
+      const refApi = resolve(refApp, 'src/api');
       if (existsSync(refApi)) {
-        cpSync(refApi, resolve(appDir, "src/api"), { recursive: true });
+        cpSync(refApi, resolve(appDir, 'src/api'), { recursive: true });
       }
 
       // Copy stores from the reference app (nutui uses src/store, others use src/stores)
-      const refStoresPath = existsSync(resolve(refApp, "src/stores"))
-        ? resolve(refApp, "src/stores")
-        : resolve(refApp, "src/store");
+      const refStoresPath = existsSync(resolve(refApp, 'src/stores'))
+        ? resolve(refApp, 'src/stores')
+        : resolve(refApp, 'src/store');
       if (existsSync(refStoresPath)) {
-        cpSync(refStoresPath, resolve(appDir, "src/stores"), { recursive: true });
+        cpSync(refStoresPath, resolve(appDir, 'src/stores'), {
+          recursive: true,
+        });
       }
 
       consola.success(colors.green(`\n✅ App created: apps/${appName}`));
       consola.info(`\nNext steps:`);
-      consola.info(`  1. Run ${colors.cyan("pnpm install")} to install dependencies`);
+      consola.info(
+        `  1. Run ${colors.cyan('pnpm install')} to install dependencies`,
+      );
       consola.info(`  2. Add dev/build scripts to root package.json:`);
-      consola.info(`     ${colors.cyan(`"dev:${appName}": "pnpm -F @vh5/${appName} run dev"`)}`);
+      consola.info(
+        `     ${colors.cyan(`"dev:${appName}": "pnpm -F @vh5/${appName} run dev"`)}`,
+      );
       consola.info(
         `     ${colors.cyan(`"build:${appName}": "pnpm run build --filter=@vh5/${appName}"`)}`,
       );
-      consola.info(`  3. Run ${colors.cyan(`pnpm dev:${appName}`)} to start development\n`);
+      consola.info(
+        `  3. Run ${colors.cyan(`pnpm dev:${appName}`)} to start development\n`,
+      );
     });
 }

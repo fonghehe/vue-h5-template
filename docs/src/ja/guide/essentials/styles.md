@@ -5,10 +5,10 @@
 `packages/styles` がグローバル基本スタイルと各 UI ライブラリのスタイルエントリを提供します：
 
 ```ts
-import "@vh5/styles/global"; // グローバル基本スタイル
-import "@vh5/styles/nutui"; // NutUI テーマスタイル（オプション）
-import "@vh5/styles/vant"; // Vant テーマスタイル（オプション）
-import "@vh5/styles/varlet"; // Varlet テーマスタイル（オプション）
+import '@vh5/styles/global'; // グローバル基本スタイル
+import '@vh5/styles/nutui'; // NutUI テーマスタイル（オプション）
+import '@vh5/styles/vant'; // Vant テーマスタイル（オプション）
+import '@vh5/styles/varlet'; // Varlet テーマスタイル（オプション）
 ```
 
 ## オンデマンドロード戦略
@@ -20,7 +20,7 @@ import "@vh5/styles/varlet"; // Varlet テーマスタイル（オプション�
 
 ```ts
 // bootstrap.ts (vant)
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ✅ Vant コンポーネント CSS は VantResolver が自動注入
 // ❌ app.use(Vant) 不要
 ```
@@ -31,8 +31,8 @@ import "@vh5/styles/global";
 - **Snackbar（関数式）**：Snackbar を使用するファイルで手動インポートが必要
 
 ```ts
-import { Snackbar } from "@varlet/ui";
-import "@varlet/ui/es/snackbar/style/index.mjs";
+import { Snackbar } from '@varlet/ui';
+import '@varlet/ui/es/snackbar/style/index.mjs';
 ```
 
 ### NutUI
@@ -41,10 +41,10 @@ import "@varlet/ui/es/snackbar/style/index.mjs";
 - **関数式コンポーネント**（Toast/Notify/Dialog/ImagePreview）：`bootstrap.ts` で手動インポート
 
 ```ts
-import "@nutui/nutui/dist/packages/toast/style/css";
-import "@nutui/nutui/dist/packages/notify/style/css";
-import "@nutui/nutui/dist/packages/dialog/style/css";
-import "@nutui/nutui/dist/packages/imagepreview/style/css";
+import '@nutui/nutui/dist/packages/toast/style/css';
+import '@nutui/nutui/dist/packages/notify/style/css';
+import '@nutui/nutui/dist/packages/dialog/style/css';
+import '@nutui/nutui/dist/packages/imagepreview/style/css';
 ```
 
 ## NutUI SCSS 変数

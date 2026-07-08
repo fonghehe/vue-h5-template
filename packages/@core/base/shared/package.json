@@ -2,10 +2,14 @@
   "name": "@vh5-core/shared",
   "version": "1.0.0",
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm exec tsdown",
+    "stub": "pnpm run build"
+  },
   "files": [
     "dist"
   ],
-  "type": "module",
   "sideEffects": false,
   "exports": {
     "./constants": {
@@ -48,10 +52,6 @@
         "default": "./dist/store.mjs"
       }
     }
-  },
-  "scripts": {
-    "build": "pnpm unbuild",
-    "stub": "pnpm unbuild --stub"
   },
   "dependencies": {
     "@tanstack/vue-store": "catalog:",

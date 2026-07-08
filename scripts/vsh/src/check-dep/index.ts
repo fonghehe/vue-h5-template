@@ -23,7 +23,6 @@ const DEFAULT_CONFIG = {
     '@vh5/commitlint-config',
     '@vh5/eslint-config',
     '@vh5/node-utils',
-    '@vh5/oxfmt-config',
     '@vh5/oxlint-config',
     '@vh5/stylelint-config',
     '@vh5/tsconfig',

@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import router from "@/router";
-import { useUserStore } from "@/store/modules/user";
-import { showToast } from "@nutui/nutui";
+import { showToast } from '@nutui/nutui';
+
+import router from '@/router';
+import { useUserStore } from '@/store/modules/user';
 
 const userStore = useUserStore();
 const formData = reactive({
-  name: "user",
-  pwd: "123456",
+  name: 'user',
+  pwd: '123456',
 });
 const ruleForm = ref<any>(null);
 const loading = ref(false);
@@ -14,16 +15,16 @@ const loading = ref(false);
 const submit = async () => {
   const { valid, errors } = await ruleForm.value.validate();
   if (!valid) {
-    console.warn("validate error", errors);
+    console.warn('validate error', errors);
     return;
   }
   loading.value = true;
   try {
     await userStore.login(formData.name, formData.pwd);
-    showToast.success("登录成功");
-    router.push({ path: "/mine" });
+    showToast.success('登录成功');
+    router.push({ path: '/mine' });
   } catch (error: any) {
-    showToast.fail(error.message || "登录失败");
+    showToast.fail(error.message || '登录失败');
   } finally {
     loading.value = false;
   }
@@ -62,7 +63,9 @@ const submit = async () => {
           class="bg-transparent"
         />
       </nut-form-item>
-      <nut-button block type="info" :loading="loading" @click="submit"> 登录 </nut-button>
+      <nut-button block type="info" :loading="loading" @click="submit">
+        登录
+      </nut-button>
     </nut-form>
   </div>
 </template>

@@ -17,7 +17,15 @@
 ## 导出
 
 ```ts
-export { $t, $te, i18n, loadLocaleMessages, loadLocalesMap, loadLocalesMapFromDir, setupI18n };
+export {
+  $t,
+  $te,
+  i18n,
+  loadLocaleMessages,
+  loadLocalesMap,
+  loadLocalesMapFromDir,
+  setupI18n,
+};
 export type { ImportLocaleFn, LocaleSetupOptions, SupportedLanguagesType };
 ```
 

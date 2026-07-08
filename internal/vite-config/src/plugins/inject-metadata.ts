@@ -1,8 +1,13 @@
-import type { PluginOption } from "vite";
+import type { PluginOption } from 'vite';
 
-import { dateUtil, findMonorepoRoot, getPackages, readPackageJSON } from "@vh5/node-utils";
+import {
+  dateUtil,
+  findMonorepoRoot,
+  getPackages,
+  readPackageJSON,
+} from '@vh5/node-utils';
 
-import { readWorkspaceManifest } from "@pnpm/workspace.read-manifest";
+import { readWorkspaceManifest } from '@pnpm/workspace.read-manifest';
 
 function resolvePackageVersion(
   pkgsMeta: Record<string, string>,
@@ -10,11 +15,11 @@ function resolvePackageVersion(
   value: string,
   catalog: Record<string, string>,
 ) {
-  if (value.includes("catalog:")) {
+  if (value.includes('catalog:')) {
     return catalog[name];
   }
 
-  if (value.includes("workspace")) {
+  if (value.includes('workspace')) {
     return pkgsMeta[name];
   }
 
@@ -37,10 +42,20 @@ async function resolveMonorepoDependencies() {
   for (const { packageJson } of packages) {
     const { dependencies = {}, devDependencies = {} } = packageJson;
     for (const [key, value] of Object.entries(dependencies)) {
-      resultDependencies[key] = resolvePackageVersion(pkgsMeta, key, value, catalog);
+      resultDependencies[key] = resolvePackageVersion(
+        pkgsMeta,
+        key,
+        value,
+        catalog,
+      );
     }
     for (const [key, value] of Object.entries(devDependencies)) {
-      resultDevDependencies[key] = resolvePackageVersion(pkgsMeta, key, value, catalog);
+      resultDevDependencies[key] = resolvePackageVersion(
+        pkgsMeta,
+        key,
+        value,
+        catalog,
+      );
     }
   }
   return {
@@ -52,16 +67,20 @@ async function resolveMonorepoDependencies() {
 /**
  * 用于注入项目信息
  */
-async function viteMetadataPlugin(root = process.cwd()): Promise<PluginOption | undefined> {
-  const { author, description, homepage, license, version } = await readPackageJSON(root);
+async function viteMetadataPlugin(
+  root = process.cwd(),
+): Promise<PluginOption | undefined> {
+  const { author, description, homepage, license, version } =
+    await readPackageJSON(root);
 
-  const buildTime = dateUtil().format("YYYY-MM-DD HH:mm:ss");
+  const buildTime = dateUtil().format('YYYY-MM-DD HH:mm:ss');
 
   return {
     async config() {
-      const { dependencies, devDependencies } = await resolveMonorepoDependencies();
+      const { dependencies, devDependencies } =
+        await resolveMonorepoDependencies();
 
-      const isAuthorObject = typeof author === "object";
+      const isAuthorObject = typeof author === 'object';
       const authorName = isAuthorObject ? author.name : author;
       const authorEmail = isAuthorObject ? author.email : null;
       const authorUrl = isAuthorObject ? author.url : null;
@@ -80,12 +99,12 @@ async function viteMetadataPlugin(root = process.cwd()): Promise<PluginOption | 
             license,
             version,
           }),
-          "import.meta.env.VITE_APP_VERSION": JSON.stringify(version),
+          'import.meta.env.VITE_APP_VERSION': JSON.stringify(version),
         },
       };
     },
-    enforce: "post",
-    name: "vite:inject-metadata",
+    enforce: 'post',
+    name: 'vite:inject-metadata',
   };
 }
 

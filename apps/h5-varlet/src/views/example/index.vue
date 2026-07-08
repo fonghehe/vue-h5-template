@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { Snackbar } from "@varlet/ui";
-import "@varlet/ui/es/snackbar/style/index.mjs";
+import { Snackbar } from '@varlet/ui';
 
-import { t } from "@/locales";
+import { t } from '@/locales';
+
+import '@varlet/ui/es/snackbar/style/index.mjs';
 
 function demo() {
-  Snackbar.success(t("app.toastDemo"));
+  Snackbar.success(t('app.toastDemo'));
 }
 
 const switchValue = ref(false);
-const inputValue = ref("");
-const radioValue = ref("1");
+const inputValue = ref('');
+const radioValue = ref('1');
 const checkboxValue = ref(false);
 const rate = ref(3);
 const sliderValue = ref(40);
@@ -22,11 +23,13 @@ const counterValue = ref(1);
     <!-- Button -->
     <div class="font-600 mb-3">Button 按钮</div>
     <var-space wrap>
-      <var-button type="primary" @click="demo">{{ t("app.buttonPrimary") }}</var-button>
-      <var-button type="info">{{ t("app.buttonInfo") }}</var-button>
-      <var-button type="success">{{ t("app.buttonSuccess") }}</var-button>
-      <var-button type="danger">{{ t("app.buttonDanger") }}</var-button>
-      <var-button type="warning">{{ t("app.buttonWarning") }}</var-button>
+      <var-button type="primary" @click="demo">
+        {{ t('app.buttonPrimary') }}
+      </var-button>
+      <var-button type="info">{{ t('app.buttonInfo') }}</var-button>
+      <var-button type="success">{{ t('app.buttonSuccess') }}</var-button>
+      <var-button type="danger">{{ t('app.buttonDanger') }}</var-button>
+      <var-button type="warning">{{ t('app.buttonWarning') }}</var-button>
     </var-space>
     <var-space wrap class="mt-2">
       <var-button type="primary" outline>Outline</var-button>
@@ -54,9 +57,9 @@ const counterValue = ref(1);
     <!-- Radio -->
     <div class="font-600 mt-4 mb-3">Radio 单选</div>
     <var-radio-group v-model="radioValue" direction="horizontal">
-      <var-radio :checked-value="'1'">选项一</var-radio>
-      <var-radio :checked-value="'2'">选项二</var-radio>
-      <var-radio :checked-value="'3'">选项三</var-radio>
+      <var-radio checked-value="1">选项一</var-radio>
+      <var-radio checked-value="2">选项二</var-radio>
+      <var-radio checked-value="3">选项三</var-radio>
     </var-radio-group>
 
     <!-- Checkbox -->
@@ -89,9 +92,15 @@ const counterValue = ref(1);
     <!-- Badge -->
     <div class="font-600 mt-4 mb-3">Badge 徽标</div>
     <var-space class="gap-5">
-      <var-badge type="primary" :value="8"><var-icon name="information" :size="24" /></var-badge>
-      <var-badge type="danger" :value="99"><var-icon name="star" :size="24" /></var-badge>
-      <var-badge type="primary" dot><var-icon name="heart" :size="24" /></var-badge>
+      <var-badge type="primary" :value="8">
+        <var-icon name="information" :size="24" />
+      </var-badge>
+      <var-badge type="danger" :value="99">
+        <var-icon name="star" :size="24" />
+      </var-badge>
+      <var-badge type="primary" dot>
+        <var-icon name="heart" :size="24" />
+      </var-badge>
     </var-space>
 
     <!-- Progress -->

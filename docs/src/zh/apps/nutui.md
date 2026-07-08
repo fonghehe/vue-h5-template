@@ -21,10 +21,10 @@ pnpm dev:nutui
 NutUI 的 `showToast`、`showNotify`、`showDialog`、`showImagePreview` 等函数式组件无法被 Resolver 自动引入样式，需在 `bootstrap.ts` 中手动导入：
 
 ```ts
-import "@nutui/nutui/dist/packages/toast/style/css";
-import "@nutui/nutui/dist/packages/notify/style/css";
-import "@nutui/nutui/dist/packages/dialog/style/css";
-import "@nutui/nutui/dist/packages/imagepreview/style/css";
+import '@nutui/nutui/dist/packages/toast/style/css';
+import '@nutui/nutui/dist/packages/notify/style/css';
+import '@nutui/nutui/dist/packages/dialog/style/css';
+import '@nutui/nutui/dist/packages/imagepreview/style/css';
 ```
 
 ## SCSS 配置

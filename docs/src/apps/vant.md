@@ -21,7 +21,7 @@ Default port: `5778`
 ```ts
 // bootstrap.ts
 // ✅ Import global base styles only; Vant component CSS is injected on-demand by VantResolver
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ❌ Do NOT use app.use(Vant) for global registration
 // ❌ Do NOT import vant/lib/index.css (conflicts with Resolver on-demand injection)
 ```

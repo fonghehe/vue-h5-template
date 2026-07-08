@@ -21,7 +21,7 @@ pnpm dev:vant
 ```ts
 // bootstrap.ts
 // ✅ 只引入全局基础样式，vant 组件 CSS 由 VantResolver 按需注入
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ❌ 不使用 app.use(Vant) 全量注册
 // ❌ 不额外导入 vant/lib/index.css（避免与 Resolver 按需注入冲突）
 ```

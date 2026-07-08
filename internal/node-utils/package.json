@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "stub": "node ./scripts/build.mjs"
+  },
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -16,9 +19,6 @@
       "import": "./dist/index.mjs",
       "default": "./dist/index.mjs"
     }
-  },
-  "scripts": {
-    "stub": "pnpm unbuild --stub"
   },
   "dependencies": {
     "@changesets/git": "catalog:",

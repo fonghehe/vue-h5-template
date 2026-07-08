@@ -93,10 +93,10 @@ const { data, loading, error } = useProductDetail(() => Number(route.query.id));
 ```ts
 export const productRoutes: RouteRecordRaw[] = [
   {
-    path: "/product",
-    name: "product-list",
-    component: () => import("./views/List.vue"),
-    meta: { title: "商品列表", authority: ["user", "admin"] },
+    path: '/product',
+    name: 'product-list',
+    component: () => import('./views/List.vue'),
+    meta: { title: '商品列表', authority: ['user', 'admin'] },
   },
 ];
 ```
@@ -105,19 +105,23 @@ export const productRoutes: RouteRecordRaw[] = [
 
 ```ts
 // packages/features/product/src/index.ts
-export { productRoutes } from "./routes";
-export { useProductStore } from "./store";
-export * from "./composables/use-product-detail";
+export { productRoutes } from './routes';
+export { useProductStore } from './store';
+export * from './composables/use-product-detail';
 ```
 
 ### 第七步 — 注冊到應用外殼
 
 ```ts
 // packages/app-shell/src/router/index.ts
-import { productRoutes } from "@vh5/feature-product";
-import { mergeRouteModules } from "@vh5/utils";
+import { productRoutes } from '@vh5/feature-product';
+import { mergeRouteModules } from '@vh5/utils';
 
-export const routes = mergeRouteModules([...authRoutes, ...productRoutes, ...userRoutes]);
+export const routes = mergeRouteModules([
+  ...authRoutes,
+  ...productRoutes,
+  ...userRoutes,
+]);
 ```
 
 每個適配應用都已掛載共享外殼，唔需每個應用單獨配置。

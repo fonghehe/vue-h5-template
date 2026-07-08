@@ -5,11 +5,11 @@
 ## 使用
 
 ```ts
-import { defineConfig } from "@vh5/vite-config";
+import { defineConfig } from '@vh5/vite-config';
 
 export default defineConfig(async () => ({
   application: {
-    uiLibrary: "nut", // 'nut' | 'vant' | 'varlet'
+    uiLibrary: 'nut', // 'nut' | 'vant' | 'varlet'
   },
   vite: {
     // 自定义 Vite 配置
@@ -40,10 +40,10 @@ export default defineConfig(async () => ({
 
 ```ts
 interface ApplicationPluginOptions {
-  uiLibrary?: "nut" | "vant" | "varlet";
+  uiLibrary?: 'nut' | 'vant' | 'varlet';
   devtools?: boolean;
   compress?: boolean;
-  compressTypes?: ("brotli" | "gzip")[];
+  compressTypes?: ('brotli' | 'gzip')[];
   html?: boolean;
   pwa?: boolean;
   nitroMock?: boolean;

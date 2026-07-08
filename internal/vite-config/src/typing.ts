@@ -1,7 +1,7 @@
-import type { PluginVisualizerOptions } from "rollup-plugin-visualizer";
-import type { ConfigEnv, PluginOption, UserConfig } from "vite";
-import type { PluginOptions } from "vite-plugin-dts";
-import type { Options as PwaPluginOptions } from "vite-plugin-pwa";
+import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer';
+import type { ConfigEnv, PluginOption, UserConfig } from 'vite';
+import type { PluginOptions } from 'vite-plugin-dts';
+import type { Options as PwaPluginOptions } from 'vite-plugin-pwa';
 
 /**
  * ImportMap 配置接口
@@ -99,7 +99,7 @@ interface ImportmapPluginOptions {
    * @default 'jspm.io'
    * @description 支持 esm.sh 和 jspm.io 两种 CDN 供应商
    */
-  defaultProvider?: "esm.sh" | "jspm.io";
+  defaultProvider?: 'esm.sh' | 'jspm.io';
   /**
    * ImportMap 配置数组
    * @description 配置需要从 CDN 导入的包
@@ -167,19 +167,6 @@ interface CommonPluginOptions {
    */
   mode?: string;
   /**
-   * 是否开启依赖分析
-   * @default false
-   * @description 使用 rollup-plugin-visualizer 分析依赖
-   */
-  visualizer?: boolean | PluginVisualizerOptions;
-  /**
-   * UI 库类型
-   * - vant: Vant UI 库
-   * - nut: NutUI 库
-   * - varlet: Varlet UI 库
-   */
-  uiLibrary?: "vant" | "nut" | "varlet";
-  /**
    * 是否开启 px-to-viewport 转换
    * @default false
    */
@@ -189,10 +176,35 @@ interface CommonPluginOptions {
    */
   pxToViewportOptions?: {
     /**
-     * 视口宽度
-     * @default 375
+     * 需要转换的文件扩展名
+     * @default ['.vue', '.tsx', '.ts', '.jsx', '.js']
      */
-    viewportWidth?: number;
+    exclude?: RegExp | RegExp[];
+    /**
+     * 字体单位
+     * @default 'vw'
+     */
+    fontViewportUnit?: string;
+    /**
+     * 是否转换媒体查询中的 px
+     * @default false
+     */
+    mediaQuery?: boolean;
+    /**
+     * 最小转换值
+     * @default 1
+     */
+    minPixelValue?: number;
+    /**
+     * 需要忽略的选择器
+     * @default []
+     */
+    selectorBlackList?: string[];
+    /**
+     * 单位转换精度
+     * @default 5
+     */
+    unitPrecision?: number;
     /**
      * 视口高度
      * @default 667
@@ -204,36 +216,24 @@ interface CommonPluginOptions {
      */
     viewportUnit?: string;
     /**
-     * 字体单位
-     * @default 'vw'
+     * 视口宽度
+     * @default 375
      */
-    fontViewportUnit?: string;
-    /**
-     * 单位转换精度
-     * @default 5
-     */
-    unitPrecision?: number;
-    /**
-     * 最小转换值
-     * @default 1
-     */
-    minPixelValue?: number;
-    /**
-     * 是否转换媒体查询中的 px
-     * @default false
-     */
-    mediaQuery?: boolean;
-    /**
-     * 需要忽略的选择器
-     * @default []
-     */
-    selectorBlackList?: string[];
-    /**
-     * 需要转换的文件扩展名
-     * @default ['.vue', '.tsx', '.ts', '.jsx', '.js']
-     */
-    exclude?: RegExp | RegExp[];
+    viewportWidth?: number;
   };
+  /**
+   * UI 库类型
+   * - vant: Vant UI 库
+   * - nut: NutUI 库
+   * - varlet: Varlet UI 库
+   */
+  uiLibrary?: 'nut' | 'vant' | 'varlet';
+  /**
+   * 是否开启依赖分析
+   * @default false
+   * @description 使用 rollup-plugin-visualizer 分析依赖
+   */
+  visualizer?: boolean | PluginVisualizerOptions;
 }
 
 /**
@@ -263,7 +263,12 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
    * @default ['gzip']
    * @description 可选的压缩类型
    */
-  compressTypes?: ("brotli" | "gzip")[];
+  compressTypes?: ('brotli' | 'gzip')[];
+  /**
+   * 是否开启 eruda
+   * @default true (仅非生产环境)
+   */
+  eruda?: boolean;
   /**
    * 是否抽离配置文件
    * @default false
@@ -321,7 +326,7 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
   /**
    * 打印插件配置
    */
-  printInfoMap?: PrintPluginOptions["infoMap"];
+  printInfoMap?: PrintPluginOptions['infoMap'];
   /**
    * 是否开启 PWA
    * @default false
@@ -336,11 +341,6 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
    * @default true
    */
   unocss?: boolean;
-  /**
-   * 是否开启 vConsole
-   * @default true (仅非生产环境)
-   */
-  vconsole?: boolean;
   /**
    * 是否开启 VXE Table 懒加载
    * @default false

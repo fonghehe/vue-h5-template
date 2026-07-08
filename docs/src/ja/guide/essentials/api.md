@@ -2,11 +2,11 @@
 
 HTTP スタックは責務ごとに 3 つのパッケージに分割されています。
 
-| パッケージ      | 責務                                                                |
-| --------------- | ------------------------------------------------------------------- |
-| `@vh5/request`  | 型付き `fetch` ラッパー・インターセプター・Token 更新・エラー正規化 |
-| `@vh5/api`      | エンドポイント定義とリクエスト/レスポンス DTO（副作用なし）         |
-| `@vh5/services` | ドメインサービス。`@vh5/api` を消費してドメインモデルを返す         |
+| パッケージ | 責務 |
+| --- | --- |
+| `@vh5/request` | 型付き `fetch` ラッパー・インターセプター・Token 更新・エラー正規化 |
+| `@vh5/api` | エンドポイント定義とリクエスト/レスポンス DTO（副作用なし） |
+| `@vh5/services` | ドメインサービス。`@vh5/api` を消費してドメインモデルを返す |
 
 アプリと特性モジュールは **`fetch` を直接呼び出しません**。
 
@@ -14,14 +14,14 @@ HTTP スタックは責務ごとに 3 つのパッケージに分割されてい
 
 ```ts
 export const request = createRequest({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? "/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   timeout: 15_000,
 });
 
 // Access Token を注入
 request.interceptors.request.use((config) => {
   const token = useAuthStore().accessToken;
-  if (token) config.headers.set("Authorization", `Bearer ${token}`);
+  if (token) config.headers.set('Authorization', `Bearer ${token}`);
   return config;
 });
 
@@ -63,8 +63,11 @@ export interface ProductDTO {
 
 export const productApi = {
   list: (params: { page: number; size: number }) =>
-    request.get<{ items: ProductDTO[]; total: number }>("/product/list", { params }),
-  detail: (id: number) => request.get<ProductDTO>("/product/detail", { params: { id } }),
+    request.get<{ items: ProductDTO[]; total: number }>('/product/list', {
+      params,
+    }),
+  detail: (id: number) =>
+    request.get<ProductDTO>('/product/detail', { params: { id } }),
 };
 ```
 
@@ -97,8 +100,8 @@ export const ProductService = {
 
 ```ts
 // packages/features/product/composables/use-product-detail.ts
-import { ProductService } from "@vh5/services";
-import { tryOnScopeDispose } from "@vueuse/core";
+import { ProductService } from '@vh5/services';
+import { tryOnScopeDispose } from '@vueuse/core';
 
 export function useProductDetail(id: MaybeRef<number>) {
   const data = ref<Product | null>(null);

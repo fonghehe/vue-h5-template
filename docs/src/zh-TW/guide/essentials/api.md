@@ -14,14 +14,14 @@ HTTP 棧拆分為三個套件，每個套件職責單一：
 
 ```ts
 export const request = createRequest({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? "/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   timeout: 15_000,
 });
 
 // 注入 Access Token
 request.interceptors.request.use((config) => {
   const token = useAuthStore().accessToken;
-  if (token) config.headers.set("Authorization", `Bearer ${token}`);
+  if (token) config.headers.set('Authorization', `Bearer ${token}`);
   return config;
 });
 
@@ -63,8 +63,11 @@ export interface ProductDTO {
 
 export const productApi = {
   list: (params: { page: number; size: number }) =>
-    request.get<{ items: ProductDTO[]; total: number }>("/product/list", { params }),
-  detail: (id: number) => request.get<ProductDTO>("/product/detail", { params: { id } }),
+    request.get<{ items: ProductDTO[]; total: number }>('/product/list', {
+      params,
+    }),
+  detail: (id: number) =>
+    request.get<ProductDTO>('/product/detail', { params: { id } }),
 };
 ```
 
@@ -97,8 +100,8 @@ export const ProductService = {
 
 ```ts
 // packages/features/product/composables/use-product-detail.ts
-import { ProductService } from "@vh5/services";
-import { tryOnScopeDispose } from "@vueuse/core";
+import { ProductService } from '@vh5/services';
+import { tryOnScopeDispose } from '@vueuse/core';
 
 export function useProductDetail(id: MaybeRef<number>) {
   const data = ref<Product | null>(null);

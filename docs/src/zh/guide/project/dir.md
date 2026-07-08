@@ -95,17 +95,17 @@ internal/
 
 ## 5. 快速查找表
 
-| 我想添加……              | 放在……                                                          |
-| ----------------------- | --------------------------------------------------------------- |
-| 新页面                  | `packages/features/<feature>/src/views/`                        |
-| 新 API 接口             | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
-| 新 Pinia Store          | `packages/features/<feature>/src/store.ts`                      |
-| 新共享 Composable       | `packages/@core/composables/src/`                               |
-| 新共享工具函数          | `packages/@core/base/shared/src/utils/`                         |
-| 新语言字符串            | `packages/features/<feature>/src/locales/<lang>.json`           |
-| 新全局样式 / 设计 Token | `packages/styles/src/global/`                                   |
-| 新构建插件              | `internal/vite-config/src/plugins/`                             |
-| 新 UI 组件库适配应用    | `apps/h5-<lib>/` + 在 `pnpm-workspace.yaml` 中注册              |
+| 我想添加…… | 放在…… |
+| --- | --- |
+| 新页面 | `packages/features/<feature>/src/views/` |
+| 新 API 接口 | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
+| 新 Pinia Store | `packages/features/<feature>/src/store.ts` |
+| 新共享 Composable | `packages/@core/composables/src/` |
+| 新共享工具函数 | `packages/@core/base/shared/src/utils/` |
+| 新语言字符串 | `packages/features/<feature>/src/locales/<lang>.json` |
+| 新全局样式 / 设计 Token | `packages/styles/src/global/` |
+| 新构建插件 | `internal/vite-config/src/plugins/` |
+| 新 UI 组件库适配应用 | `apps/h5-<lib>/` + 在 `pnpm-workspace.yaml` 中注册 |
 
 ## 各 H5 应用页面
 
@@ -126,10 +126,10 @@ internal/
 
 ```ts
 // apps/h5-nutui/vite.config.mts
-import { defineConfig } from "@vh5/vite-config";
+import { defineConfig } from '@vh5/vite-config';
 
 export default defineConfig(async () => ({
-  application: { uiLibrary: "nut" },
+  application: { uiLibrary: 'nut' },
   vite: {
     /* 自定义配置 */
   },

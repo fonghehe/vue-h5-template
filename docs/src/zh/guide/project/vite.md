@@ -5,11 +5,11 @@
 ## 使用
 
 ```ts
-import { defineConfig } from "@vh5/vite-config";
+import { defineConfig } from '@vh5/vite-config';
 
 export default defineConfig(async () => ({
   application: {
-    uiLibrary: "nut", // 'nut' | 'vant' | 'varlet'
+    uiLibrary: 'nut', // 'nut' | 'vant' | 'varlet'
   },
   vite: {
     // 自定义 Vite 配置
@@ -39,20 +39,20 @@ export default defineConfig(async () => ({
 
 通过 `uiLibrary` 选项自动配置对应的 Resolver：
 
-| UI 库  | Component Resolver     | Auto Import Resolver                         | importStyle        |
-| ------ | ---------------------- | -------------------------------------------- | ------------------ |
-| vant   | `VantResolver`         | `VantResolver`                               | `false`（全量CSS） |
-| varlet | `VarletImportResolver` | `VarletImportResolver({ autoImport: true })` | 自动               |
-| nutui  | `NutUIResolver`        | —                                            | 自动               |
+| UI 库 | Component Resolver | Auto Import Resolver | importStyle |
+| --- | --- | --- | --- |
+| vant | `VantResolver` | `VantResolver` | `false`（全量CSS） |
+| varlet | `VarletImportResolver` | `VarletImportResolver({ autoImport: true })` | 自动 |
+| nutui | `NutUIResolver` | — | 自动 |
 
 ## 配置选项
 
 ```ts
 interface ApplicationPluginOptions {
-  uiLibrary?: "nut" | "vant" | "varlet";
+  uiLibrary?: 'nut' | 'vant' | 'varlet';
   devtools?: boolean;
   compress?: boolean;
-  compressTypes?: ("brotli" | "gzip")[];
+  compressTypes?: ('brotli' | 'gzip')[];
   html?: boolean;
   pwa?: boolean;
   injectAppLoading?: boolean;

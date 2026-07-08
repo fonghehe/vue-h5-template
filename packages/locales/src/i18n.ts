@@ -1,30 +1,33 @@
-import type { App } from "vue";
-import type { Locale } from "vue-i18n";
+import type { App } from 'vue';
+import type { Locale } from 'vue-i18n';
 
 import type {
   ImportLocaleFn,
   LoadMessageFn,
   LocaleSetupOptions,
   SupportedLanguagesType,
-} from "./typing";
+} from './typing';
 
-import { unref } from "vue";
-import { createI18n } from "vue-i18n";
+import { unref } from 'vue';
+import { createI18n } from 'vue-i18n';
 
-import { useSimpleLocale } from "@vh5-core/composables";
+import { useSimpleLocale } from '@vh5-core/composables';
 
 const i18n = createI18n({
   globalInjection: true,
   legacy: false,
-  locale: "",
+  locale: '',
   messages: {},
 });
 
-const modules = import.meta.glob("./langs/**/*.json");
+const modules = import.meta.glob('./langs/**/*.json');
 
 const { setSimpleLocale } = useSimpleLocale();
 
-const localesMap = loadLocalesMapFromDir(/\.\/langs\/([^/]+)\/(.*)\.json$/, modules);
+const localesMap = loadLocalesMapFromDir(
+  /\.\/langs\/([^/]+)\/(.*)\.json$/,
+  modules,
+);
 let loadMessages: LoadMessageFn;
 
 /**
@@ -93,11 +96,11 @@ function loadLocalesMapFromDir(
 function setI18nLanguage(locale: SupportedLanguagesType) {
   i18n.global.locale.value = locale as Locale;
 
-  document?.querySelector("html")?.setAttribute("lang", locale);
+  document?.querySelector('html')?.setAttribute('lang', locale);
 }
 
 async function setupI18n(app: App, options: LocaleSetupOptions = {}) {
-  const { defaultLocale = "zh-CN" } = options;
+  const { defaultLocale = 'zh-CN' } = options;
   // app可以自行扩展一些第三方库和组件库的国际化
   loadMessages = options.loadMessages || (async () => ({}));
   app.use(i18n);
@@ -105,8 +108,10 @@ async function setupI18n(app: App, options: LocaleSetupOptions = {}) {
 
   // 在控制台打印警告
   i18n.global.setMissingHandler((locale, key) => {
-    if (options.missingWarn && key.includes(".")) {
-      console.warn(`[intlify] Not found '${key}' key in '${locale}' locale messages.`);
+    if (options.missingWarn && key.includes('.')) {
+      console.warn(
+        `[intlify] Not found '${key}' key in '${locale}' locale messages.`,
+      );
     }
   });
 }
@@ -133,4 +138,10 @@ async function loadLocaleMessages(lang: SupportedLanguagesType) {
   return setI18nLanguage(lang);
 }
 
-export { i18n, loadLocaleMessages, loadLocalesMap, loadLocalesMapFromDir, setupI18n };
+export {
+  i18n,
+  loadLocaleMessages,
+  loadLocalesMap,
+  loadLocalesMapFromDir,
+  setupI18n,
+};

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { getProductList } from "@/api/product";
-import { to } from "@vh5/utils";
+import { to } from '@vh5/utils';
+
+import { getProductList } from '@/api/product';
 
 const router = useRouter();
 
@@ -9,7 +10,7 @@ const list = ref<any[]>([]);
 onMounted(async () => {
   const [err, data] = await to(getProductList());
   if (err) {
-    console.error("获取商品列表失败", err);
+    console.error('获取商品列表失败', err);
     return;
   }
   if (data.code === 0) {
@@ -18,7 +19,7 @@ onMounted(async () => {
 });
 
 const toDetails = (id: number) => {
-  router.push({ path: "/details", query: { id } });
+  router.push({ path: '/details', query: { id } });
 };
 </script>
 

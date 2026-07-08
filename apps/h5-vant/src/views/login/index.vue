@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import router from "@/router";
-import { useUserStore } from "@/stores/user";
+import router from '@/router';
+import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore();
 const loading = ref(false);
 const formData = reactive({
-  name: "user",
-  pwd: "123456",
+  name: 'user',
+  pwd: '123456',
 });
 
 async function submit() {
   if (!formData.name || !formData.pwd) {
-    showToast("请输入用户名和密码");
+    showToast('请输入用户名和密码');
     return;
   }
   loading.value = true;
   try {
     await userStore.login(formData.name, formData.pwd);
-    showToast("登录成功");
-    router.push({ path: "/mine" });
+    showToast('登录成功');
+    router.push({ path: '/mine' });
   } catch (error: any) {
-    showToast(error.message || "登录失败");
+    showToast(error.message || '登录失败');
   } finally {
     loading.value = false;
   }
@@ -29,7 +29,7 @@ async function submit() {
 
 <template>
   <section>
-    <van-form ref="formRef">
+    <van-form>
       <van-cell-group inset>
         <van-field
           v-model="formData.name"
@@ -48,7 +48,9 @@ async function submit() {
         />
       </van-cell-group>
       <div class="p-4">
-        <van-button block type="primary" :loading="loading" @click="submit"> 登录 </van-button>
+        <van-button block type="primary" :loading="loading" @click="submit">
+          登录
+        </van-button>
       </div>
     </van-form>
   </section>

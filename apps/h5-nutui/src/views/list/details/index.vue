@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import { to } from '@vh5/utils';
+
+import { getProductDetail } from '@/api/product';
+
+const router = useRouter();
+const page = ref(1);
+
+const details = reactive<any>({ data: {} });
+
+watch(
+  () => router.currentRoute.value.query.id,
+  async (id) => {
+    if (!id) return;
+    const [err, data] = await to(getProductDetail(String(id)));
+    if (err) {
+      console.error('获取商品详情失败', err);
+      return;
+    }
+    if (data.code === 0) {
+      details.data = data.data;
+    }
+  },
+  { immediate: true },
+);
+</script>
+
 <template>
   <nut-swiper
     :init-page="page"
@@ -24,29 +51,3 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { getProductDetail } from "@/api/product";
-import { to } from "@vh5/utils";
-
-const router = useRouter();
-const page = ref(1);
-
-const details = reactive<any>({ data: {} });
-
-watch(
-  () => router.currentRoute.value.query.id,
-  async (id) => {
-    if (!id) return;
-    const [err, data] = await to(getProductDetail(String(id)));
-    if (err) {
-      console.error("获取商品详情失败", err);
-      return;
-    }
-    if (data.code === 0) {
-      details.data = data.data;
-    }
-  },
-  { immediate: true },
-);
-</script>

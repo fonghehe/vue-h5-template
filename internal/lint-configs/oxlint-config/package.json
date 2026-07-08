@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "stub": "pnpm exec tsdown"
+  },
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -16,12 +19,8 @@
       "import": "./dist/index.mjs"
     }
   },
-  "scripts": {
-    "stub": "pnpm exec tsdown"
-  },
   "dependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "catalog:",
-    "eslint-plugin-better-tailwindcss": "catalog:",
     "eslint-plugin-command": "catalog:",
     "oxlint": "catalog:"
   }

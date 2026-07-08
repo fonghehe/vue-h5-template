@@ -49,11 +49,11 @@ packages/
 
 ## 4. クイックリファレンス
 
-| 追加したいもの            | 置く場所                                                        |
-| ------------------------- | --------------------------------------------------------------- |
-| 新しいページ              | `packages/features/<feature>/src/views/`                        |
+| 追加したいもの | 置く場所 |
+| --- | --- |
+| 新しいページ | `packages/features/<feature>/src/views/` |
 | 新しい API エンドポイント | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
-| 新しい Pinia Store        | `packages/features/<feature>/src/store.ts`                      |
-| 新しい共有 Composable     | `packages/@core/composables/src/`                               |
-| 新しいロケール文字列      | `packages/features/<feature>/src/locales/<lang>.json`           |
-| 新しいグローバルスタイル  | `packages/styles/src/global/`                                   |
+| 新しい Pinia Store | `packages/features/<feature>/src/store.ts` |
+| 新しい共有 Composable | `packages/@core/composables/src/` |
+| 新しいロケール文字列 | `packages/features/<feature>/src/locales/<lang>.json` |
+| 新しいグローバルスタイル | `packages/styles/src/global/` |

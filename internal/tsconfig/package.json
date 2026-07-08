@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
+  "type": "module",
   "files": [
     "base.json",
     "library.json",
@@ -10,7 +11,6 @@
     "web-app.json",
     "web.json"
   ],
-  "type": "module",
   "dependencies": {
     "vite": "catalog:"
   }

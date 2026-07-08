@@ -2,11 +2,15 @@
   "name": "@vh5-core/design",
   "version": "1.0.0",
   "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm vite build",
+    "prepublishOnly": "npm run build"
+  },
   "files": [
     "dist",
     "src"
   ],
-  "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "exports": {
@@ -26,9 +30,5 @@
         "default": "./dist/index.mjs"
       }
     }
-  },
-  "scripts": {
-    "build": "pnpm vite build",
-    "prepublishOnly": "npm run build"
   }
 }

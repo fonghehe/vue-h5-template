@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { showToast } from "@nutui/nutui";
-import { Dongdong, Heart, Star } from "@nutui/icons-vue";
+import { Dongdong, Heart, Star } from '@nutui/icons-vue';
+import { showToast } from '@nutui/nutui';
 
-import { t } from "@/locales";
+import { t } from '@/locales';
 
 const showNutToast = () => {
-  showToast.text(t("app.toastDemo"));
+  showToast.text(t('app.toastDemo'));
 };
 
 const switchValue = ref(false);
-const inputValue = ref("");
-const radioValue = ref("1");
+const inputValue = ref('');
+const radioValue = ref('1');
 const checkboxValue = ref(false);
 const rate = ref(3);
 const progress = ref(68);
@@ -24,12 +24,14 @@ const stepperValue = ref(1);
     <section class="mb-4">
       <span class="inline-block mb-3 text-16px font-600">Button 按钮</span>
       <div class="flex flex-wrap gap-2">
-        <nut-button type="primary" @click="showNutToast">{{ t("app.buttonPrimary") }}</nut-button>
-        <nut-button type="info">{{ t("app.buttonInfo") }}</nut-button>
-        <nut-button type="default">{{ t("app.buttonDefault") }}</nut-button>
-        <nut-button type="danger">{{ t("app.buttonDanger") }}</nut-button>
-        <nut-button type="warning">{{ t("app.buttonWarning") }}</nut-button>
-        <nut-button type="success">{{ t("app.buttonSuccess") }}</nut-button>
+        <nut-button type="primary" @click="showNutToast">
+          {{ t('app.buttonPrimary') }}
+        </nut-button>
+        <nut-button type="info">{{ t('app.buttonInfo') }}</nut-button>
+        <nut-button type="default">{{ t('app.buttonDefault') }}</nut-button>
+        <nut-button type="danger">{{ t('app.buttonDanger') }}</nut-button>
+        <nut-button type="warning">{{ t('app.buttonWarning') }}</nut-button>
+        <nut-button type="success">{{ t('app.buttonSuccess') }}</nut-button>
       </div>
       <div class="flex flex-wrap gap-2 mt-2">
         <nut-button type="primary" plain>Plain</nut-button>
@@ -101,7 +103,9 @@ const stepperValue = ref(1);
 
     <!-- Stepper -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">InputNumber 步进器</span>
+      <span class="inline-block mb-3 text-16px font-600"
+        >InputNumber 步进器</span
+      >
       <nut-input-number v-model="stepperValue" />
     </section>
 

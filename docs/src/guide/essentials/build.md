@@ -37,7 +37,7 @@ The project includes a GitHub Actions workflow that automatically builds and dep
 on:
   push:
     branches: [main]
-    paths: ["docs/**"]
+    paths: ['docs/**']
 ```
 
 Trigger condition: push to `main` with changes under `docs/**`, or manual `workflow_dispatch`.

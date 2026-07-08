@@ -3,19 +3,19 @@
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.side-content[data-side="top"] {
+.side-content[data-side='top'] {
   animation-name: slide-up;
 }
 
-.side-content[data-side="bottom"] {
+.side-content[data-side='bottom'] {
   animation-name: slide-down;
 }
 
-.side-content[data-side="left"] {
+.side-content[data-side='left'] {
   animation-name: slide-left;
 }
 
-.side-content[data-side="right"] {
+.side-content[data-side='right'] {
   animation-name: slide-right;
 }
 

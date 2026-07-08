@@ -5,10 +5,10 @@
 `packages/styles` 提供全局基础样式和各 UI 库的样式入口：
 
 ```ts
-import "@vh5/styles/global"; // 全局基础样式（CSS Reset + 公共组件样式）
-import "@vh5/styles/nutui"; // NutUI 主题样式（可选）
-import "@vh5/styles/vant"; // Vant 主题样式（可选）
-import "@vh5/styles/varlet"; // Varlet 主题样式（可选）
+import '@vh5/styles/global'; // 全局基础样式（CSS Reset + 公共组件样式）
+import '@vh5/styles/nutui'; // NutUI 主题样式（可选）
+import '@vh5/styles/vant'; // Vant 主题样式（可选）
+import '@vh5/styles/varlet'; // Varlet 主题样式（可选）
 ```
 
 所有应用在 `bootstrap.ts` 中统一引入 `@vh5/styles/global`。
@@ -22,13 +22,11 @@ import "@vh5/styles/varlet"; // Varlet 主题样式（可选）
 - **组件 JS + CSS**：通过 `VantResolver({ importStyle: true })`（默认值）完全按需加载，无需 `app.use(Vant)` 全量注册
 - **不额外导入** `vant/lib/index.css`，由 Resolver 统一管理每个组件的 CSS 注入顺序
 
-> **为什么不能同时导入 `vant/lib/index.css` 和使用 Resolver 按需注入？**
-> 全量 CSS 和按需 CSS 会导致同一组件的样式被注入两次，且第二次（按需）的 Popup CSS 顺序排在 Toast CSS 之后，造成白色背景覆盖深色 Toast 背景。
-> 正确做法：只用 Resolver 按需注入，不额外引入全量 CSS。
+> **为什么不能同时导入 `vant/lib/index.css` 和使用 Resolver 按需注入？** 全量 CSS 和按需 CSS 会导致同一组件的样式被注入两次，且第二次（按需）的 Popup CSS 顺序排在 Toast CSS 之后，造成白色背景覆盖深色 Toast 背景。正确做法：只用 Resolver 按需注入，不额外引入全量 CSS。
 
 ```ts
 // bootstrap.ts（vant）
-import "@vh5/styles/global";
+import '@vh5/styles/global';
 // ✅ 不导入 vant/lib/index.css，组件 CSS 由 VantResolver 按需注入
 // ❌ 不使用 app.use(Vant) 全量注册
 ```
@@ -40,8 +38,8 @@ import "@vh5/styles/global";
 
 ```ts
 // 在使用 Snackbar 的组件文件中
-import { Snackbar } from "@varlet/ui";
-import "@varlet/ui/es/snackbar/style/index.mjs"; // 手动导入 Snackbar CSS
+import { Snackbar } from '@varlet/ui';
+import '@varlet/ui/es/snackbar/style/index.mjs'; // 手动导入 Snackbar CSS
 ```
 
 ### NutUI
@@ -51,10 +49,10 @@ import "@varlet/ui/es/snackbar/style/index.mjs"; // 手动导入 Snackbar CSS
 
 ```ts
 // bootstrap.ts（nutui）
-import "@nutui/nutui/dist/packages/toast/style/css";
-import "@nutui/nutui/dist/packages/notify/style/css";
-import "@nutui/nutui/dist/packages/dialog/style/css";
-import "@nutui/nutui/dist/packages/imagepreview/style/css";
+import '@nutui/nutui/dist/packages/toast/style/css';
+import '@nutui/nutui/dist/packages/notify/style/css';
+import '@nutui/nutui/dist/packages/dialog/style/css';
+import '@nutui/nutui/dist/packages/imagepreview/style/css';
 ```
 
 ## NutUI SCSS 变量
