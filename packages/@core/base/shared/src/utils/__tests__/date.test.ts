@@ -111,10 +111,14 @@ describe('dateUtils', () => {
   // getSystemTimezone
   // ===============================
   describe('getSystemTimezone', () => {
-    it('should return a valid IANA timezone string', () => {
+    it('should return a valid IANA timezone identifier', () => {
       const tz = getSystemTimezone();
       expect(typeof tz).toBe('string');
-      expect(tz).toMatch(/^[A-Z]+\/[A-Z_]+/i);
+      expect(tz.length).toBeGreaterThan(0);
+      // IANA identifiers are either a top-level zone ("UTC", "GMT") or an
+      // "Area/City" pair. CI runners report the bare "UTC", so a slash cannot
+      // be required here.
+      expect(tz).toMatch(/^(?:UTC|GMT|[A-Za-z_]+(?:\/[A-Za-z0-9_+-]+)+)$/);
     });
   });
 

@@ -38,7 +38,7 @@
     "test:e2e:nutui": "cross-env E2E_APP=nutui playwright test",
     "test:e2e:varlet": "cross-env E2E_APP=varlet playwright test",
     "typecheck": "pnpm -r --if-present run type-check",
-    "version": "pnpm exec changeset version && pnpm install --no-frozen-lockfile",
+    "version-packages": "pnpm exec changeset version && pnpm install --no-frozen-lockfile",
     "catalog": "pnpm dlx codemod pnpm/catalog"
   },
   "devDependencies": {

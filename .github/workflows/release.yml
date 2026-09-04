@@ -30,7 +30,14 @@ jobs:
       - uses: changesets/action@v1
         with:
           publish: pnpm release
-          version: pnpm version
+          # `pnpm version` is a builtin pnpm command (it bumps package.json), so the
+          # changesets script must not be named `version` or the action calls the wrong thing.
+          version: pnpm version-packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # setup-node writes the auth token it finds in NODE_AUTH_TOKEN, not NPM_TOKEN.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # The repo .npmrc pins npmmirror to speed up installs. Publishing must go to
+          # the public registry, and env config outranks the project .npmrc.
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org
