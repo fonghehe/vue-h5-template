@@ -14,7 +14,38 @@ vi.mock('@/api/user', () => ({
 describe('user store', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+  });
+
+  it('does not fetch user data without a session', async () => {
+    const store = useUserStore();
+    await expect(store.fetchUserInfo()).resolves.toBeNull();
+    expect(fetchUserInfoApi).not.toHaveBeenCalled();
+  });
+
+  it('updates the current profile after an authenticated fetch', async () => {
+    const profile = {
+      avatar: '',
+      id: 1,
+      realName: 'Updated',
+      roles: ['user'],
+      username: 'user',
+    };
+    vi.mocked(fetchUserInfoApi).mockResolvedValue(profile);
+    const store = useUserStore();
+    store.setToken('token');
+    await expect(store.fetchUserInfo()).resolves.toEqual(profile);
+    expect(store.getUserInfo).toEqual(profile);
+    expect(store.token).toBe('token');
+  });
+
+  it('does not create a session when login fails', async () => {
+    const failure = new Error('Invalid credentials');
+    vi.mocked(loginApi).mockRejectedValue(failure);
+    const store = useUserStore();
+    await expect(store.login('user', 'wrong')).rejects.toBe(failure);
+    expect(store.isLoggedIn).toBe(false);
+    expect(store.info).toEqual({});
   });
 
   it('stores client auth state after login', async () => {

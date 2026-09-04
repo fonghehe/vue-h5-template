@@ -6,6 +6,7 @@
   "license": "MIT",
   "author": "",
   "scripts": {
+    "type-check": "tsc --noEmit",
     "build": "nitro build",
     "start": "nitro dev"
   },

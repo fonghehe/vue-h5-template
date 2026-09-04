@@ -5,7 +5,7 @@ import type {
   StreamingChatOptions,
 } from './types';
 
-import { computed, readonly, ref } from 'vue';
+import { computed, reactive, readonly, ref } from 'vue';
 
 const defaultCreateId = () =>
   globalThis.crypto?.randomUUID?.() ??
@@ -17,7 +17,9 @@ export function useStreamingChat(
 ) {
   const createId = options.createId ?? defaultCreateId;
   const now = options.now ?? Date.now;
-  const messages = ref<ChatMessage[]>([...(options.initialMessages ?? [])]);
+  const messages = ref<ChatMessage[]>(
+    (options.initialMessages ?? []).map((message) => ({ ...message })),
+  );
   const status = ref<ChatStatus>('idle');
   const error = ref<Error>();
   let controller: AbortController | undefined;
@@ -28,22 +30,29 @@ export function useStreamingChat(
 
   async function generate() {
     controller?.abort();
-    controller = new AbortController();
+    const currentController = new AbortController();
+    controller = currentController;
     error.value = undefined;
     status.value = 'submitting';
-    const assistant: ChatMessage = {
+    const assistant = reactive<ChatMessage>({
       content: '',
       createdAt: now(),
       id: createId(),
       role: 'assistant',
-    };
+    });
     messages.value.push(assistant);
 
     try {
       const history = messages.value.slice(0, -1);
       for await (const chunk of provider.chat(history, {
-        signal: controller.signal,
+        signal: currentController.signal,
       })) {
+        // A cancelled provider may still yield or reject after a new request starts.
+        if (
+          controller !== currentController ||
+          currentController.signal.aborted
+        )
+          return;
         if (chunk.type === 'start') status.value = 'streaming';
         if (chunk.type === 'delta') {
           status.value = 'streaming';
@@ -51,9 +60,10 @@ export function useStreamingChat(
         }
         if (chunk.type === 'error') throw new Error(chunk.message);
       }
-      status.value = 'idle';
+      if (controller === currentController) status.value = 'idle';
     } catch (caughtError) {
-      if (controller.signal.aborted) {
+      if (controller !== currentController) return;
+      if (currentController.signal.aborted) {
         status.value = 'idle';
         return;
       }
@@ -61,7 +71,7 @@ export function useStreamingChat(
         caughtError instanceof Error ? caughtError : new Error('Chat failed');
       status.value = 'error';
     } finally {
-      controller = undefined;
+      if (controller === currentController) controller = undefined;
     }
   }
 
@@ -95,7 +105,11 @@ export function useStreamingChat(
   }
 
   function abort() {
-    controller?.abort();
+    const activeController = controller;
+    if (!activeController) return;
+    controller = undefined;
+    status.value = 'idle';
+    activeController.abort();
   }
 
   function clear() {

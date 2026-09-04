@@ -14,7 +14,7 @@ Vant は 5778 使用中なら失敗します。別ポートは `VITE_PORT=5788 p
 
 ## 型チェック
 
-古い `pnpm check:type` ではなく `pnpm typecheck`。共有 UI/API/AI/Vite 設定を個別チェックし、Vant は app と node 設定の両方を検証。自動 import 宣言は Vite 生成、ルートは手書きです。
+古い `pnpm check:type` ではなく `pnpm typecheck` を使います。共有パッケージ、Mock、ツール、3 アプリのソースと `tsconfig.node.json`、ルートのテスト設定と E2E が対象です。自動 import 宣言は Vite 生成、ルートは手書きです。
 
 ## 機能追加・配信
 

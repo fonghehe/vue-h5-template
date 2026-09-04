@@ -10,7 +10,9 @@ Vant 5778 佔用會報錯，可用 `VITE_PORT=5788 pnpm dev:vant`。Mock 出事�
 
 ## 頂欄同型別
 
-導入 `@vh5/styles/vant`，頂欄變數放 `.van-nav-bar`，避免 root 樣式覆蓋。用 `pnpm typecheck`，唔係舊 `pnpm check:type`。UI/API/AI/Vite config 獨立檢查，Vant 包 node 設定；路由仍然手寫。
+導入 `@vh5/styles/vant`，頂欄變數放喺 `.van-nav-bar`，避免 root 樣式覆蓋。
+
+用 `pnpm typecheck`，唔係舊 `pnpm check:type`。會檢查共享套件、Mock、工具、三個應用源碼同 `tsconfig.node.json`，仲有根測試設定同 E2E。自動 import 宣告由 Vite 生成，路由仍然手寫。
 
 ## 新增同部署
 

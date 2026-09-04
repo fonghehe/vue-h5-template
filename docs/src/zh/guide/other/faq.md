@@ -14,7 +14,7 @@
 
 ## 类型与修改
 
-运行 `pnpm typecheck`，不是旧 `pnpm check:type`。共享 UI/API/AI/Vite 配置都有独立检查，Vant 同时检查应用及 `tsconfig.node.json`。Vite 生成自动导入声明，路由仍然手写。
+执行 `pnpm typecheck`，不要使用已废弃的 `pnpm check:type`。它检查共享包、Mock 后端、工具及三个应用（源码和 `tsconfig.node.json`），也检查根测试配置和 E2E 代码。自动导入声明由 Vite 生成，路由仍手写。
 
 ## 新增功能与部署
 

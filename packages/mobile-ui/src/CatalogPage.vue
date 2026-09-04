@@ -10,8 +10,10 @@ import { usePullToRefresh } from '@vh5-core/composables';
 import { useQuery } from '@tanstack/vue-query';
 
 import { useCartStore } from './cart';
+import SvgIcon from './SvgIcon.vue';
 
 import './surface.css';
+import './commerce.css';
 const { t, locale } = useI18n();
 const cart = useCartStore();
 const products = useQuery({
@@ -29,7 +31,7 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
 </script>
 <template>
   <section
-    class="product-page catalog-page"
+    class="product-page commerce-page catalog-page"
     @touchstart.passive="onTouchStart"
     @touchmove.passive="onTouchMove"
     @touchend="onTouchEnd"
@@ -39,12 +41,23 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
         <span class="eyebrow">{{ t('mobile.collection') }}</span>
         <h1>{{ t('mobile.products') }}</h1>
       </div>
-      <RouterLink class="cart-link" to="/cart">
-        <span>{{ t('mobile.cart') }}</span
-        ><strong>{{ t('mobile.itemCount', { count: cart.itemCount }) }}</strong>
+      <RouterLink
+        class="cart-link"
+        to="/cart"
+        :aria-label="t('mobile.openCart', { count: cart.itemCount })"
+        data-testid="catalog-cart"
+      >
+        <SvgIcon name="shopping-bag" :size="22" />
+        <span class="cart-count" aria-hidden="true">{{
+          cart.itemCount > 99 ? '99+' : cart.itemCount
+        }}</span>
       </RouterLink>
     </header>
     <p class="muted catalog-subtitle">{{ t('mobile.catalogDesc') }}</p>
+    <p v-if="notice" class="cart-notice" role="status">
+      <SvgIcon name="check" :size="16" />{{ t('mobile.added') }} ·
+      {{ t('mobile.itemCount', { count: cart.itemCount }) }}
+    </p>
     <div
       v-if="distance > 0 || refreshing"
       class="pull-indicator"
@@ -89,60 +102,75 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
           </RouterLink>
           <p class="product-description">{{ item.shopDesc }}</p>
           <span class="delivery">{{ item.delivery }}</span>
-          <div class="product-footer">
-            <div class="price-group">
-              <strong>¥{{ item.price }}</strong
-              ><small>{{ t('mobile.memberPrice') }} ¥{{ item.vipPrice }}</small>
-            </div>
-            <button
-              class="add-button"
-              :aria-label="t('mobile.addCart')"
-              @click="
-                cart.add(item);
-                notice = true;
-              "
-            >
-              <span aria-hidden="true">＋</span>
-            </button>
+        </div>
+        <div class="product-footer">
+          <div class="price-group">
+            <strong>¥{{ item.price }}</strong
+            ><small>{{ t('mobile.memberPrice') }} ¥{{ item.vipPrice }}</small>
           </div>
+          <button
+            class="add-button"
+            :aria-label="t('mobile.addCart')"
+            @click="
+              cart.add(item);
+              notice = true;
+            "
+          >
+            <SvgIcon name="cart-add" :size="18" /><span>{{
+              t('mobile.addShort')
+            }}</span>
+          </button>
         </div>
       </article>
     </div>
-    <p v-if="notice" class="cart-notice" role="status">
-      {{ t('mobile.added') }} ·
-      {{ t('mobile.itemCount', { count: cart.itemCount }) }}
-    </p>
   </section>
 </template>
 <style scoped>
 .catalog-header {
   display: flex;
   gap: 16px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
 .catalog-header h1 {
   margin-bottom: 0;
+  font-weight: 750;
 }
 
 .catalog-subtitle {
-  margin: 14px 0 22px;
+  margin: 12px 0 24px;
   font-size: 14px;
 }
 
 .cart-link {
-  display: grid;
-  gap: 4px;
-  min-height: 44px;
-  font-size: 12px;
+  display: inline-flex;
+  flex: none;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 8px 10px 8px 14px;
+  margin-top: 2px;
   color: var(--app-primary-deep);
-  text-align: right;
   text-decoration: none;
+  background: var(--app-surface-raised);
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgb(var(--app-primary-rgb) / 6%);
 }
 
-.cart-link strong {
-  font-size: 14px;
+.cart-count {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 5px;
+  font-size: 12px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  background: var(--app-primary-soft);
+  border-radius: 50%;
 }
 
 .catalog-grid {
@@ -153,12 +181,13 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
 .product-card {
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
-  gap: 16px;
+  gap: 14px 16px;
   align-items: start;
   padding: 16px;
   background: var(--app-surface-raised);
   border: 1px solid var(--app-border);
-  border-radius: 18px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgb(var(--app-primary-rgb) / 3%);
 }
 
 .product-image {
@@ -213,10 +242,12 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
 
 .product-footer {
   display: flex;
+  grid-column: 1 / -1;
   gap: 8px;
   align-items: center;
   justify-content: space-between;
-  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--app-border);
 }
 
 .price-group {
@@ -227,27 +258,40 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
 }
 
 .price-group strong {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
   color: var(--app-primary-deep);
 }
 
 .price-group small {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--app-text-muted);
 }
 
 .add-button {
-  display: grid;
-  flex: 0 0 44px;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  font-size: 24px;
-  color: #fff;
+  display: inline-flex;
+  flex: none;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  min-height: 44px;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--app-primary-deep);
   cursor: pointer;
-  background: var(--app-primary);
-  border: 0;
-  border-radius: 14px;
+  background: var(--app-primary-soft);
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+}
+
+.add-button:hover {
+  color: #fff;
+  background: var(--app-primary-deep);
+  border-color: var(--app-primary-deep);
 }
 
 .pull-indicator {
@@ -258,8 +302,15 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
 }
 
 .cart-notice {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 10px 12px;
+  margin: -8px 0 16px;
   font-size: 13px;
   color: var(--app-primary-deep);
+  background: var(--app-primary-soft);
+  border-radius: 12px;
 }
 
 @media (max-width: 359px) {

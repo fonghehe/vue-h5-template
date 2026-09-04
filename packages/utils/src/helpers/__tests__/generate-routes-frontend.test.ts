@@ -34,7 +34,7 @@ const mockRoutes = [
     meta: { hideInMenu: false },
     path: '/profile',
   },
-] as RouteRecordRaw[];
+] as [RouteRecordRaw, RouteRecordRaw, RouteRecordRaw];
 
 describe('hasAuthority', () => {
   it('should return true if there is no authority defined', () => {

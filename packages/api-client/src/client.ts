@@ -94,7 +94,10 @@ function normalizeAxiosError(error: unknown): ApiError {
   const axiosError = error as AxiosError<ApiResponse<unknown>>;
   const status = axiosError.response?.status;
   const requestId = requestIdFrom(axiosError.config);
-  if (axiosError.code === AxiosError.ETIMEDOUT) {
+  if (
+    axiosError.code === AxiosError.ETIMEDOUT ||
+    axiosError.code === AxiosError.ECONNABORTED
+  ) {
     return new ApiError('Request timed out. Please try again.', {
       cause: error,
       code: axiosError.code,

@@ -11,14 +11,16 @@ Object.defineProperty(globalThis, 'ResizeObserver', {
   value: ResizeObserverStub,
 });
 
-Object.defineProperty(window, 'matchMedia', {
-  configurable: true,
-  value: vi.fn().mockImplementation((query: string) => ({
-    addEventListener: vi.fn(),
-    matches: false,
-    media: query,
-    removeEventListener: vi.fn(),
-  })),
-});
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      addEventListener: vi.fn(),
+      matches: false,
+      media: query,
+      removeEventListener: vi.fn(),
+    })),
+  });
 
-Element.prototype.scrollTo = vi.fn();
+  Element.prototype.scrollTo = vi.fn();
+}

@@ -18,6 +18,18 @@ pnpm dev:services:varlet
 
 ## 配套服务
 
+这两个后端是独立的 Git 仓库，并不包含在前端项目中。请先克隆到自己的工作目录：
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI 流式服务（端口 8001）
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — 业务 API 服务（端口 8002）
+
+```bash
+git clone https://github.com/fonghehe/vue-h5-template-ai-service.git
+git clone https://github.com/fonghehe/vue-h5-template-business-service.git
+```
+
+克隆后，请按各仓库 README 安装运行环境。下面的启动命令需要在各自仓库目录中、使用独立终端执行。
+
 `dev:services:<ui>` 加载应用的 `.env.services`，不启动 Nitro。先根据两个后端仓库各自的 `.env.example` 完成配置，再分别启动：
 
 ```bash

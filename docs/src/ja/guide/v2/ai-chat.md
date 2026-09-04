@@ -8,6 +8,13 @@ Mock も実際に chunk を順次送ります。Markdown は DOMPurify でサニ
 
 ## Companion AI service を使う
 
+ソースリポジトリ：
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI ストリーミングサービス（ポート 8001）
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — 業務 API サービス（ポート 8002）
+
+クローンと設定の手順は[バックエンドモード](../essentials/server.md)を参照してください。
+
 `vue-h5-template-ai-service` を既定の `AI_PROVIDER=mock` でポート `8001` に起動し、`pnpm dev:services:vant` を実行します。Vite は `/api/ai/chat` を SSE のまま転送し、ログイン済みの場合は `FetchChatProvider` が Business Service の Bearer Token を付与します。両サービスの JWT 設定を同一にすれば `AI_AUTH_REQUIRED=true` も利用できます。
 
 実モデルを使う場合、`AI_PROVIDER=openai-compatible`、`AI_BASE_URL`、`AI_API_KEY`、`AI_MODEL` は **AI service** 側だけに設定します。アプリの `VITE_*` に秘密情報を入れず、ブラウザー契約は変更しません。

@@ -12,12 +12,18 @@
   --nut-primary-color: var(--app-primary);
   --nut-primary-color-start: var(--app-primary);
   --nut-primary-color-end: #ff654c;
+  --nut-tabbar-active-color: var(--app-primary);
+}
+
+/* Keep header tokens local so late-loaded library defaults cannot win. */
+.nut-navbar {
   --nut-navbar-background: var(--app-primary);
   --nut-navbar-color: #fff;
   --nut-navbar-height: 54px;
   --nut-navbar-title-font: 16px;
   --nut-navbar-title-font-color: #fff;
-  --nut-tabbar-active-color: var(--app-primary);
+  --nut-cell-desc-color: #fff;
+  --nut-navbar-box-shadow: none;
 }
 
 body {

@@ -8,6 +8,13 @@ Mock 會真實逐個 Chunk 輸出。Markdown 一定要先經 DOMPurify；AI Key 
 
 ## 使用配套 AI Service
 
+源碼倉庫：
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI 串流服務（Port 8001）
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — 業務 API 服務（Port 8002）
+
+Clone 命令同設定步驟見[後端模式](../essentials/server.md)。
+
 先用預設 `AI_PROVIDER=mock` 喺 `8001` 啟動 `vue-h5-template-ai-service`，再執行 `pnpm dev:services:vant`。Vite 會以串流方式轉發 `/api/ai/chat`；用戶已登入時，`FetchChatProvider` 亦會加上 Business Service 簽發嘅 Bearer Token。兩個服務使用相同 JWT 設定後，可以啟用 `AI_AUTH_REQUIRED=true`。
 
 使用真實模型時，只喺 **AI Service** 設定 `AI_PROVIDER=openai-compatible`、`AI_BASE_URL`、`AI_API_KEY` 同 `AI_MODEL`。唔好將秘密放入應用嘅 `VITE_*` 變數，瀏覽器契約唔需要改。

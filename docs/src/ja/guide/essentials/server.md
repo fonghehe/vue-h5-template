@@ -18,6 +18,18 @@ pnpm dev:services:varlet
 
 ## 連携サービス
 
+これらのバックエンドは独立した Git リポジトリで、フロントエンドには同梱されていません。任意の作業ディレクトリにクローンしてください。
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI ストリーミングサービス（ポート 8001）
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — 業務 API サービス（ポート 8002）
+
+```bash
+git clone https://github.com/fonghehe/vue-h5-template-ai-service.git
+git clone https://github.com/fonghehe/vue-h5-template-business-service.git
+```
+
+クローン後、各 README に従って実行環境を用意してください。以下の起動コマンドは、それぞれのリポジトリのディレクトリで、別々のターミナルから実行します。
+
 `dev:services:<ui>` は `.env.services` を読み込み、Nitro を起動しません。各バックエンドの `.env.example` を基に設定し、別々に起動します。
 
 ```bash

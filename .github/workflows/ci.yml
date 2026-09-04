@@ -28,7 +28,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Verify generated API types
         run: pnpm api:generate && git diff --exit-code -- packages/api-client/src/generated/schema.d.ts
-      - run: pnpm check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test:coverage
+      - run: pnpm build
 
   e2e:
     name: Mobile E2E

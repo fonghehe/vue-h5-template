@@ -4,6 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "type-check": "tsc --noEmit",
     "build": "pnpm vite build",
     "prepublishOnly": "npm run build"
   },

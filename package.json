@@ -37,7 +37,7 @@
     "test:e2e": "playwright test && pnpm run test:e2e:nutui && pnpm run test:e2e:varlet",
     "test:e2e:nutui": "cross-env E2E_APP=nutui playwright test",
     "test:e2e:varlet": "cross-env E2E_APP=varlet playwright test",
-    "typecheck": "pnpm -r --if-present run type-check",
+    "typecheck": "pnpm -r --if-present run type-check && pnpm exec vue-tsc --noEmit -p tsconfig.tools.json",
     "version-packages": "pnpm exec changeset version && pnpm install --no-frozen-lockfile",
     "catalog": "pnpm dlx codemod pnpm/catalog"
   },
@@ -61,6 +61,7 @@
     "cross-env": "catalog:",
     "eslint": "catalog:",
     "happy-dom": "catalog:",
+    "jsdom": "catalog:",
     "openapi-typescript": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",

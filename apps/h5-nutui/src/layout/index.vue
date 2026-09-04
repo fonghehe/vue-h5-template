@@ -3,7 +3,7 @@ import FloatingAiButton from '@vh5/mobile-ui/FloatingAiButton.vue';
 
 import { useNetworkStatus, useVisualViewport } from '@vh5-core/composables';
 
-import { Home, Horizontal, Location, My } from '@nutui/icons-vue';
+import { Home, Horizontal, Left, Location, My } from '@nutui/icons-vue';
 
 import { t } from '@/locales';
 
@@ -38,6 +38,18 @@ const shellStyle = computed(() => ({
 }));
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
+const contentRef = ref<HTMLElement>();
+// Vue Router resets the window; this mobile shell scrolls its own content.
+watch(
+  () => route.fullPath,
+  () => {
+    if (contentRef.value) {
+      contentRef.value.scrollTop = 0;
+      contentRef.value.scrollLeft = 0;
+    }
+  },
+  { flush: 'post' },
+);
 const navTitle = computed(() =>
   t(typeof route.meta.title === 'string' ? route.meta.title : 'app.home'),
 );
@@ -64,13 +76,26 @@ const goBack = () => {
       :title="navTitle"
       :left-show="!tabbarVisible"
       @click-back="goBack"
-    />
+    >
+      <template #left-show>
+        <button
+          class="header-back"
+          :aria-label="t('common.back')"
+          @click.stop="goBack"
+        >
+          <Left width="18px" height="18px" color="currentColor" />
+        </button>
+      </template>
+    </nut-navbar>
 
     <div v-if="!isOnline" class="offline-banner" role="status">
       {{ t('mobile.offlineBanner') }}
     </div>
 
-    <div class="app-content flex-1 min-h-0 overflow-hidden overflow-y-auto">
+    <div
+      ref="contentRef"
+      class="app-content flex-1 min-h-0 overflow-hidden overflow-y-auto"
+    >
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />
@@ -109,6 +134,24 @@ const goBack = () => {
 
 .nut-navbar {
   margin-bottom: 0;
+}
+
+.header-back {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  color: var(--nut-navbar-color, #fff);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+}
+
+.header-back:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: -4px;
 }
 
 .app-shell,

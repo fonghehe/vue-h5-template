@@ -16,6 +16,18 @@ pnpm dev:services:varlet
 
 `dev:services:<ui>` 載入 `.env.services` 並停用 Nitro。先依照兩個後端各自的 `.env.example` 設定，再分別執行：
 
+這兩個後端是獨立的 Git 儲存庫，並未包含在前端專案中。請先複製到自己的工作目錄：
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI 串流服務（連接埠 8001）
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — 業務 API 服務（連接埠 8002）
+
+```bash
+git clone https://github.com/fonghehe/vue-h5-template-ai-service.git
+git clone https://github.com/fonghehe/vue-h5-template-business-service.git
+```
+
+複製後，請依照各儲存庫 README 安裝執行環境。下方啟動命令須在各自的儲存庫目錄中，使用獨立終端機執行。
+
 ```bash
 # vue-h5-template-ai-service/
 uv sync

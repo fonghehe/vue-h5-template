@@ -1,5 +1,38 @@
 import { expect, test } from '@playwright/test';
 
+test('tab navigation and browser back reset the mobile content scroll', async ({
+  page,
+}) => {
+  await page.goto('/list');
+  await expect(
+    page.getByRole('button', { exact: true, name: 'Add to cart' }).first(),
+  ).toBeVisible();
+  const content = page.locator('.app-content');
+  await content.evaluate((element) => {
+    element.scrollTop = 250;
+  });
+  await expect
+    .poll(() => content.evaluate((element) => element.scrollTop))
+    .toBeGreaterThan(0);
+  // Fixed tabs avoid Playwright scrolling the content to reach a top-of-page link.
+  await page.getByTestId('tab-examples').first().click();
+  await expect(page).toHaveURL(/\/examples$/u);
+  await expect
+    .poll(() => content.evaluate((element) => element.scrollTop))
+    .toBe(0);
+  await content.evaluate((element) => {
+    element.scrollTop = 250;
+  });
+  await expect
+    .poll(() => content.evaluate((element) => element.scrollTop))
+    .toBeGreaterThan(0);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/list$/u);
+  await expect
+    .poll(() => content.evaluate((element) => element.scrollTop))
+    .toBe(0);
+});
+
 test('Vant header follows the theme even when library styles load later', async ({
   page,
 }) => {
@@ -103,10 +136,86 @@ test('product can be added to the persisted cart', async ({ page }) => {
     .getByRole('button', { exact: true, name: 'Add to cart' })
     .first()
     .click();
-  await expect(page.getByText('1 item(s)', { exact: true })).toBeVisible();
-  await expect(page.getByText('Shopping cart')).toBeVisible();
-  await page.getByText('Shopping cart').click();
+  await expect(page.getByTestId('catalog-cart')).toHaveAccessibleName(
+    'Shopping cart, 1 item(s)',
+  );
+  await page.getByTestId('catalog-cart').click();
 
   await expect(page).toHaveURL(/\/cart$/u);
   await expect(page.getByText('Checkout (1)')).toBeVisible();
+});
+
+test('cart checkout supports demo payment, clears persistence and guards empty checkout', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/list');
+  await page
+    .getByRole('button', { exact: true, name: 'Add to cart' })
+    .first()
+    .click();
+  await page.getByTestId('catalog-cart').click();
+  await page.getByRole('button', { name: 'Increase quantity' }).click();
+  await expect(page.getByRole('spinbutton', { name: 'Quantity' })).toHaveValue(
+    '2',
+  );
+  await page.screenshot({ path: testInfo.outputPath('cart.png') });
+  await page.getByRole('button', { name: 'Checkout (2)', exact: true }).click();
+  await expect(page).toHaveURL(/\/payment$/u);
+  await expect(page.getByTestId('ai-entry')).toHaveCount(0);
+  await page.getByRole('radio', { name: 'Alipay', exact: true }).check();
+  await expect(
+    page.getByRole('radio', { name: 'Alipay', exact: true }),
+  ).toBeChecked();
+  await page.screenshot({ path: testInfo.outputPath('payment.png') });
+  await page.getByRole('button', { name: 'Confirm demo payment' }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Payment successful' }),
+  ).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath('payment-success.png') });
+  await page.getByRole('link', { name: 'Back to cart' }).click();
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { name: 'Your cart is empty' }),
+  ).toBeVisible();
+  await page.goto('/payment');
+  await expect(
+    page.getByRole('heading', { name: 'Nothing to check out' }),
+  ).toBeVisible();
+});
+
+test('commerce controls remain accessible at 320px and follow the selected locale', async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto('/list');
+  await page
+    .getByRole('button', { exact: true, name: 'Add to cart' })
+    .first()
+    .click();
+  await page.getByTestId('catalog-cart').click();
+  for (const control of ['Increase quantity', 'Decrease quantity']) {
+    const box = await page.getByRole('button', { name: control }).boundingBox();
+    expect(box?.width).toBeGreaterThanOrEqual(44);
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+  }
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({ path: testInfo.outputPath('cart-320.png') });
+  await page.goto('/member');
+  await page.getByRole('combobox').selectOption('ja-JP');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ja-JP');
+  await page.goto('/payment');
+  await expect(
+    page.getByRole('heading', { name: '支払い方法を選択' }),
+  ).toBeVisible();
+  await expect(page.getByRole('radio', { name: '銀行カード' })).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.screenshot({ path: testInfo.outputPath('payment-ja-320.png') });
 });

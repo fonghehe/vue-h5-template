@@ -58,4 +58,39 @@ vite.config.ts.*
 *.sln
 *.sw?
 .history
-.cursor
+
+# AI assistants: local memory, conversations and caches (never shared rules).
+**/.workbuddy/memory/
+**/.workbuddy/history/
+**/.workbuddy/logs/
+**/.workbuddy/cache/
+**/.claude/settings.local.json
+**/.claude/memory/
+**/.claude/projects/
+**/.claude/worktrees/
+**/.claude/sessions/
+CLAUDE.local.md
+**/.codex/auth.json
+**/.codex/history.jsonl
+**/.codex/sessions/
+**/.codex/memories/
+**/.codex/log/
+**/.codex/tmp/
+**/.codex/state_*.sqlite*
+**/.cursor/chats/
+**/.cursor/memory/
+**/.cursor/cache/
+**/.cursor/worktrees/
+**/.gemini/history/
+**/.gemini/tmp/
+**/.gemini/oauth_creds.json
+**/.gemini/google_accounts.json
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache*/
+**/.continue/sessions/
+**/.continue/index/
+**/.continue/logs/
+
+# Keep AGENTS.md, CLAUDE.md, GEMINI.md, .cursor/rules/, .claude/skills/,
+# .codex/skills/ and .github/copilot-instructions.md available to version control.

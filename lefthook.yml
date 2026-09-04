@@ -42,8 +42,8 @@
 #       runner: go run
 
 pre-commit:
-  # 串行执行（不设 parallel），避免与 check:type 同时运行导致低配机内存/CPU 瞬时飙升。
-  # lint 仅检查暂存文件并自动修复后回填，大幅降低负载；check:type 仍需全量。
+  # 串行执行，避免与 typecheck 同时运行导致低配机资源瞬时飙升。
+  # lint 检查暂存文件；typecheck 检查完整 workspace。
   jobs:
     - name: oxlint
       glob: '*.{js,jsx,ts,tsx,vue,cjs,mjs,cts,mts}'
@@ -62,7 +62,7 @@ pre-commit:
       run: pnpm exec stylelint --fix {staged_files}
       stage_fixed: true
     - name: checkType
-      run: pnpm check:type
+      run: pnpm typecheck
 
 post-merge:
   commands:

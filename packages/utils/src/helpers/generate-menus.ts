@@ -1,4 +1,4 @@
-import type { Router, RouteRecordRaw } from 'vue-router';
+import type { RouteMeta, Router, RouteRecordRaw } from 'vue-router';
 
 import type { MenuRecordRaw } from '@vh5-core/typings';
 
@@ -28,7 +28,7 @@ export function generateMenus(
           : undefined;
         const path =
           resolvedPath ?? (parent ? joinPath(parent, route.path) : route.path);
-        const meta = route.meta ?? {};
+        const meta: Partial<RouteMeta> = route.meta ?? {};
         const currentParents = parent ? [...parents, parent] : parents;
         return {
           badge: meta.badge as string | undefined,

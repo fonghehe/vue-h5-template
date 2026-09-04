@@ -25,6 +25,107 @@ function response(
 }
 
 describe('createApiClient', () => {
+  it.each([AxiosError.ETIMEDOUT, AxiosError.ECONNABORTED])(
+    'normalizes timeout %s and retains the request ID',
+    async (code) => {
+      const adapter: AxiosAdapter = async (config) => {
+        throw new AxiosError('timeout', code, config);
+      };
+      const client = createApiClient({ adapter });
+      await expect(
+        client.get('/slow', { headers: { 'X-Request-ID': 'trace-1' } }),
+      ).rejects.toMatchObject({
+        code,
+        kind: 'timeout',
+        requestId: 'trace-1',
+      });
+    },
+  );
+
+  it('normalizes network, HTTP and unexpected transport errors', async () => {
+    const onUnauthorized = vi.fn();
+    const failures: [Error, Partial<ApiError>][] = [
+      [new AxiosError('offline', AxiosError.ERR_NETWORK), { kind: 'network' }],
+      [new Error('unexpected'), { kind: 'unknown' }],
+    ];
+    for (const [failure, expected] of failures) {
+      const client = createApiClient({
+        adapter: vi.fn<AxiosAdapter>().mockRejectedValue(failure),
+        onUnauthorized,
+      });
+      await expect(client.get('/resource')).rejects.toMatchObject(expected);
+    }
+    const client = createApiClient({
+      adapter: async (config) => {
+        throw new AxiosError(
+          'Bad response',
+          AxiosError.ERR_BAD_RESPONSE,
+          config,
+          undefined,
+          response(config, { message: 'Service unavailable' }, 503),
+        );
+      },
+      onUnauthorized,
+    });
+    await expect(client.get('/resource')).rejects.toMatchObject({
+      kind: 'http',
+      status: 503,
+      message: 'Service unavailable',
+    });
+    expect(onUnauthorized).not.toHaveBeenCalled();
+  });
+
+  it('applies reconfiguration and never retains a previous session token', async () => {
+    let token: string | undefined = 'signed-in';
+    const adapter = vi.fn<AxiosAdapter>(async (config) =>
+      response(config, { code: 0, data: null, message: 'ok' }),
+    );
+    const client = createApiClient({
+      adapter,
+      getAccessToken: () => token,
+      generateRequestId: false,
+    });
+    await client.get('/user/info');
+    token = undefined;
+    client.configure({ baseURL: '/gateway', timeout: 500 });
+    await client.get('/user/info');
+    expect(adapter.mock.calls[0]?.[0].headers.get('Authorization')).toBe(
+      'Bearer signed-in',
+    );
+    const second = adapter.mock.calls[1]?.[0];
+    expect(second?.headers.has('Authorization')).toBe(false);
+    expect(second?.headers.has('X-Request-ID')).toBe(false);
+    expect(second?.baseURL).toBe('/gateway');
+    expect(second?.timeout).toBe(500);
+  });
+
+  it('supports typed write methods and delete without losing their payloads', async () => {
+    const adapter = vi.fn<AxiosAdapter>(async (config) =>
+      response(config, { code: 0, data: { updated: true }, message: 'ok' }),
+    );
+    const client = createApiClient({ adapter });
+    for (const method of ['post', 'put', 'patch'] as const) {
+      await expect(
+        client[method]('/resource', { title: 'Updated' }),
+      ).resolves.toEqual({ updated: true });
+    }
+    await client.delete('/resource');
+    expect(adapter.mock.calls.map(([config]) => config.method)).toEqual([
+      'post',
+      'put',
+      'patch',
+      'delete',
+    ]);
+    expect(
+      adapter.mock.calls
+        .slice(0, 3)
+        .every(
+          ([config]) => config.data === JSON.stringify({ title: 'Updated' }),
+        ),
+    ).toBe(true);
+    expect(adapter.mock.calls[3]?.[0].data).toBeUndefined();
+  });
+
   it('reads the current language on each request and respects an explicit override', async () => {
     let locale = 'en-US';
     const adapter = vi.fn<AxiosAdapter>(async (config) =>

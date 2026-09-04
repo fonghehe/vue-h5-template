@@ -6,4 +6,4 @@ API Client への移行、Vue Query への server state 移行、Route Meta と 
 
 ## 現在の実装範囲
 
-業務タブ・テーマ・HTTP 401 は共通です。`requiresAuth` 評価は Vant のみ、`authority` によるロール認可は未接続です。KeepAlive は条件付きで非キャッシュルートでは消えます。user/cart は本番も localStorage。自動 token 更新、サーバー同期カート、決済、アップロードは未実装です。[ルート](../essentials/route.md)、[状態](../essentials/state.md)、[配信](../essentials/build.md)を参照してください。
+業務タブ・テーマ・HTTP 401 は共通です。`requiresAuth` 評価は Vant のみ、`authority` によるロール認可は未接続です。カートと Query を含め、業務画面は既定でキャッシュしません。各レイアウトは遷移時に `.app-content` のスクロールをリセットします。Pinia の永続化と Query のデータキャッシュは KeepAlive とは独立しています。user/cart は本番も localStorage。`/payment` にフロントエンドのみの決済方法デモがあります。実際の決済、自動 token 更新、サーバー同期カート、アップロードは未実装です。[ルート](../essentials/route.md)、[状態](../essentials/state.md)、[配信](../essentials/build.md)を参照してください。

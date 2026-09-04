@@ -15,6 +15,12 @@ interface CartState {
   lines: CartLine[];
 }
 
+function normalizeQuantity(quantity: number): number {
+  return Number.isFinite(quantity)
+    ? Math.min(99, Math.max(1, Math.trunc(quantity)))
+    : 1;
+}
+
 function priceInCents(value: string): number {
   const price = Number.parseFloat(value);
   return Number.isFinite(price) ? Math.round(price * 100) : 0;
@@ -42,7 +48,7 @@ export const useCartStore = defineStore('cart', {
   },
   actions: {
     add(product: ProductItem, quantity = 1) {
-      const normalizedQuantity = Math.min(99, Math.max(1, quantity));
+      const normalizedQuantity = normalizeQuantity(quantity);
       const current = this.lines.find((line) => line.product.id === product.id);
       if (current) {
         current.product = product;
@@ -56,6 +62,9 @@ export const useCartStore = defineStore('cart', {
         selected: true,
       });
     },
+    clear() {
+      this.lines = [];
+    },
     clearSelected() {
       this.lines = this.lines.filter((line) => !line.selected);
     },
@@ -65,7 +74,7 @@ export const useCartStore = defineStore('cart', {
     setQuantity(productId: number, quantity: number) {
       const line = this.lines.find((item) => item.product.id === productId);
       if (!line) return;
-      line.quantity = Math.min(99, Math.max(1, Math.trunc(quantity)));
+      line.quantity = normalizeQuantity(quantity);
     },
     toggle(productId: number) {
       const line = this.lines.find((item) => item.product.id === productId);

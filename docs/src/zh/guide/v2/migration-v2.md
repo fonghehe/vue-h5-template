@@ -16,4 +16,4 @@
 
 ## 当前实现边界
 
-三套应用共享业务 Tab、主题和 HTTP 401；仅 Vant 实际检查 `requiresAuth`，`authority` 尚非已接入角色授权。所有布局条件挂载 KeepAlive，进入非缓存路由会移除。user/cart 即使生产也显式使用 localStorage。未实现自动刷新 token、服务端购物车同步、支付与上传。参见[路由](../essentials/route.md)、[状态](../essentials/state.md)与[部署](../essentials/build.md)。
+三套应用共享业务 Tab、主题和 HTTP 401；仅 Vant 实际检查 `requiresAuth`，`authority` 尚非已接入角色授权。业务页面默认不缓存，包括购物车与 Query；三个布局在路由变化时重置 `.app-content` 滚动位置。Pinia 持久化和 Query 数据缓存独立于 KeepAlive。user/cart 即使生产也显式使用 localStorage。`/payment` 已提供纯前端支付方式演示；真实支付、自动刷新 token、服务端购物车同步与上传尚未实现。参见[路由](../essentials/route.md)、[状态](../essentials/state.md)与[部署](../essentials/build.md)。

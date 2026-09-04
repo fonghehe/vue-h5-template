@@ -8,7 +8,10 @@ defineProps<{ withTabs: boolean }>();
 const route = useRoute();
 const { t } = useI18n();
 const visible = computed(
-  () => !['ai-chat', 'cart', 'details', 'login'].includes(String(route.name)),
+  () =>
+    !['ai-chat', 'cart', 'details', 'login', 'payment'].includes(
+      String(route.name),
+    ),
 );
 </script>
 

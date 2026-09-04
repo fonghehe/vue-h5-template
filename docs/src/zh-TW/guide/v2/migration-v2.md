@@ -6,4 +6,4 @@ API 現在回傳已解包資料；login 改用 object 參數；商品列表固�
 
 ## 目前實作邊界
 
-三應用共用業務 Tab、主題及 HTTP 401，但僅 Vant 檢查 `requiresAuth`，`authority` 尚未接入角色授權。KeepAlive 條件掛載，切到非快取路由會移除。user/cart 正式環境仍用 localStorage。自動 token 更新、伺服器同步購物車、支付及上傳未實作。見[路由](../essentials/route.md)、[狀態](../essentials/state.md)、[部署](../essentials/build.md)。
+三應用共用業務 Tab、主題及 HTTP 401，但僅 Vant 檢查 `requiresAuth`，`authority` 尚未接入角色授權。業務頁預設不快取，包含購物車與 Query；布局在路由變更後重設 `.app-content` 捲動位置。Pinia 持久化及 Query 資料快取不依賴 KeepAlive。user/cart 正式環境仍用 localStorage。`/payment` 提供純前端付款方式示範；真實付款、自動 token 更新、伺服器同步購物車及上傳尚未實作。見[路由](../essentials/route.md)、[狀態](../essentials/state.md)、[部署](../essentials/build.md)。

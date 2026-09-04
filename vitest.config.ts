@@ -12,7 +12,26 @@ export default defineConfig({
   },
   test: {
     coverage: {
-      exclude: ['**/*.d.ts', '**/generated/**', '**/dist/**'],
+      exclude: [
+        '**/*.d.ts',
+        '**/generated/**',
+        '**/dist/**',
+        '**/__tests__/**',
+      ],
+      include: [
+        'packages/api-client/src/**/*.ts',
+        'packages/ai-chat/src/**/*.ts',
+        'packages/@core/base/shared/src/{cache,utils}/**/*.ts',
+        'packages/@core/composables/src/**/*.ts',
+        'packages/utils/src/helpers/**/*.ts',
+        'packages/mobile-ui/src/{cart,queries}.ts',
+        'packages/mobile-ui/src/{AiChatInput,ChatPage,MarkdownContent,CartPage,PaymentPage,SvgIcon}.vue',
+        'apps/h5-vant/src/stores/user.ts',
+        'apps/h5-vant/src/components/{auth/LoginForm,common/AppErrorBoundary}.vue',
+        'apps/h5-nutui/src/locales/nutui-ja.ts',
+        'apps/backend-mock/utils/{jwt-utils,product-locales}.ts',
+        'internal/vite-config/src/backend-proxy.ts',
+      ],
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       thresholds: {

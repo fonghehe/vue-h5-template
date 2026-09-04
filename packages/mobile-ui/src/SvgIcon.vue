@@ -15,10 +15,12 @@ const iconNames = Object.keys(rawIcons).map(
       ?.replace(/\.svg$/u, '') ?? '',
 );
 
-let spriteReady = false;
+let installedSprite: SVGSVGElement | undefined;
 
 function installSprite() {
-  if (spriteReady || typeof document === 'undefined') return;
+  if (typeof document === 'undefined' || installedSprite?.isConnected) return;
+  // Replace the previous module's sprite after HMR instead of keeping stale icons.
+  document.querySelector('#vh5-shared-svg-sprite')?.remove();
   const sprite = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   sprite.id = 'vh5-shared-svg-sprite';
   sprite.setAttribute('aria-hidden', 'true');
@@ -48,7 +50,7 @@ function installSprite() {
     sprite.append(symbol);
   }
   document.body.prepend(sprite);
-  spriteReady = true;
+  installedSprite = sprite;
 }
 
 export { iconNames };

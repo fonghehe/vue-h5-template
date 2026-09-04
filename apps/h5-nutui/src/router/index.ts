@@ -33,6 +33,12 @@ const router = createRouter({
           meta: { title: 'mobile.cart' },
         },
         {
+          path: 'payment',
+          name: 'payment',
+          component: () => import('@/views/payment/index.vue'),
+          meta: { title: 'mobile.payment' },
+        },
+        {
           path: 'ai/chat',
           name: 'ai-chat',
           component: () => import('@/views/ai/chat/index.vue'),

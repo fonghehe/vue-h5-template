@@ -49,11 +49,7 @@ const UI_TEMPLATES: Record<UILibrary, AppTemplate> = {
   },
 };
 
-function generatePackageJson(
-  name: string,
-  ui: UILibrary,
-  template: AppTemplate,
-): string {
+function generatePackageJson(name: string, template: AppTemplate): string {
   return `{
   "name": "@vh5/${name}",
   "version": "2.0.0",
@@ -64,7 +60,7 @@ function generatePackageJson(
     "build": "pnpm vite build --mode production",
     "build:analyze": "pnpm vite build --mode analyze",
     "preview": "vite preview",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.node.json"
   },
   "dependencies": {
     "@vh5/api-client": "workspace:*",
@@ -467,7 +463,7 @@ export function defineCreateAppCommand(cli: CAC) {
 
       // Generate files
       const files: Record<string, string> = {
-        'package.json': generatePackageJson(appName, uiType, template),
+        'package.json': generatePackageJson(appName, template),
         'vite.config.ts': generateViteConfig(uiType, appName),
         'tsconfig.json': generateTsconfig(),
         'tsconfig.node.json': generateTsconfigNode(),

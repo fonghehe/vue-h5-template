@@ -23,6 +23,13 @@ Shiki was not added: basic code blocks satisfy the reference page and keep its l
 
 ## Using the companion AI service
 
+Source repositories:
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI streaming service (port 8001)
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — Business API service (port 8002)
+
+For clone commands and setup, see [Backend Modes](../essentials/server.md).
+
 Start `vue-h5-template-ai-service` on port `8001` with its default `AI_PROVIDER=mock`, then run `pnpm dev:services:vant`. The Vite proxy forwards `/api/ai/chat` without buffering the response, and `FetchChatProvider` adds the current business-service bearer token when the user is signed in. This also supports the AI service's optional `AI_AUTH_REQUIRED=true` mode when both backend services share the same JWT settings.
 
 To use a real model, configure `AI_PROVIDER=openai-compatible`, `AI_BASE_URL`, `AI_API_KEY` and `AI_MODEL` in the **AI service**, never in an app `VITE_*` variable. The browser contract remains unchanged.

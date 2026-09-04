@@ -18,6 +18,18 @@ pnpm dev:services:varlet
 
 ## Companion services
 
+These backends are separate Git repositories, not directories bundled with this frontend. Clone them into your preferred workspace:
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI streaming service (port 8001)
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — Business API service (port 8002)
+
+```bash
+git clone https://github.com/fonghehe/vue-h5-template-ai-service.git
+git clone https://github.com/fonghehe/vue-h5-template-business-service.git
+```
+
+After cloning, follow each repository's README for prerequisites. Run the commands below in separate terminals, from the corresponding repository directory.
+
 `dev:services:<ui>` loads the app's `.env.services` and does not start Nitro. Start the two companion repositories first (configure each from its own `.env.example`):
 
 ```bash

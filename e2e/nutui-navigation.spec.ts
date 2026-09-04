@@ -1,5 +1,21 @@
 import { expect, test } from '@playwright/test';
 
+test('NutUI back icon stays white against the theme and navigates back', async ({
+  page,
+}) => {
+  await page.goto('/list');
+  await page.getByTestId('catalog-cart').click();
+  const back = page.getByRole('button', { name: 'Back', exact: true });
+  await expect(back.locator('svg')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await page.addStyleTag({
+    content:
+      ':root { --nut-navbar-color: #979797; --nut-cell-desc-color: #ccc; }',
+  });
+  await expect(back.locator('svg')).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await back.click();
+  await expect(page).toHaveURL(/\/list$/u);
+});
+
 test('NutUI tabs navigate to list, member and examples', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));

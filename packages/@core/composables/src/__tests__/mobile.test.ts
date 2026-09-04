@@ -25,6 +25,48 @@ afterEach(() => {
 });
 
 describe('mobile composables', () => {
+  it('resets a short pull without requesting data', async () => {
+    const onRefresh = vi.fn();
+    const refresh = usePullToRefresh({ onRefresh });
+    const element = document.createElement('section');
+    const eventAt = (clientY: number) =>
+      ({
+        currentTarget: element,
+        touches: [{ clientY }],
+      }) as unknown as TouchEvent;
+    refresh.onTouchStart(eventAt(10));
+    refresh.onTouchMove(eventAt(30));
+    await refresh.onTouchEnd();
+    expect(onRefresh).not.toHaveBeenCalled();
+    expect(refresh.distance.value).toBe(0);
+    expect(refresh.ready.value).toBe(false);
+  });
+
+  it('clears refresh state when the request fails so the user can retry', async () => {
+    const failure = new Error('offline');
+    const onRefresh = vi
+      .fn()
+      .mockRejectedValueOnce(failure)
+      .mockResolvedValueOnce(undefined);
+    const refresh = usePullToRefresh({ onRefresh, threshold: 40 });
+    const element = document.createElement('section');
+    const eventAt = (clientY: number) =>
+      ({
+        currentTarget: element,
+        touches: [{ clientY }],
+      }) as unknown as TouchEvent;
+    const pull = () => {
+      refresh.onTouchStart(eventAt(0));
+      refresh.onTouchMove(eventAt(200));
+      return refresh.onTouchEnd();
+    };
+    await expect(pull()).rejects.toBe(failure);
+    expect(refresh.refreshing.value).toBe(false);
+    expect(refresh.distance.value).toBe(0);
+    await pull();
+    expect(onRefresh).toHaveBeenCalledTimes(2);
+  });
+
   it('tracks browser online and offline events', async () => {
     Object.defineProperty(navigator, 'onLine', {
       configurable: true,

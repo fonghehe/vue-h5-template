@@ -38,7 +38,13 @@ const router = createRouter({
           path: 'cart',
           name: 'cart',
           component: () => import('@/views/cart/index.vue'),
-          meta: { keepAlive: true, title: 'mobile.cart' },
+          meta: { title: 'mobile.cart' },
+        },
+        {
+          path: 'payment',
+          name: 'payment',
+          component: () => import('@/views/payment/index.vue'),
+          meta: { title: 'mobile.payment' },
         },
         {
           path: 'member',
@@ -82,7 +88,7 @@ const router = createRouter({
           path: 'examples/query',
           name: 'query-example',
           component: () => import('@/views/examples/query/index.vue'),
-          meta: { keepAlive: true, title: 'mobile.query' },
+          meta: { title: 'mobile.query' },
         },
         {
           path: 'examples/svg-icons',

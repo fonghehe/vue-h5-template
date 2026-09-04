@@ -10,6 +10,13 @@ AI 内容始终不可信：Marked 只负责解析，进入 `v-html` 前必须经
 
 ## 使用配套 AI Service
 
+源码仓库：
+
+- [vue-h5-template-ai-service](https://github.com/fonghehe/vue-h5-template-ai-service) — AI 流式服务（端口 8001）
+- [vue-h5-template-business-service](https://github.com/fonghehe/vue-h5-template-business-service) — 业务 API 服务（端口 8002）
+
+克隆命令和配置步骤见[后端模式](../essentials/server.md)。
+
 先以默认 `AI_PROVIDER=mock` 在 `8001` 端口启动 `vue-h5-template-ai-service`，再执行 `pnpm dev:services:vant`。Vite 会把 `/api/ai/chat` 转发到 AI Service，并保持 SSE 流不被前端缓冲；用户已登录时，`FetchChatProvider` 还会附加 Business Service 签发的 Bearer Token。两个服务使用相同 JWT 配置后，也可以启用 `AI_AUTH_REQUIRED=true`。
 
 接入真实模型时，只在 **AI Service** 中配置 `AI_PROVIDER=openai-compatible`、`AI_BASE_URL`、`AI_API_KEY` 和 `AI_MODEL`，不要写进应用的 `VITE_*` 变量。浏览器端协议和页面都不需要改变。

@@ -1,6 +1,6 @@
 # 程式碼規範
 
-> 目前限制：`lefthook.yml` 仲用已移除嘅 `pnpm check:type`，正確係 `pnpm typecheck`。要先改 hook config，本輪文檔唔改 Git hook；CI 獨立跑 `pnpm check`。
+> `lefthook.yml` 已用正確嘅 `pnpm typecheck`，涵蓋 workspace、三個應用設定同測試工具。CI 獨立跑 lint、型別檢查、單元測試覆蓋率同 build。
 
 ## Lint 工具鏈
 
@@ -30,8 +30,12 @@ pnpm exec czg
 - **oxfmt** —— 格式化暫存檔案
 - **eslint** —— 對暫存檔案執行 `eslint --fix`
 - **stylelint** —— 對暫存 Vue / CSS / SCSS 檔案執行 `stylelint --fix`
-- **check:type** —— 全量 TypeScript 型別檢查（`pnpm check:type`）
+- **typecheck** —— 全量 TypeScript 型別檢查（`pnpm typecheck`）
 
 所有 lint 任務都會自動修復並重新暫存變更。`commit-msg` 鉤子執行 `commitlint`，強制校驗上述提交資訊格式。合併（merge）之後，`post-merge` 鉤子會自動執行 `pnpm install`。
 
 由於鉤子會自動執行，正常提交就得，無須手動先跑 lint（當然亦可以用 `pnpm lint` / `pnpm format` 喺本地自查）。
+
+## AI 助手本機檔案
+
+`.gitignore` 排除常見 AI 助手嘅本機記憶、歷史、session 同憑證（包括 `.workbuddy/memory/`）。共享指令、規則同 skills 照樣可以提交，例如 `AGENTS.md`、`.cursor/rules/`、`.claude/skills/` 同 `.codex/skills/`，唔會刪個人資料。加其他工具時只忽略具體本機產物，再用 `git check-ignore --no-index` 驗證；回歸測試亦會確認共享規則冇被誤忽略。

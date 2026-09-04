@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "type-check": "tsc --noEmit",
     "stub": "pnpm exec tsdown"
   },
   "files": [

@@ -20,6 +20,7 @@ test('direct route loads resolve shared modules without browser errors', async (
     '/member',
     '/examples',
     '/cart',
+    '/payment',
     '/details?id=1',
     '/ai/chat',
     '/examples/query',
@@ -127,7 +128,12 @@ test('shared SVG and optional PWA examples remain reachable', async ({
 }) => {
   await page.goto('/examples/svg-icons');
   await expect(page.getByRole('heading', { name: 'SVG Icons' })).toBeVisible();
-  await expect(page.locator('.icon-item svg')).toHaveCount(3);
+  await expect(
+    page.locator('.icon-item svg use[href="#vh5-shared-icon-shopping-bag"]'),
+  ).toHaveCount(1);
+  await expect(
+    page.locator('.icon-item svg use[href="#vh5-shared-icon-shield-check"]'),
+  ).toHaveCount(1);
   await page.goto('/examples/pwa');
   await expect(
     page.getByRole('heading', { name: 'PWA & Offline' }),

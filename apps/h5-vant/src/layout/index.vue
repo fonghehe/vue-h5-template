@@ -20,6 +20,18 @@ const tabItem = [
 ];
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
+const contentRef = ref<HTMLElement>();
+// Vue Router resets the window; this mobile shell scrolls its own content.
+watch(
+  () => route.fullPath,
+  () => {
+    if (contentRef.value) {
+      contentRef.value.scrollTop = 0;
+      contentRef.value.scrollLeft = 0;
+    }
+  },
+  { flush: 'post' },
+);
 watch(
   () => route.path,
   (path) => {
@@ -53,7 +65,10 @@ const navTitle = computed(() =>
     <div v-if="!isOnline" class="offline-banner" role="status">
       {{ t('mobile.offlineBanner') }}
     </div>
-    <div class="app-content flex-1 min-h-0 overflow-hidden overflow-y-auto">
+    <div
+      ref="contentRef"
+      class="app-content flex-1 min-h-0 overflow-hidden overflow-y-auto"
+    >
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />
