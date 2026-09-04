@@ -1,6 +1,6 @@
 {
   "name": "@vh5/mobile-ui",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "type-check": "vue-tsc --noEmit"
