@@ -14,12 +14,18 @@ Vant 頂欄使用 `--app-primary`，標題、圖示與文字操作為白色。�
 
 ## 語言與 AI 入口
 
-介面預設英文，首頁與 Member 提供 English、简体中文、日本語切換，選擇儲存在 `vh5:locale`。同步翻譯本文、路由與文件標題、提示文字及無障礙標籤。REST 請求傳送 `Accept-Language`，Nitro Mock 回傳翻譯後的商品；真實業務服務自行提供翻譯。Query 快取鍵包含語言。
+介面預設英文，Member 提供 English、简体中文、日本語切換，選擇儲存在 `vh5:locale`。同步翻譯本文、路由與文件標題、提示文字及無障礙標籤。REST 請求傳送 `Accept-Language`，Nitro Mock 回傳翻譯後的商品；真實業務服務自行提供翻譯。Query 快取鍵包含語言。
 
-主題色 AI 浮動按鈕位於 Tab 上方，開啟延遲載入的 `/ai/chat`。Chat、Login、Cart、Payment、Details 隱藏入口，避免遮擋輸入與結帳。三端共用串流、停止、重新產生、複製及安全 Markdown。
+主題色 AI 浮動按鈕位於 Tab 上方，開啟延遲載入的 `/ai/chat`。Member、Chat、Login、Cart、Payment、Details 隱藏入口，避免遮擋輸入與結帳。三端共用串流、停止、重新產生、複製及安全 Markdown。
 
 繼續支援 `pnpm dev:<ui>`（Nitro Mock）及 `pnpm dev:services:<ui>`（AI 8001、Business 8002）。前端環境變數不得存放服務商金鑰。
 
 SVG 與選用 PWA 範例也已在三端統一，Vant 應用級 SVG 資產仍可獨立使用。NutUI 日文語系由型別化的 `apps/h5-nutui/src/locales/nutui-ja.ts` 補充。既有繁體中文字典保留供客製整合，預設選單提供上述三種產品語言。語言偏好由 Vue I18n 與 localStorage 管理，不存入 Pinia。
 
 NutUI 將導覽變數設於 `.nut-navbar`，返回按鈕插槽使用原生 `Left` 圖示並繼承 `currentColor`，避免套件固定灰色在紅色頂欄上不清楚。
+
+## 入口整合
+
+四個底部 Tab 負責主導覽。首頁僅展示專案概覽，不再重複放功能連結或語言選單。會員頁本身就是個人中心：展示傳入的頭像/名稱、登入狀態、帳戶資訊與偏好設定，依狀態顯示登入或登出；不虛構資料編輯欄位或新後端 API。語言切換只保留於此。
+
+商品列表提供購物車主入口，詳情返回列表，不再額外放購物車捷徑。AI Chat 僅保留共用浮動按鈕，首頁卡片與範例列表不再重複導向。Query、Request、行動 Web 能力、SVG、PWA 與原生元件統一由範例頁進入。結帳中的返回/繼續購物屬於流程操作，仍保留。三端共用相同結構，各自沿用主題色。

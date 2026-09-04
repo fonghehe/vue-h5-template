@@ -1,6 +1,6 @@
 # 国际化
 
-页面默认英文 `en-US`。Home 和 Member 提供 English、简体中文 `zh-CN`、日本語 `ja-JP`。启动时优先使用 `vh5:locale` 中保存的受支持语言，并同步 `<html lang>`。文档的五种语言与应用默认三语选择是两回事。
+页面默认英文 `en-US`。Member 提供 English、简体中文 `zh-CN`、日本語 `ja-JP`。启动时优先使用 `vh5:locale` 中保存的受支持语言，并同步 `<html lang>`。文档的五种语言与应用默认三语选择是两回事。
 
 共享文案在 `packages/locales/src/langs/{en-US,zh-CN,ja-JP}/{app,mobile,demo}.json`，页面、无障碍标签、错误及路由标题的键要同步。保留的 `zh-TW` 字典用于自定义集成，不包含全部新增 mobile/demo 文案，也不在默认选择器中。
 

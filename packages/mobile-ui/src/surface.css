@@ -3,7 +3,8 @@
   width: 100%;
   max-width: 760px;
   min-height: 100%;
-  padding: 20px 16px calc(90px + env(safe-area-inset-bottom));
+  padding: 20px 16px
+    calc(20px + var(--page-safe-bottom, env(safe-area-inset-bottom)));
   margin: 0 auto;
   color: var(--app-text);
 }

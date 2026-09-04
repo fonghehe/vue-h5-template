@@ -16,7 +16,7 @@ pnpm -F @vh5/h5-vant preview
 
 `pnpm dev` 是交互选择一个包，不是启动全部应用。默认端口：NutUI 5777、Vant 5778、Varlet 5779、Nitro 5320。Mock 账号为 `user / 123456`、`admin / 123456`，仅适用于 Nitro。
 
-页面默认英文，Home 和 Member 可切换中文、日文。三套应用有相同的业务 Tab 与 AI 悬浮入口。真实后端使用[服务模式](../essentials/server.md)，前端命令不会代替你启动两个配套服务。
+页面默认英文，Member 可切换中文、日文。三套应用有相同的业务 Tab 与 AI 悬浮入口。真实后端使用[服务模式](../essentials/server.md)，前端命令不会代替你启动两个配套服务。
 
 从应用 `.env.example` 复制所需值到本地配置，勿覆盖已有设置。新增 workspace 依赖后执行 `pnpm install` 并重启开发服务。Vant 端口占用时会报错；以终端实际输出 URL 为准。
 

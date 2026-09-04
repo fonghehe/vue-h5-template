@@ -7,7 +7,6 @@ import './surface.css';
 defineProps<{ framework: string }>();
 const { t } = useI18n();
 const examples = [
-  { key: 'chat', path: '/ai/chat' },
   { key: 'query', path: '/examples/query' },
   { key: 'request', path: '/examples/request' },
   { key: 'mobile', path: '/examples/mobile' },

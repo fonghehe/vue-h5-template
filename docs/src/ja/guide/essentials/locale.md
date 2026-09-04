@@ -1,6 +1,6 @@
 # 国際化
 
-画面の既定は英語 `en-US`。Home と Member で English、简体中文 `zh-CN`、日本語 `ja-JP` を選択できます。`vh5:locale` の保存済み設定を優先し、`<html lang>` も更新します。ドキュメントの 5 言語とアプリの 3 言語は別の設定です。
+画面の既定は英語 `en-US`。Member で English、简体中文 `zh-CN`、日本語 `ja-JP` を選択できます。`vh5:locale` の保存済み設定を優先し、`<html lang>` も更新します。ドキュメントの 5 言語とアプリの 3 言語は別の設定です。
 
 共有文言は `packages/locales/src/langs/{en-US,zh-CN,ja-JP}/{app,mobile,demo}.json`。アクセシビリティ、エラー、ルートタイトルも同じキー構成で翻訳します。既存の `zh-TW` はカスタム利用向けで、新しい mobile/demo の全キーはなく、標準セレクターには含みません。
 

@@ -1,4 +1,13 @@
 {
+  "personalCenter": "マイページ",
+  "personalCenterDesc": "アカウント情報と設定をまとめて確認できます。",
+  "memberFallback": "メンバー",
+  "accountInfo": "アカウント情報",
+  "displayName": "表示名",
+  "accountStatus": "ログイン状態",
+  "sessionActive": "ログイン中",
+  "sessionGuest": "ゲスト",
+  "preferences": "設定",
   "addShort": "追加",
   "openCart": "カート、{count} 点",
   "cartEyebrow": "ショッピングバッグ",

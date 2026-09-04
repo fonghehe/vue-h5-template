@@ -35,6 +35,10 @@ const { isOnline } = useNetworkStatus();
 const { viewportHeight } = useVisualViewport();
 const shellStyle = computed(() => ({
   height: viewportHeight.value ? `${viewportHeight.value}px` : '100dvh',
+  // In-flow tabs own their safe area; child pages must not reserve it again.
+  '--page-safe-bottom': tabbarVisible.value
+    ? '0px'
+    : 'env(safe-area-inset-bottom)',
 }));
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
@@ -105,6 +109,7 @@ const goBack = () => {
     </div>
 
     <nut-tabbar
+      safe-area-inset-bottom
       v-model="activeTab"
       v-show="tabbarVisible"
       active-color="var(--app-primary)"

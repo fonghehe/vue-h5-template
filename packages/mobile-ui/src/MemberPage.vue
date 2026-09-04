@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import { useI18n } from '@vh5/locales';
@@ -14,9 +14,20 @@ const props = defineProps<{
   name?: string;
 }>();
 const { t } = useI18n();
+const displayName = computed(
+  () => props.name?.trim() || t('mobile.memberFallback'),
+);
 const busy = ref(false);
 const failed = ref(false);
+const avatarLoaded = ref(false);
+watch(
+  () => [props.avatar, props.loggedIn],
+  () => {
+    avatarLoaded.value = false;
+  },
+);
 async function signOut() {
+  if (busy.value) return;
   busy.value = true;
   failed.value = false;
   try {
@@ -29,11 +40,26 @@ async function signOut() {
 }
 </script>
 <template>
-  <section class="product-page">
+  <section class="product-page member-page">
+    <header class="member-heading">
+      <h1>{{ t('mobile.personalCenter') }}</h1>
+      <p class="muted">{{ t('mobile.personalCenterDesc') }}</p>
+    </header>
     <div class="panel profile-panel">
-      <span class="eyebrow">{{ t('app.mine') }}</span>
-      <img v-if="loggedIn && avatar" class="avatar" :src="avatar" alt="" />
-      <h1>{{ loggedIn ? name : t('mobile.guest') }}</h1>
+      <div class="avatar" aria-hidden="true">
+        <span v-if="!avatarLoaded" class="avatar-fallback">
+          {{ loggedIn ? displayName.slice(0, 1).toLocaleUpperCase() : '—' }}
+        </span>
+        <img
+          v-if="loggedIn && avatar"
+          v-show="avatarLoaded"
+          :src="avatar"
+          alt=""
+          @load="avatarLoaded = true"
+          @error="avatarLoaded = false"
+        />
+      </div>
+      <h2>{{ loggedIn ? displayName : t('mobile.guest') }}</h2>
       <p class="muted">
         {{ t(loggedIn ? 'app.welcomeBack' : 'app.notLoggedIn') }}
       </p>
@@ -41,21 +67,25 @@ async function signOut() {
         {{ t('app.pleaseLogin') }}
       </RouterLink>
     </div>
-    <div class="panel"><LanguageSelect /></div>
-    <div class="panel">
-      <RouterLink class="row-link" to="/cart">
-        <span>{{ t('mobile.cart') }}</span
-        >›
-      </RouterLink>
-      <RouterLink class="row-link" to="/examples">
-        <span>{{ t('app.example') }}</span
-        >›
-      </RouterLink>
-      <RouterLink class="row-link" to="/examples/mobile">
-        <span>{{ t('mobile.mobile') }}</span
-        >›
-      </RouterLink>
-    </div>
+    <section class="panel" aria-labelledby="account-heading">
+      <h2 id="account-heading">{{ t('mobile.accountInfo') }}</h2>
+      <dl class="account-details">
+        <div v-if="loggedIn">
+          <dt>{{ t('mobile.displayName') }}</dt>
+          <dd>{{ displayName }}</dd>
+        </div>
+        <div>
+          <dt>{{ t('mobile.accountStatus') }}</dt>
+          <dd>
+            {{ t(loggedIn ? 'mobile.sessionActive' : 'mobile.sessionGuest') }}
+          </dd>
+        </div>
+      </dl>
+    </section>
+    <section class="panel" aria-labelledby="preferences-heading">
+      <h2 id="preferences-heading">{{ t('mobile.preferences') }}</h2>
+      <LanguageSelect />
+    </section>
     <button
       v-if="loggedIn"
       class="action secondary"
@@ -68,6 +98,15 @@ async function signOut() {
   </section>
 </template>
 <style scoped>
+.member-heading {
+  margin-bottom: 22px;
+}
+
+.member-heading h1,
+.profile-panel h2 {
+  font-weight: 700;
+}
+
 .profile-panel {
   background: linear-gradient(
     135deg,
@@ -77,10 +116,70 @@ async function signOut() {
 }
 
 .avatar {
-  display: block;
+  position: relative;
   width: 64px;
   height: 64px;
-  margin-top: 18px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  color: var(--app-primary-deep);
+  background: var(--app-primary-soft);
   border-radius: 50%;
+}
+
+.avatar img,
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar img {
+  display: block;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--app-primary-deep);
+  background: var(--app-primary-soft);
+}
+
+.profile-panel h2,
+.account-details dd {
+  overflow-wrap: anywhere;
+}
+
+.account-details {
+  margin: 0;
+}
+
+.account-details > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.account-details > div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.account-details dt {
+  color: var(--app-text-muted);
+}
+
+.account-details dd {
+  min-width: 0;
+  margin: 0;
+  font-weight: 600;
+}
+
+.member-page > button {
+  width: 100%;
 }
 </style>

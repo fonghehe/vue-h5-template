@@ -1,6 +1,6 @@
 # 國際化
 
-頁面預設英文 `en-US`，Home 與 Member 可選英文、簡體中文 `zh-CN`、日文 `ja-JP`。啟動優先套用 `vh5:locale` 保存的受支援語言，同步 `<html lang>`。文檔五語與應用三語選項不同。
+頁面預設英文 `en-US`，Member 可選英文、簡體中文 `zh-CN`、日文 `ja-JP`。啟動優先套用 `vh5:locale` 保存的受支援語言，同步 `<html lang>`。文檔五語與應用三語選項不同。
 
 共享文案在 `packages/locales/src/langs/{en-US,zh-CN,ja-JP}/{app,mobile,demo}.json`，包含無障礙、錯誤及路由標題。`zh-TW` 字典保留供自訂整合，未含完整 mobile/demo 新鍵，也不在預設選單。
 

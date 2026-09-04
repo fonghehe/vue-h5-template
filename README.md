@@ -12,7 +12,7 @@ English | [简体中文](./README.zh-CN.md) | [日本語](./README.ja-JP.md) | [
 
 All three apps now share Home / List / Member / Examples, product details and cart, Query and request demos, and streaming chat. Native navigation and component showcases retain each framework’s identity; shared views use each app’s own theme tokens.
 
-English is the default. Change to Chinese or Japanese from Home or Member; the choice, document language, route titles, UI copy and Mock product language stay synchronized. The floating AI button opens Chat above the bottom tabs and hides on input/checkout routes. Catalog cards preserve real 44px touch targets, including at 320px.
+English is the default. Change to Chinese or Japanese from Member; the choice, document language, route titles, UI copy and Mock product language stay synchronized. The floating AI button opens Chat above the bottom tabs and hides on Member and input/checkout routes. Catalog cards preserve real 44px touch targets, including at 320px.
 
 Both Mock and the separate AI/business services work with all three targets. Run `pnpm test:e2e` to check Vant, NutUI and Varlet. See [UI architecture](docs/src/guide/v2/ui-framework.md).
 

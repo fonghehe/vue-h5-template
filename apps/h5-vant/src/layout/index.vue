@@ -11,6 +11,10 @@ const { isOnline } = useNetworkStatus();
 const { viewportHeight } = useVisualViewport();
 const shellStyle = computed(() => ({
   height: viewportHeight.value ? `${viewportHeight.value}px` : '100dvh',
+  // In-flow tabs own their safe area; child pages must not reserve it again.
+  '--page-safe-bottom': tabbarVisible.value
+    ? '0px'
+    : 'env(safe-area-inset-bottom)',
 }));
 const tabItem = [
   { icon: 'home-o', key: 'home', path: '/home' },
@@ -76,7 +80,12 @@ const navTitle = computed(() =>
       </RouterView>
       <RouterView v-if="!route.meta.keepAlive" :key="route.path" />
     </div>
-    <van-tabbar v-model="activeTab" v-show="tabbarVisible" :fixed="false">
+    <van-tabbar
+      v-model="activeTab"
+      v-show="tabbarVisible"
+      :fixed="false"
+      safe-area-inset-bottom
+    >
       <van-tabbar-item
         v-for="(item, index) in tabItem"
         :key="item.key"

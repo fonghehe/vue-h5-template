@@ -60,6 +60,8 @@ describe('cart interactions', () => {
     expect(wrapper.get('h1').text()).toBe('Your cart is empty');
     expect(wrapper.get('a').attributes('href')).toBe('/list');
     expect(wrapper.find('.cart-summary').exists()).toBe(false);
+    expect(wrapper.find('.commerce-dock-space').exists()).toBe(false);
+    expect(wrapper.classes()).not.toContain('with-commerce-dock');
   });
 
   it('updates quantities, selection and checkout navigation', async () => {
@@ -99,6 +101,8 @@ describe('cart interactions', () => {
       .trigger('click');
     expect(cart.lines).toEqual([]);
     expect(wrapper.get('h1').text()).toBe('Your cart is empty');
+    expect(wrapper.find('.commerce-dock-space').exists()).toBe(false);
+    expect(wrapper.classes()).not.toContain('with-commerce-dock');
   });
 });
 
@@ -122,6 +126,8 @@ describe('demo payment', () => {
         lines: [],
       });
       expect(wrapper.find('button.commerce-cta').exists()).toBe(false);
+      expect(wrapper.find('.commerce-dock-space').exists()).toBe(false);
+      expect(wrapper.classes()).not.toContain('with-commerce-dock');
       expect(wrapper.get('a.commerce-cta').attributes('href')).toBe('/list');
     },
   );

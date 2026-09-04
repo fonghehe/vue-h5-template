@@ -1,4 +1,13 @@
 {
+  "personalCenter": "Personal center",
+  "personalCenterDesc": "Your account and preferences, in one place.",
+  "memberFallback": "Member",
+  "accountInfo": "Account information",
+  "displayName": "Display name",
+  "accountStatus": "Account status",
+  "sessionActive": "Signed in",
+  "sessionGuest": "Guest",
+  "preferences": "Preferences",
   "addShort": "Add",
   "openCart": "Shopping cart, {count} item(s)",
   "cartEyebrow": "YOUR BAG",

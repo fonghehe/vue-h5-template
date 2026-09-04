@@ -16,7 +16,7 @@ pnpm -F @vh5/h5-vant preview
 
 `pnpm dev` interactively selects one package, not all apps. Default ports are NutUI 5777, Vant 5778, Varlet 5779, Nitro 5320. Mock credentials are `user / 123456` and `admin / 123456` (Nitro only).
 
-Pages start in English; Home and Member offer Chinese/Japanese switching. All apps have the same product tabs and floating AI entry. For real backend integration use [service mode](../essentials/server.md); those commands do not start the two companion services for you.
+Pages start in English; Member offers Chinese/Japanese switching. All apps have the same product tabs and floating AI entry. For real backend integration use [service mode](../essentials/server.md); those commands do not start the two companion services for you.
 
 Copy needed values from the app's `.env.example` into local environment files without overwriting existing settings. After adding workspace dependencies, run `pnpm install` and restart the dev server. Vant refuses an occupied port; check the URL printed in your terminal.
 

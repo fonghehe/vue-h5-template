@@ -1,6 +1,7 @@
 /* Shared commerce primitives stay in real CSS pixels across all three apps. */
-.commerce-page {
-  padding-bottom: calc(190px + env(safe-area-inset-bottom));
+.commerce-page.with-commerce-dock {
+  /* The measured dock already includes the bottom safe area. */
+  --page-safe-bottom: 0px;
 }
 
 .commerce-page .commerce-heading {

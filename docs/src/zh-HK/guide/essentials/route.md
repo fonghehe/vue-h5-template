@@ -4,7 +4,7 @@
 
 共用 `/home`、`/list`、`/member`、`/examples`，舊 `/mine`、`/example` 會轉址。子頁包括 `/details?id=1`、`/cart`、`/payment`、`/login`、`/ai/chat`、`/examples/{query,request,mobile,svg-icons,pwa,components}`。Vant/Varlet 名稱保留 `mine`、`example`，NutUI 用 `member`、`examples`；跨應用連結用標準路徑。
 
-`title` 係翻譯鍵（例如 `app.home`），頂欄同瀏覽器標題會跟語言切換。Tab 只喺四個主頁顯示；Chat/Login/Cart/Payment/Details 隱藏 AI 浮動入口。
+`title` 係翻譯鍵（例如 `app.home`），頂欄同瀏覽器標題會跟語言切換。Tab 只喺四個主頁顯示；Member/Chat/Login/Cart/Payment/Details 隱藏 AI 浮動入口。
 
 全部應用處理 `guestOnly`，只有 Vant 檢查 `requiresAuth`；示例未設 `requiresAuth: true`。HTTP 401 統一處理。`authority` 型別唔代表角色授權已接入，後端仍然要驗證。
 

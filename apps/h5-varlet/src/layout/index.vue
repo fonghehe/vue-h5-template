@@ -11,6 +11,10 @@ const { isOnline } = useNetworkStatus();
 const { viewportHeight } = useVisualViewport();
 const shellStyle = computed(() => ({
   height: viewportHeight.value ? `${viewportHeight.value}px` : '100dvh',
+  // In-flow tabs own their safe area; child pages must not reserve it again.
+  '--page-safe-bottom': tabbarVisible.value
+    ? '0px'
+    : 'env(safe-area-inset-bottom)',
 }));
 const tabItem = [
   { icon: 'home', key: 'home', path: '/home' },
@@ -84,6 +88,7 @@ const navTitle = computed(() =>
     </div>
     <div v-if="tabbarVisible">
       <var-bottom-navigation
+        safe-area
         :active="activeTab"
         @update:active="(v) => (activeTab = Number(v))"
       >

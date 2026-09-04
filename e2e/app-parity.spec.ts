@@ -50,7 +50,6 @@ test('all four tabs expose the same business features', async ({ page }) => {
   await page.locator(tab('examples')).first().click();
   await expect(page).toHaveURL(/\/examples$/u);
   for (const path of [
-    '/ai/chat',
     '/examples/query',
     '/examples/request',
     '/examples/mobile',
@@ -63,6 +62,54 @@ test('all four tabs expose the same business features', async ({ page }) => {
   await page.locator('.row-link[href="/examples/components"]').click();
   await expect(page.getByText('Buttons', { exact: true })).toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test('feature entries stay focused and Member is the personal center', async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto('/home');
+  await expect(page.locator('.home-page a')).toHaveCount(0);
+  await expect(page.getByRole('combobox')).toHaveCount(0);
+  await expect(page.locator('a[href="/ai/chat"]')).toHaveCount(1);
+  await page.screenshot({ path: testInfo.outputPath('home-320.png') });
+
+  await page.locator(tab('member')).first().click();
+  await expect(
+    page.getByRole('heading', { name: 'Personal center', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Language' })).toHaveCount(1);
+  await expect(page.getByTestId('ai-entry')).toHaveCount(0);
+  for (const path of ['/cart', '/examples', '/examples/mobile']) {
+    await expect(page.locator(`.member-page a[href="${path}"]`)).toHaveCount(0);
+  }
+  await expect(page.locator('.account-details')).toContainText('Guest');
+  await page.screenshot({ path: testInfo.outputPath('member-guest-320.png') });
+  await page.getByRole('link', { name: 'Please login first' }).click();
+  await page.getByRole('button', { name: 'Login', exact: true }).click();
+  await expect(page).toHaveURL(/\/member$/u);
+  await expect(page.locator('.account-details')).toContainText('Signed in');
+  await expect(
+    page.getByRole('button', { name: 'Logout', exact: true }),
+  ).toBeVisible();
+  expect(
+    await page
+      .locator('.member-page')
+      .evaluate((element) => element.scrollWidth <= element.clientWidth),
+  ).toBe(true);
+  await page.screenshot({
+    path: testInfo.outputPath('member-signed-in-320.png'),
+  });
+  await page.getByRole('button', { name: 'Logout', exact: true }).click();
+  await expect(page.locator('.account-details')).toContainText('Guest');
+
+  await page.locator(tab('examples')).first().click();
+  await expect(page.locator('a[href="/examples/mobile"]')).toHaveCount(1);
+  await expect(page.locator('a[href="/ai/chat"]')).toHaveCount(1);
+  await page.locator('a[href="/examples/mobile"]').click();
+  await expect(
+    page.getByRole('heading', { name: 'Device-aware interaction' }),
+  ).toBeVisible();
 });
 
 test('language changes translate pages and persist after reload', async ({
@@ -88,6 +135,7 @@ test('language changes translate pages and persist after reload', async ({
   ).toBeVisible();
   await expect(page.locator('.product-title').first()).toContainText('活ガニ');
   await expect(page).toHaveTitle(/リスト|一覧|リスト/u);
+  await page.locator(tab('home')).first().click();
   await page.getByTestId('ai-entry').click();
   await expect(
     page.getByRole('heading', { name: 'アイデアを形にしよう' }),

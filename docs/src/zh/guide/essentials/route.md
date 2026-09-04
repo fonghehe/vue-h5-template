@@ -4,7 +4,7 @@
 
 三个应用统一使用 `/home`、`/list`、`/member`、`/examples`；旧 `/mine`、`/example` 会重定向。子页包括 `/details?id=1`、`/cart`、`/payment`、`/login`、`/ai/chat` 和 `/examples/{query,request,mobile,svg-icons,pwa,components}`。Vant/Varlet 保留 `mine`、`example` 路由名，NutUI 使用 `member`、`examples`，跨应用链接建议用标准路径。
 
-`title` 保存 `app.home` 等翻译键，顶栏和浏览器标题响应语言变化。底部 Tab 仅在四个主页面显示；AI 悬浮入口在聊天、登录、购物车、支付、详情页隐藏。
+`title` 保存 `app.home` 等翻译键，顶栏和浏览器标题响应语言变化。底部 Tab 仅在四个主页面显示；AI 悬浮入口在会员、聊天、登录、购物车、支付、详情页隐藏。
 
 三个应用都处理 `guestOnly` 登录跳转；只有 Vant 实际检查 `requiresAuth`，NutUI/Varlet 尚未接入。目前示例路由未设置 `requiresAuth: true`。三个应用都有统一 HTTP 401 处理。`authority` 是共享元数据类型，不代表自动执行角色鉴权；后端仍须授权校验。
 

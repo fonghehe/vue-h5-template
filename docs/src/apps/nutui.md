@@ -1,6 +1,6 @@
 # NutUI
 
-All three apps have Home, List, Member and Examples tabs at `/home`, `/list`, `/member`, `/examples`. Product views come from `packages/mobile-ui`; native navigation and `/examples/components` remain app-specific. English is the default, with Chinese and Japanese switching on Home/Member. The themed floating AI button opens `/ai/chat` and hides on Chat/Login/Cart/Details.
+All three apps have Home, List, Member and Examples tabs at `/home`, `/list`, `/member`, `/examples`. Product views come from `packages/mobile-ui`; native navigation and `/examples/components` remain app-specific. English is the default, with Chinese and Japanese switching on Member. The themed floating AI button opens `/ai/chat` and hides on Member/Chat/Login/Cart/Payment/Details.
 
 NutUI 4 uses `NutUIResolver` and `@nutui/icons-vue`. The theme is red `#fa2c19`. Layout uses `NutNavbar` and `NutTabbarItem.to` for route navigation. Japanese native labels come from `src/locales/nutui-ja.ts`. Functional Toast/Notify/Dialog/ImagePreview CSS is explicitly imported in bootstrap; SCSS variable injection is limited to this app's source.
 

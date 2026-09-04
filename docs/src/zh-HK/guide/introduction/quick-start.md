@@ -16,7 +16,7 @@ pnpm -F @vh5/h5-vant preview
 
 `pnpm dev` 互動揀一個套件，唔係全部啟動。預設 NutUI 5777、Vant 5778、Varlet 5779、Nitro 5320。`user / 123456`、`admin / 123456` 只係 Nitro 測試帳號。
 
-預設英文，Home/Member 支援中日切換，共用業務 Tab 同 AI 浮動入口。[服務模式](../essentials/server.md)要自行起兩個配套後端。
+預設英文，Member 支援中日切換，共用業務 Tab 同 AI 浮動入口。[服務模式](../essentials/server.md)要自行起兩個配套後端。
 
 參考應用 `.env.example` 設定本機檔案，唔好覆寫已有值。新增 workspace 依賴後要 install 同重啟。Vant Port 佔用會報錯，請確認 terminal URL。
 

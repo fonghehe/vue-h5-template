@@ -6,6 +6,7 @@ This file is the source of truth for AI coding agents working in this repository
 
 - This is a pnpm + Turborepo monorepo. Use pnpm only.
 - Vant, NutUI and Varlet expose the same Home / List / Member / Examples tabs.
+- Keep one primary entry per feature: tabs own main navigation, the catalog owns cart access, the floating button owns AI Chat, and Examples owns technical demos (including Mobile Web APIs). Home is an overview, not another launcher. Member is the personal center and the only language-switching location. Transactional back/continue links are workflow controls, not extra feature menus.
 - Framework-neutral product views live in `packages/mobile-ui`; app views are lazy wrappers. Native navigation and component showcases stay app-specific.
 - A production app selects one UI framework; never import all three into one app.
 - `apps/backend-mock` is a Nitro development backend. Production builds must not start it.
@@ -78,6 +79,7 @@ Do not add empty layers, placeholder directories, or speculative abstractions.
 - Validate redirects with `getSafeRedirect`.
 - Do not cache `/api/**` in the service worker.
 - Keep touch targets at least 44 CSS pixels where practical and preserve safe-area padding.
+- Shared pages use a 20px bottom content gap. In-flow tabs own their safe area; fixed checkout bars use CommerceDock to reserve their measured height only while mounted. Do not add blanket tab/dock-sized padding to every page.
 - Prefer `100dvh`, contained scrolling and lazy routes for mobile WebViews.
 - Product pages are uncached by default. Only opt into KeepAlive for an explicit state-retention requirement; reset the shell's `.app-content` scroll on route changes, not only the window. Cart persistence and query caches do not require page caching.
 - Default to English. User-facing text belongs in `packages/locales/src/langs/{en-US,zh-CN,ja-JP}`; translate pages, accessibility labels and route titles together.

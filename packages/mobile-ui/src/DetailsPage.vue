@@ -56,10 +56,6 @@ const added = ref(false);
         >
           {{ t('mobile.addCart') }}
         </button>
-
-        <RouterLink class="action secondary" to="/cart">
-          {{ t('mobile.cart') }}
-        </RouterLink>
       </div>
       <p v-if="added" role="status">{{ t('mobile.added') }}</p>
     </article>

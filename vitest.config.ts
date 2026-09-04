@@ -25,7 +25,7 @@ export default defineConfig({
         'packages/@core/composables/src/**/*.ts',
         'packages/utils/src/helpers/**/*.ts',
         'packages/mobile-ui/src/{cart,queries}.ts',
-        'packages/mobile-ui/src/{AiChatInput,ChatPage,MarkdownContent,CartPage,PaymentPage,SvgIcon}.vue',
+        'packages/mobile-ui/src/{AiChatInput,ChatPage,MarkdownContent,CartPage,PaymentPage,SvgIcon,MemberPage,CommerceDock}.vue',
         'apps/h5-vant/src/stores/user.ts',
         'apps/h5-vant/src/components/{auth/LoginForm,common/AppErrorBoundary}.vue',
         'apps/h5-nutui/src/locales/nutui-ja.ts',

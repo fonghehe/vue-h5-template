@@ -1,6 +1,6 @@
 # Internationalization
 
-Pages default to English (`en-US`). Home and Member expose English, 简体中文 (`zh-CN`) and 日本語 (`ja-JP`). A saved supported choice in `vh5:locale` takes precedence on startup; `<html lang>` updates. The five documentation locales are separate from the three app switcher options.
+Pages default to English (`en-US`). Member exposes English, 简体中文 (`zh-CN`) and 日本語 (`ja-JP`). A saved supported choice in `vh5:locale` takes precedence on startup; `<html lang>` updates. The five documentation locales are separate from the three app switcher options.
 
 Shared page copy is in `packages/locales/src/langs/{en-US,zh-CN,ja-JP}/{app,mobile,demo}.json`. Keep key sets aligned, including accessibility labels, errors and route titles. Existing `zh-TW` dictionaries remain for custom integration but do not contain all new mobile/demo keys and are not in the default selector.
 

@@ -5,6 +5,7 @@ import { RouterLink } from 'vue-router';
 import { useI18n } from '@vh5/locales';
 
 import { useCartStore } from './cart';
+import CommerceDock from './CommerceDock.vue';
 import SvgIcon from './SvgIcon.vue';
 
 import './surface.css';
@@ -72,7 +73,10 @@ function pay() {
 </script>
 
 <template>
-  <section class="product-page commerce-page payment-page">
+  <section
+    class="product-page commerce-page payment-page"
+    :class="{ 'with-commerce-dock': !receipt && cart.selectedCount > 0 }"
+  >
     <div
       v-if="receipt"
       class="commerce-empty payment-success"
@@ -171,7 +175,7 @@ function pay() {
           t('mobile.demoClearCart')
         }}</span>
       </p>
-      <footer class="commerce-dock">
+      <CommerceDock>
         <div class="dock-row">
           <span class="payment-due">{{ t('mobile.amountDue') }}</span>
           <div class="dock-total">
@@ -182,7 +186,7 @@ function pay() {
           {{ t('mobile.confirmPayment')
           }}<SvgIcon name="arrow-right" :size="20" />
         </button>
-      </footer>
+      </CommerceDock>
     </template>
   </section>
 </template>

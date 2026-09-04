@@ -4,6 +4,7 @@ import { RouterLink, useRouter } from 'vue-router';
 import { useI18n } from '@vh5/locales';
 
 import { useCartStore } from './cart';
+import CommerceDock from './CommerceDock.vue';
 import SvgIcon from './SvgIcon.vue';
 
 import './surface.css';
@@ -25,7 +26,10 @@ function checkout() {
 </script>
 
 <template>
-  <section class="product-page commerce-page cart-page">
+  <section
+    class="product-page commerce-page cart-page"
+    :class="{ 'with-commerce-dock': cart.lines.length > 0 }"
+  >
     <div v-if="cart.lines.length === 0" class="commerce-empty">
       <div class="state-icon"><SvgIcon name="shopping-bag" :size="38" /></div>
       <h1>{{ t('mobile.cartEmpty') }}</h1>
@@ -125,7 +129,7 @@ function checkout() {
         }}<SvgIcon name="arrow-right" :size="16" />
       </RouterLink>
       <p class="cart-demo-note">{{ t('mobile.checkoutDemo') }}</p>
-      <footer class="commerce-dock cart-summary">
+      <CommerceDock class="cart-summary">
         <div class="dock-row">
           <label class="select-all">
             <span class="selection-control">
@@ -153,7 +157,7 @@ function checkout() {
           {{ t('mobile.checkout', { count: cart.selectedCount })
           }}<SvgIcon name="arrow-right" :size="20" />
         </button>
-      </footer>
+      </CommerceDock>
     </template>
   </section>
 </template>

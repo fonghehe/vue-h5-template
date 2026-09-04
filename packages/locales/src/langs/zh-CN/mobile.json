@@ -1,4 +1,13 @@
 {
+  "personalCenter": "个人中心",
+  "personalCenterDesc": "在这里管理你的账户与偏好设置。",
+  "memberFallback": "会员",
+  "accountInfo": "账户信息",
+  "displayName": "显示名称",
+  "accountStatus": "账户状态",
+  "sessionActive": "已登录",
+  "sessionGuest": "游客",
+  "preferences": "偏好设置",
   "addShort": "加购",
   "openCart": "购物车，{count} 件商品",
   "cartEyebrow": "我的购物袋",

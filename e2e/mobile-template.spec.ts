@@ -1,5 +1,67 @@
 import { expect, test } from '@playwright/test';
 
+test('bottom spacing stays compact and checkout reserves only its actual height', async ({
+  page,
+}) => {
+  for (const path of [
+    '/home',
+    '/member',
+    '/examples',
+    '/list',
+    '/cart',
+    '/payment',
+  ]) {
+    await page.goto(path);
+    await expect(page.locator('.product-page')).toHaveCSS(
+      'padding-bottom',
+      '20px',
+    );
+    await expect(page.locator('.commerce-dock-space')).toHaveCount(0);
+  }
+  await page.goto('/list');
+  await page
+    .getByRole('button', { exact: true, name: 'Add to cart' })
+    .first()
+    .click();
+  await page.getByTestId('catalog-cart').click();
+  const dockHeight = () =>
+    page
+      .locator('.commerce-dock')
+      .evaluate((element) => Math.ceil(element.getBoundingClientRect().height));
+  const spaceHeight = () =>
+    page
+      .locator('.commerce-dock-space')
+      .evaluate((element) => element.getBoundingClientRect().height);
+  await expect
+    .poll(async () => (await spaceHeight()) - (await dockHeight()))
+    .toBe(0);
+  await expect(page.locator('.cart-page')).toHaveCSS('padding-bottom', '20px');
+  // Simulate a larger safe area / wrapped controls: the spacer must follow.
+  await page.addStyleTag({
+    content: '.commerce-dock { padding-bottom: 50px !important; }',
+  });
+  await expect
+    .poll(async () => (await spaceHeight()) - (await dockHeight()))
+    .toBe(0);
+  await page.locator('.app-content').evaluate((element) => {
+    element.scrollTop = element.scrollHeight;
+  });
+  const note = await page.locator('.cart-demo-note').boundingBox();
+  const dock = await page.locator('.commerce-dock').boundingBox();
+  expect(note && dock && note.y + note.height <= dock.y).toBeTruthy();
+  await page.getByRole('button', { name: 'Checkout (1)', exact: true }).click();
+  await expect(page).toHaveURL(/\/payment$/u);
+  await expect
+    .poll(async () => (await spaceHeight()) - (await dockHeight()))
+    .toBe(0);
+  await page.getByRole('button', { name: 'Confirm demo payment' }).click();
+  await expect(page.locator('.commerce-dock-space')).toHaveCount(0);
+  await expect(page.locator('.payment-page')).toHaveCSS(
+    'padding-bottom',
+    '20px',
+  );
+});
+
 test('tab navigation and browser back reset the mobile content scroll', async ({
   page,
 }) => {

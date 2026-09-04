@@ -1,17 +1,13 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
-
 import { useI18n } from '@vh5/locales';
-
-import LanguageSelect from './LanguageSelect.vue';
 
 import './surface.css';
 defineProps<{ framework: string }>();
 const { t } = useI18n();
 const capabilities = [
-  { key: 'chat', path: '/ai/chat', icon: '✦' },
-  { key: 'query', path: '/examples/query', icon: '↻' },
-  { key: 'patterns', path: '/examples', icon: '◇' },
+  { key: 'chat', icon: '✦' },
+  { key: 'query', icon: '↻' },
+  { key: 'patterns', icon: '◇' },
 ];
 </script>
 <template>
@@ -20,23 +16,19 @@ const capabilities = [
       <span class="eyebrow">VUE H5 TEMPLATE · {{ framework }}</span>
       <h1>{{ t('app.title') }}</h1>
       <p>{{ t('app.desc') }}</p>
-      <RouterLink class="action" to="/examples">
-        {{ t('mobile.explore') }} →
-      </RouterLink>
     </header>
     <div class="capabilities">
-      <RouterLink
+      <div
         v-for="item in capabilities"
         :key="item.key"
-        :to="item.path"
         class="panel capability"
       >
         <span class="capability-icon" aria-hidden="true">{{ item.icon }}</span>
         <span
           ><strong>{{ t(`mobile.${item.key}`) }}</strong
           ><small>{{ t(`mobile.${item.key}Desc`) }}</small></span
-        ><span aria-hidden="true">›</span>
-      </RouterLink>
+        >
+      </div>
     </div>
     <section class="panel">
       <h2>{{ t('app.techStack') }}</h2>
@@ -54,7 +46,6 @@ const capabilities = [
         ><small class="muted">{{ t(`mobile.stack${index}`) }}</small>
       </div>
     </section>
-    <div class="panel"><LanguageSelect /></div>
   </section>
 </template>
 <style scoped>
@@ -83,15 +74,9 @@ const capabilities = [
   opacity: 0.85;
 }
 
-.hero .action {
-  margin-top: 8px;
-  color: var(--app-primary-deep);
-  background: #fff;
-}
-
 .capability {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) auto;
+  grid-template-columns: 42px minmax(0, 1fr);
   gap: 14px;
   align-items: center;
   color: inherit;

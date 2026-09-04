@@ -12,7 +12,7 @@
 
 三套應用共用 Home / List / Member / Examples、商品詳情與購物車、Query、API 範例及串流對話。各自保留原生導覽、元件展示與主題色。
 
-介面預設英文，首頁和 Member 可切換簡體中文、日文，並保存選擇，同步標題、文案與 Mock 商品語言。AI 浮動按鈕置於 Tab 上方，在輸入及結帳頁隱藏。商品卡片在 320px 螢幕仍保留實際 44px 觸控尺寸。
+介面預設英文，Member 可切換簡體中文、日文，並保存選擇，同步標題、文案與 Mock 商品語言。AI 浮動按鈕置於 Tab 上方，在會員、輸入及結帳頁隱藏。商品卡片在 320px 螢幕仍保留實際 44px 觸控尺寸。
 
 三端均支援 Mock 與獨立 AI/Business 服務。`pnpm test:e2e` 驗證三套應用。參見 [UI 架構](docs/src/zh-TW/guide/v2/ui-framework.md)。
 
