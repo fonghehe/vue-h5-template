@@ -12,6 +12,7 @@ export * from './state-handler';
 export * from './to';
 export * from './tree';
 export * from './unique';
+export * from './update-css-variables';
 export * from './util';
 export * from './window';
 export { get, isEqual, set } from 'es-toolkit/compat';

@@ -1,63 +1,16 @@
 # NutUI
 
-[NutUI](https://nutui.jd.com/) 4.x ベースのモバイル H5 アプリ。
+3 アプリ共通の Home/List/Member/Examples は `/home`、`/list`、`/member`、`/examples` です。業務画面は `packages/mobile-ui`、ネイティブナビと `/examples/components` はアプリ固有です。英語既定で Home/Member に中日切替があります。テーマ付き AI ボタンは `/ai/chat` を開き、Chat/Login/Cart/Details では隠れます。
 
-## 特徴
-
-- NutUI コンポーネントのオンデマンド**ロード**（`NutUIResolver` により自動登録・ CSS 注入）
-- グローバル SCSS 変数サポート（関数式注入、アプリ自身のファイルにのみ適用）
-- NutUI アイコンライブラリ `@nutui/icons-vue`
-
-## 起動
+NutUI 4 は `NutUIResolver` と `@nutui/icons-vue` を使用、テーマは赤 `#fa2c19`。`NutNavbar` と `NutTabbarItem.to` でナビゲーションします。日本語は `src/locales/nutui-ja.ts`。関数型 Toast/Notify/Dialog/ImagePreview CSS は bootstrap で明示、SCSS 変数はアプリ内のみです。
 
 ```bash
 pnpm dev:nutui
+pnpm dev:services:nutui
+pnpm build:nutui
+pnpm -F @vh5/h5-nutui preview
 ```
 
-デフォルトポート：`5777`
+Port: `5777`.
 
-## 関数型コンポーネントのスタイル
-
-`showToast`、`showNotify`、`showDialog`、`showImagePreview` などの関数型コンポーネントは Resolver で自動インポートできないため、`bootstrap.ts` で手動インポートが必要です：
-
-```ts
-import '@nutui/nutui/dist/packages/toast/style/css';
-import '@nutui/nutui/dist/packages/notify/style/css';
-import '@nutui/nutui/dist/packages/dialog/style/css';
-import '@nutui/nutui/dist/packages/imagepreview/style/css';
-```
-
-## SCSS 設定
-
-NutUI グローバル変数は Vite `additionalData` 関数式注入で、アプリ自身の SCSS ファイルにのみ適用されます：
-
-```ts
-css: {
-  preprocessorOptions: {
-    scss: {
-      additionalData: (source: string, filename: string) => {
-        if (filename.includes('/apps/h5-nutui/src/')) {
-          return `@use "@nutui/nutui/dist/styles/variables.scss" as *;\n${source}`;
-        }
-        return source;
-      },
-    },
-  },
-}
-```
-
-## 使用している NutUI コンポーネント
-
-| コンポーネント           | 用途                        |
-| ------------------------ | --------------------------- |
-| `nut-navbar`             | トップナビゲーションバー    |
-| `nut-tabbar`             | ボトムタブバー              |
-| `nut-cell`               | 商品リスト / リストアイテム |
-| `nut-swiper`             | カルーセル                  |
-| `nut-form` / `nut-input` | ログインフォーム            |
-| `nut-avatar`             | ユーザーアバター            |
-| `nut-grid`               | グリッドレイアウト          |
-| `nut-button`             | ボタン                      |
-| `showToast`              | トーストメッセージ（API）   |
-| `showNotify`             | 通知（API）                 |
-| `showDialog`             | ダイアログ（API）           |
+[バックエンドモード](../guide/essentials/server.md) · [テーマ](../guide/essentials/styles.md) · [ルート動作](../guide/essentials/route.md)

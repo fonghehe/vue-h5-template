@@ -1,59 +1,31 @@
-# 專案結構
+# 目錄結構
 
-詳見 [系統架構](./architecture.md) 瞭解分層規則。
-
-## 1. 頂層概覽
-
-```
-vue-h5-template/
-├── apps/                # 運行時應用（UI 適配器 + Mock 後端）
-├── packages/            # 可複用庫，按層組織
-├── internal/            # 構建時工具（配置、Lint、TS、Vite）
-├── scripts/             # CLI 工具
-└── docs/                # VitePress 文件
-```
-
-## 2. `apps/` — UI 適配層
-
-```
-apps/
-├── h5-nutui/            # NutUI 適配器           （端口 5777）
-├── h5-vant/             # Vant 適配器            （端口 5778）
-├── h5-varlet/           # Varlet 適配器          （端口 5779）
-└── backend-mock/        # Nitro Mock 服務器      （端口 5320）
-```
-
-適配應用**唔應包含**視圖、Store、API 調用或路由——呢啲都喺特性套件同外殼入面。
-
-## 3. `packages/` — 分層庫
-
-```
+```text
+apps/h5-{vant,nutui,varlet}/src/
+  bootstrap.ts
+  router/index.ts
+  layout/index.vue
+  views/                    → @vh5/mobile-ui/*.vue
+  locales/index.ts
+  api/                      → @vh5/api-client
 packages/
-├── @core/
-│   ├── base/            # @vh5/core-base    — 純工具（tree、date、to…）
-│   └── composables/     # @vh5/composables  — Vue Composable
-├── api/                 # @vh5/api          — 接口聲明 + DTO
-├── request/             # @vh5/request      — 類型化 fetch 客戶端 + 攔截器
-├── services/            # @vh5/services     — 領域模型 & 業務規則
-├── stores/              # @vh5/stores       — Pinia 初始化 + 持久化
-├── locales/             # @vh5/locales      — i18n 初始化 + 共享字串
-├── styles/              # @vh5/styles       — 全局 CSS & 設計 Token
-├── utils/               # @vh5/utils        — 路由輔助工具
-├── app-shell/           # @vh5/app-shell    — 啟動、佈局、路由、守衛
-└── features/
-    ├── auth/            # @vh5/feature-auth
-    ├── user/            # @vh5/feature-user
-    ├── product/         # @vh5/feature-product
-    └── home/            # @vh5/feature-home
+  mobile-ui/src/             → pages, cart.ts, queries.ts, surface.css
+  api-client/src/modules/    → auth.ts, user.ts, product.ts
+  api-client/src/generated/  → schema.d.ts
+  ai-chat/src/               → fetch-provider.ts, sse.ts, use-streaming-chat.ts
+  locales/src/langs/         → en-US, zh-CN, ja-JP, legacy zh-TW
+  stores/ styles/ utils/ @core/
+internal/                   → vite-config, tsconfig, lint-configs, node-utils
+apps/backend-mock/api/
+openapi/schema.yaml
+e2e/
+docs/src/                   → English; zh/, ja/, zh-TW/, zh-HK/
 ```
 
-## 4. 快速查找表
+共享業務頁放 `packages/mobile-ui/src`，應用提供 lazy route 包裝；框架專屬登入同元件示例留喺應用。Session store 喺 Vant/Varlet 嘅 `stores/user.ts`、NutUI 嘅 `store/modules/user.ts`。
 
-| 我想添加…… | 放喺…… |
-| --- | --- |
-| 新頁面 | `packages/features/<feature>/src/views/` |
-| 新 API 接口 | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
-| 新 Pinia Store | `packages/features/<feature>/src/store.ts` |
-| 新共享 Composable | `packages/@core/composables/src/` |
-| 新語言字串 | `packages/features/<feature>/src/locales/<lang>.json` |
-| 新全局樣式 / 設計 Token | `packages/styles/src/global/` |
+接口同生成型別歸 `api-client`，串流同生命週期歸 `ai-chat`，瀏覽器工具歸 `packages/@core/composables`，唔好集中成巨型 composable。
+
+workspace 直接公開 `.vue`/`.ts`。新增套件後 install，exports 變更後重啟。構建設定要執行 `pnpm -F @vh5/vite-config stub` 更新編譯產物。
+
+參見[路由](../essentials/route.md)、[架構](./architecture.md)同根 `AGENTS.md`。

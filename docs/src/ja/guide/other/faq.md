@@ -1,80 +1,21 @@
-# よくある質問
+# FAQ
 
-## インストールの問題
+## インストールとモジュール解決
 
-### `pnpm install` が失敗する
+Node 22.x の 22.18+ または 24.x、pnpm 11.10.0 を使用。workspace 変更後は `pnpm install`。旧サーバーの `Failed to resolve import @vh5/mobile-ui/...` はそのプロセスを停止し、`pnpm dev:vant` を再起動してブラウザを更新します。別ポートのテスト成功では旧サーバーは直りません。
 
-正しいバージョンを使用しているか確認してください：
+## ポートと Mock
 
-- Node.js >= 20.12.0
-- pnpm >= 10.0.0
+Vant は 5778 使用中なら失敗します。別ポートは `VITE_PORT=5788 pnpm dev:vant`。Mock 不調時は 5320 のプロセスを確認してください。プラグインは既存プロセスを置き換えません。サービスモードは 8002/8001 を別途起動し、Nitro アカウントを前提にしません。
 
-```bash
-node -v
-pnpm -v
-```
+## 白い Vant ヘッダー
 
-古いバージョンの場合はアップグレード：
+`@vh5/styles/vant` を読み込み、変数を `:root` だけでなく `.van-nav-bar` に設定します。[スタイル](../essentials/styles.md)を参照。
 
-```bash
-npm i -g corepack
-corepack enable
-corepack prepare pnpm@latest --activate
-```
+## 型チェック
 
-### ポートが使用中
+古い `pnpm check:type` ではなく `pnpm typecheck`。共有 UI/API/AI/Vite 設定を個別チェックし、Vant は app と node 設定の両方を検証。自動 import 宣言は Vite 生成、ルートは手書きです。
 
-デフォルトポートが使用中の場合、対応アプリの `.env.development` の `VITE_PORT` を変更するか、直接指定：
+## 機能追加・配信
 
-```bash
-VITE_PORT=3000 pnpm dev:nutui
-```
-
-## 開発の問題
-
-### Mock サーバーが動作しない
-
-`.env.development` で `VITE_NITRO_MOCK=true` が設定されていることを確認してください。Mock サーバーはデフォルトでポート `5320` で動作します。
-
-### 自動インポートが機能しない
-
-一度 `pnpm dev` を実行して自動インポートの型宣言ファイルを生成してください。生成されたファイル（`auto-imports.d.ts`、`components.d.ts`）はバージョン管理にコミットしてください。
-
-### 新しいページを追加するには？
-
-1. `src/views/` に `.vue` ファイルを作成
-2. `src/router/` にルートを追加
-3. タブバーエントリが必要な場合、レイアウト設定を更新
-
-### 新しい API エンドポイントを追加するには？
-
-1. `src/api/` に API 関数を作成
-2. Mock データを使用する場合、`apps/backend-mock/api/` に Mock ハンドラーを追加
-
-## ビルドの問題
-
-### ビルド時のメモリ不足
-
-ルートの `package.json` に `NODE_OPTIONS=--max-old-space-size=8192` が設定されています。それでも不足する場合は値を増やしてください。
-
-### サブディレクトリにデプロイするには？
-
-`.env.production` で `VITE_BASE` を設定：
-
-```bash
-VITE_BASE=/my-app/
-```
-
-## その他
-
-### 不要な UI フレームワークアプリを削除するには？
-
-1. アプリディレクトリを削除（例：`apps/h5-varlet/`）
-2. ルートの `package.json` から対応するスクリプトを削除
-3. `pnpm install` を実行して workspace を更新
-
-### 新しい共有パッケージを追加するには？
-
-1. `packages/` 配下に新しいディレクトリを作成
-2. `@vh5/` スコープで `package.json` を追加
-3. アプリから `"@vh5/my-package": "workspace:*"` で参照
+[機能ガイド](../essentials/contributing-features.md)、[バックエンド](../essentials/server.md)、[ビルド](../essentials/build.md)を確認。サブパス/PWA と旧 playground Dockerfile は環境別の確認が必要です。インストール失敗時にまず lockfile を消さないでください。

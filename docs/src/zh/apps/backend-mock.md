@@ -1,80 +1,20 @@
-# Mock 服务
+# Nitro Mock 后端
 
-基于 [Nitro](https://nitro.unjs.io/) 的 Mock 后端服务，为 H5 应用提供开发时的接口模拟。
+`pnpm dev:<ui>` 在 5320 启动或复用 Nitro。单独运行可用 `pnpm -F @vh5/backend-mock exec nitro dev --port 5320`。不要将测试数据服务当作生产业务后端。
 
-## 启动
+| Method | Path | Result |
+| --- | --- | --- |
+| POST | `/api/auth/login` | public user + accessToken |
+| POST | `/api/auth/logout` | refresh cookie cleared |
+| POST | `/api/auth/refresh` | access token string (legacy endpoint) |
+| GET | `/api/user/info` | user; Bearer token required |
+| GET | `/api/product/list?page=1&pageSize=4` | paginated products |
+| GET | `/api/product/detail?id=1` | product |
+| POST | `/api/product/favorite` | `{ productId, favorite }` |
+| POST | `/api/ai/chat` | SSE: start / delta / finish / [DONE] |
 
-Mock 服务通过 Vite 插件 `nitro-mock` 自动启动在 `http://localhost:5320`。
+Nitro 账号：`user / 123456`、`admin / 123456`。登录返回公开用户字段与 token，不返回密码。Access token 有效期 7 天，refresh cookie 30 天。旧 refresh 接口返回 token 字符串，浏览器客户端未调用，也没有自动刷新流程。
 
-也可以手动启动：
+商品根据 `Accept-Language` 返回英文（默认）、中文或日文。收藏接口校验并回传选择，不做持久化。聊天返回真实分块 SSE。当前**不存在 `/api/upload` handler**，也没有完整上传页面。
 
-```bash
-cd apps/backend-mock
-pnpm start
-```
-
-## API 接口
-
-### 认证
-
-| 方法 | 路径                | 说明                    |
-| ---- | ------------------- | ----------------------- |
-| POST | `/api/auth/login`   | 登录，返回 accessToken  |
-| POST | `/api/auth/logout`  | 登出，清除 refreshToken |
-| POST | `/api/auth/refresh` | 刷新 accessToken        |
-
-### 用户
-
-| 方法 | 路径             | 说明                            |
-| ---- | ---------------- | ------------------------------- |
-| GET  | `/api/user/info` | 获取用户信息（需 Bearer Token） |
-
-### 商品
-
-| 方法 | 路径                  | 说明                                       |
-| ---- | --------------------- | ------------------------------------------ |
-| GET  | `/api/product/list`   | 商品列表（支持分页 `?page=1&pageSize=10`） |
-| GET  | `/api/product/detail` | 商品详情（`?id=1`）                        |
-
-### 上传
-
-| 方法 | 路径          | 说明                     |
-| ---- | ------------- | ------------------------ |
-| POST | `/api/upload` | 文件上传（返回模拟 URL） |
-
-## 测试账号
-
-| 用户名 | 密码   | 角色     |
-| ------ | ------ | -------- |
-| user   | 123456 | 普通用户 |
-| admin  | 123456 | 管理员   |
-
-## 登录请求示例
-
-```bash
-curl -X POST http://localhost:5320/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"user","password":"123456"}'
-```
-
-响应：
-
-```json
-{
-  "code": 0,
-  "data": {
-    "id": 0,
-    "realName": "测试用户",
-    "avatar": "...",
-    "roles": ["user"],
-    "username": "user",
-    "accessToken": "eyJhbGciOiJIUzI1NiI..."
-  },
-  "message": "ok"
-}
-```
-
-## JWT 认证
-
-- Access Token 有效期：7 天
-- Refresh Token 有效期：30 天（存储在 HttpOnly Cookie 中）
+双后端接入见[后端模式](../guide/essentials/server.md)，其账号、持久化及鉴权与 Nitro fixture 独立。

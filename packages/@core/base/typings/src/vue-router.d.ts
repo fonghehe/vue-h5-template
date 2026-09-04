@@ -48,6 +48,11 @@ interface RouteMeta {
    */
   fullPathKey?: boolean;
   /**
+   * 已登录用户不再进入该页面。
+   * @default false
+   */
+  guestOnly?: boolean;
+  /**
    * 当前路由的子级在菜单中不展现
    * @default false
    */
@@ -117,6 +122,11 @@ interface RouteMeta {
    * 菜单所携带的参数
    */
   query?: Recordable;
+  /**
+   * 登录后才允许访问。角色级权限继续使用 authority。
+   * @default false
+   */
+  requiresAuth?: boolean;
   /**
    * 标题名称
    */

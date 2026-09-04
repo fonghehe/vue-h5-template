@@ -59,6 +59,19 @@ export const ja: LocaleSpecificConfig<DefaultTheme.Config> = {
           ],
         },
         {
+          text: 'v2 アーキテクチャ',
+          items: [
+            { text: 'アーキテクチャ', link: '/ja/guide/v2/architecture' },
+            { text: 'リクエスト', link: '/ja/guide/v2/request' },
+            { text: '状態管理', link: '/ja/guide/v2/state-management' },
+            { text: 'AI Chat', link: '/ja/guide/v2/ai-chat' },
+            { text: 'UI 戦略', link: '/ja/guide/v2/ui-framework' },
+            { text: 'テスト', link: '/ja/guide/v2/testing' },
+            { text: 'デプロイ', link: '/ja/guide/v2/deployment' },
+            { text: '移行', link: '/ja/guide/v2/migration-v2' },
+          ],
+        },
+        {
           text: 'プロジェクト',
           items: [
             {
@@ -68,6 +81,11 @@ export const ja: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: 'ディレクトリ構成', link: '/ja/guide/project/dir' },
             { text: 'Vite 設定', link: '/ja/guide/project/vite' },
             { text: 'コード規約', link: '/ja/guide/project/standard' },
+            { text: 'CLI（vsh）', link: '/ja/guide/project/cli' },
+            {
+              text: '翻訳と多言語ドキュメント',
+              link: '/ja/guide/project/translating',
+            },
           ],
         },
         {
@@ -97,11 +115,15 @@ export const ja: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: '共有パッケージ',
           items: [
+            { text: 'Mobile UI', link: '/ja/packages/mobile-ui' },
+            { text: 'API Client', link: '/ja/packages/api-client' },
+            { text: 'AI Chat', link: '/ja/packages/ai-chat' },
             { text: 'Stores', link: '/ja/packages/stores' },
             { text: 'Locales', link: '/ja/packages/locales' },
             { text: 'Utils', link: '/ja/packages/utils' },
             { text: 'Styles', link: '/ja/packages/styles' },
             { text: 'Vite Config', link: '/ja/packages/vite-config' },
+            { text: 'Core (@vh5-core)', link: '/ja/packages/core' },
           ],
         },
       ],

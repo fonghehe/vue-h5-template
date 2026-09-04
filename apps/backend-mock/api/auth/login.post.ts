@@ -4,7 +4,7 @@ import {
   setRefreshTokenCookie,
 } from '~/utils/cookie-utils';
 import { generateAccessToken, generateRefreshToken } from '~/utils/jwt-utils';
-import { MOCK_USERS } from '~/utils/mock-data';
+import { MOCK_USERS, toPublicUser } from '~/utils/mock-data';
 import {
   forbiddenResponse,
   useResponseError,
@@ -12,7 +12,10 @@ import {
 } from '~/utils/response';
 
 export default defineEventHandler(async (event) => {
-  const { password, username } = await readBody(event);
+  const { password, username } = await readBody<{
+    password?: string;
+    username?: string;
+  }>(event);
   if (!password || !username) {
     setResponseStatus(event, 400);
     return useResponseError(
@@ -30,13 +33,14 @@ export default defineEventHandler(async (event) => {
     return forbiddenResponse(event, 'Username or password is incorrect.');
   }
 
-  const accessToken = generateAccessToken(findUser);
-  const refreshToken = generateRefreshToken(findUser);
+  const publicUser = toPublicUser(findUser);
+  const accessToken = generateAccessToken(publicUser);
+  const refreshToken = generateRefreshToken(publicUser);
 
   setRefreshTokenCookie(event, refreshToken);
 
   return useResponseSuccess({
-    ...findUser,
+    ...publicUser,
     accessToken,
   });
 });

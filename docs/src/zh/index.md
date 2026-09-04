@@ -18,44 +18,28 @@ hero:
       link: https://github.com/fonghehe/vue-h5-template
 
 features:
-  - icon: 🏗️
-    title: Monorepo 架构
-    details: 基于 Turborepo + pnpm workspace，统一管理多个 H5 应用和共享包，构建缓存加速开发。
-    link: /zh/guide/project/dir
-    linkText: 目录结构
-  - icon: 📱
-    title: 三套 UI 框架
-    details: 分别提供 NutUI、Vant、Varlet 版本，自由选择适合的移动端 UI 组件库。
-    link: /zh/apps/nutui
-    linkText: 查看应用
-  - icon: 🔧
-    title: 统一工程配置
-    details: 共享 ESLint、Prettier、Stylelint、TypeScript 配置，减少重复，保持团队规范一致。
-    link: /zh/guide/project/standard
-    linkText: 代码规范
-  - icon: 🗄️
-    title: Nitro Mock 服务
-    details: 内置 Nitro Mock 后端，提供登录认证、商品列表等完整接口模拟，开发无需等待后端。
-    link: /zh/apps/backend-mock
-    linkText: Mock 文档
-  - icon: 📦
-    title: 状态管理
-    details: Pinia + 持久化插件，生产环境 AES 加密存储，多 Tab 状态同步。
-    link: /zh/packages/stores
-    linkText: Stores 文档
-  - icon: ⚡
-    title: Vite 构建
-    details: 共享 Vite 配置，支持自动导入、px-to-viewport 移动适配、PWA 等开箱即用。
-    link: /zh/guide/project/vite
-    linkText: Vite 配置
-  - icon: 🌐
-    title: 国际化
-    details: 内置 vue-i18n，支持简体中文、繁体中文、英文、日文四语言，共享 locales 包跨应用复用。
+  - title: "共享移动业务"
+    details: "Vant、NutUI、Varlet 共用 Home、List、Member、Examples，保留各自主题。"
+    link: /zh/guide/v2/ui-framework
+  - title: "流式 AI Chat"
+    details: "悬浮入口、增量 SSE、停止、重试、重新生成与净化后的 Markdown。"
+    link: /zh/guide/v2/ai-chat
+  - title: "服务端与客户端状态"
+    details: "TanStack Query 管服务端缓存和变更；Pinia 管会话与本地购物车。"
+    link: /zh/guide/essentials/state
+  - title: "类型化 REST API"
+    details: "共享 Axios 错误、请求头与 OpenAPI 生成契约。"
+    link: /zh/guide/essentials/api
+  - title: "Mock 或配套服务"
+    details: "使用 Nitro 测试数据，或切换到独立 AI 与业务后端。"
+    link: /zh/guide/essentials/server
+  - title: "英文优先国际化"
+    details: "英中日页面切换、记住语言偏好，并同步原生组件语言。"
     link: /zh/guide/essentials/locale
-    linkText: 国际化文档
-  - icon: 🔒
-    title: TypeScript
-    details: 全量 TypeScript 覆盖，严格类型检查，完整的类型声明，提升代码可维护性。
-    link: /zh/guide/introduction/about
-    linkText: 了解更多
+  - title: "移动构建与主题"
+    details: "Vite 8/Rolldown、安全区、响应式共享 CSS、可选 PWA、构建期图片优化。"
+    link: /zh/guide/essentials/styles
+  - title: "工程验证"
+    details: "共享包独立类型检查、Vitest、三应用 Playwright；AGENTS.md 明确边界。"
+    link: /zh/guide/v2/testing
 ---

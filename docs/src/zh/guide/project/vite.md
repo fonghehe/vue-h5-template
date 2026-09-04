@@ -1,61 +1,20 @@
 # Vite 配置
 
-`internal/vite-config` 提供共享的 Vite 配置生成器。
-
-## 使用
+`internal/vite-config` 提供共享配置工厂。Vite 8 使用 Rolldown，目标为 Chrome 111+、Safari 16.4+。微信/企业微信等内嵌 WebView 需满足对应内核能力，不能保证所有历史版本均兼容。
 
 ```ts
 import { defineConfig } from '@vh5/vite-config';
 
 export default defineConfig(async () => ({
-  application: {
-    uiLibrary: 'nut', // 'nut' | 'vant' | 'varlet'
-  },
-  vite: {
-    // 自定义 Vite 配置
-  },
+  application: { uiLibrary: 'vant' }, // 'nut' | 'vant' | 'varlet'
+  vite: { server: { strictPort: true } },
 }));
 ```
 
-## 内置插件
+已接入 Vue/JSX、API/组件自动导入、UnoCSS、移动 CSS、HTML/loading 注入及选中的 UI resolver，未启用文件路由。SVG 示例用 eager `import.meta.glob` 和组件 sprite，并非恢复旧 SVG/文件路由插件。
 
-| 插件                       | 说明                    |
-| -------------------------- | ----------------------- |
-| `@vitejs/plugin-vue`       | Vue 3 SFC 支持          |
-| `@vitejs/plugin-vue-jsx`   | JSX/TSX 支持            |
-| `unplugin-auto-import`     | API 自动导入            |
-| `unplugin-vue-components`  | 组件按需自动注册        |
-| `unplugin-vue-router`      | 类型安全文件路由        |
-| `unocss`                   | 原子化 CSS 引擎         |
-| `vite-plugin-eruda-pro`    | 移动端调试控制台（dev） |
-| `vite-plugin-vue-devtools` | Vue DevTools            |
-| `postcss-mobile-forever`   | 移动端视口适配          |
-| `vite-plugin-html`         | HTML 模板注入           |
-| `vite-plugin-compression`  | Gzip/Brotli 压缩        |
-| `vite-plugin-pwa`          | PWA 支持                |
-| `nitro-mock`               | Nitro Mock 服务         |
+可选开关：`VITE_PWA_ENABLED`、`VITE_IMAGE_OPTIMIZE`、`VITE_DEVTOOLS`、`VITE_ERUDA_ENABLED`、`VITE_VISUALIZER`、`VITE_ARCHIVER`；压缩用 `VITE_COMPRESS=gzip,brotli`。PWA 默认关闭。图片优化仅构建执行，Vant 当前 `.env.production` 已开启。
 
-## 按需加载配置
+`VITE_NITRO_MOCK` 区分 Mock/服务模式；目标为 `VITE_MOCK_API_TARGET`、`VITE_API_TARGET`、`VITE_AI_API_TARGET`，先匹配 `/api/ai`。参见[后端接入](../essentials/server.md)，生产构建禁止开启 Nitro。
 
-通过 `uiLibrary` 选项自动配置对应的 Resolver：
-
-| UI 库 | Component Resolver | Auto Import Resolver | importStyle |
-| --- | --- | --- | --- |
-| vant | `VantResolver` | `VantResolver` | `false`（全量CSS） |
-| varlet | `VarletImportResolver` | `VarletImportResolver({ autoImport: true })` | 自动 |
-| nutui | `NutUIResolver` | — | 自动 |
-
-## 配置选项
-
-```ts
-interface ApplicationPluginOptions {
-  uiLibrary?: 'nut' | 'vant' | 'varlet';
-  devtools?: boolean;
-  compress?: boolean;
-  compressTypes?: ('brotli' | 'gzip')[];
-  html?: boolean;
-  pwa?: boolean;
-  injectAppLoading?: boolean;
-  nitroMock?: boolean;
-}
-```
+改源码后执行 `pnpm -F @vh5/vite-config stub` 并重启开发服务。独立检查命令为 `pnpm -F @vh5/vite-config type-check`。完整类型在 `src/typing.ts`，环境转换在 `src/utils/env.ts`，移动样式/预热在 `src/config/application.ts`。

@@ -1,15 +1,12 @@
-import { eventHandler, getQuery } from 'h3';
-import { MOCK_PRODUCTS } from '~/utils/mock-data';
-import { usePageResponseSuccess, useResponseSuccess } from '~/utils/response';
+import { eventHandler, getHeader, getQuery } from 'h3';
+import { getLocalizedProducts } from '~/utils/product-locales';
+import { usePageResponseSuccess } from '~/utils/response';
 
 export default eventHandler((event) => {
-  const { page, pageSize } = getQuery(event);
-  if (page && pageSize) {
-    return usePageResponseSuccess(
-      String(page),
-      String(pageSize),
-      MOCK_PRODUCTS,
-    );
-  }
-  return useResponseSuccess(MOCK_PRODUCTS);
+  const { page = 1, pageSize = 10 } = getQuery(event);
+  return usePageResponseSuccess(
+    String(page),
+    String(pageSize),
+    getLocalizedProducts(getHeader(event, 'accept-language')),
+  );
 });

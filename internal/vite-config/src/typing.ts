@@ -286,6 +286,11 @@ interface ApplicationPluginOptions extends CommonPluginOptions {
    */
   i18n?: boolean;
   /**
+   * 是否在生产构建中优化本地图片
+   * @default false
+   */
+  imageOptimize?: boolean;
+  /**
    * 是否开启 ImportMap CDN
    * @default false
    */

@@ -18,44 +18,28 @@ hero:
       link: https://github.com/fonghehe/vue-h5-template
 
 features:
-  - icon: 🏗️
-    title: Monorepo 架構
-    details: 基於 Turborepo + pnpm workspace，統一管理多個 H5 應用和共享套件，建置快取加速開發。
-    link: /zh-HK/guide/project/dir
-    linkText: 目錄結構
-  - icon: 📱
-    title: 三套 UI 框架
-    details: 分別提供 NutUI、Vant、Varlet 版本，自由選擇適合的行動端 UI 元件庫。
-    link: /zh-HK/apps/nutui
-    linkText: 檢視應用
-  - icon: 🔧
-    title: 統一工程設定
-    details: 共享 ESLint、Prettier、Stylelint、TypeScript 設定，減少重複，保持團隊規範一致。
-    link: /zh-HK/guide/project/standard
-    linkText: 程式碼規範
-  - icon: 🗄️
-    title: Nitro Mock 服務
-    details: 內建 Nitro Mock 後端，提供登入認證、商品列表等完整介面模擬，開發無需等待後端。
-    link: /zh-HK/apps/backend-mock
-    linkText: Mock 文件
-  - icon: 📦
-    title: 狀態管理
-    details: Pinia + 持久化外掛，生產環境 AES 加密儲存，多 Tab 狀態同步。
-    link: /zh-HK/packages/stores
-    linkText: Stores 文件
-  - icon: ⚡
-    title: Vite 建置
-    details: 共享 Vite 設定，支援自動匯入、px-to-viewport 行動適配、PWA 等開箱即用。
-    link: /zh-HK/guide/project/vite
-    linkText: Vite 設定
-  - icon: 🌐
-    title: 國際化
-    details: 內建 vue-i18n，支援簡體中文、繁體中文、英文、日文四語言，共享 locales 套件跨應用複用。
+  - title: "共享 Mobile 業務"
+    details: "Vant/NutUI/Varlet 共用四個主頁，保留各自主題。"
+    link: /zh-HK/guide/v2/ui-framework
+  - title: "串流 AI Chat"
+    details: "浮動入口、增量 SSE、停止、重試、重新生成同安全 Markdown。"
+    link: /zh-HK/guide/v2/ai-chat
+  - title: "狀態分工"
+    details: "Query 管 server cache 同更新，Pinia 管 session 同本機購物車。"
+    link: /zh-HK/guide/essentials/state
+  - title: "Typed REST"
+    details: "共享 Axios 錯誤、request headers 同 OpenAPI 生成契約。"
+    link: /zh-HK/guide/essentials/api
+  - title: "Mock 或配套服務"
+    details: "用 Nitro fixture 或獨立 AI 同業務後端。"
+    link: /zh-HK/guide/essentials/server
+  - title: "英文優先多語"
+    details: "英中日頁面切換、保存偏好，同步原生 UI 語言。"
     link: /zh-HK/guide/essentials/locale
-    linkText: 國際化文件
-  - icon: 🔒
-    title: TypeScript
-    details: 全量 TypeScript 覆蓋，嚴格型別檢查，完整的型別宣告，提升程式碼可維護性。
-    link: /zh-HK/guide/introduction/about
-    linkText: 了解更多
+  - title: "Mobile 構建"
+    details: "Vite 8/Rolldown、安全區、responsive CSS、可選 PWA 同 build 圖片優化。"
+    link: /zh-HK/guide/essentials/styles
+  - title: "工程驗證"
+    details: "共享包獨立型別檢查、Vitest、三應用 Playwright；AGENTS.md 列明邊界。"
+    link: /zh-HK/guide/v2/testing
 ---

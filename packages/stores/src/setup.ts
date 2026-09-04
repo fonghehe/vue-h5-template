@@ -8,7 +8,7 @@ import SecureLS from 'secure-ls';
 let pinia: Pinia;
 
 type SecureLSStorage = {
-  get(key: string): any;
+  get(key: string): null | string;
   set(key: string, value: unknown): void;
 };
 
@@ -74,7 +74,13 @@ export function resetAllStores() {
     console.error('Pinia is not installed');
     return;
   }
-  const allStores = (pinia as any)._s;
+  // Pinia does not expose the registry publicly; this narrow compatibility
+  // view is isolated here so application stores stay on the supported API.
+  const allStores = (
+    pinia as unknown as {
+      _s: Map<string, { $reset(): void }>;
+    }
+  )._s;
   for (const [_key, store] of allStores) {
     store.$reset();
   }

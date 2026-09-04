@@ -4,6 +4,18 @@ interface OpenWindowOptions {
   target?: '_blank' | '_parent' | '_self' | '_top' | string;
 }
 
+const SAFE_WINDOW_PROTOCOLS = new Set(['http:', 'https:']);
+
+function resolveSafeWindowUrl(url: string): string {
+  const resolved = new URL(url, window.location.href);
+  if (!SAFE_WINDOW_PROTOCOLS.has(resolved.protocol)) {
+    throw new TypeError(
+      `Unsupported window URL protocol: ${resolved.protocol}`,
+    );
+  }
+  return resolved.href;
+}
+
 /**
  * 新窗口打开URL。
  *
@@ -20,7 +32,7 @@ function openWindow(url: string, options: OpenWindowOptions = {}): void {
     .join(',');
 
   // 打开窗口
-  window.open(url, target, features);
+  window.open(resolveSafeWindowUrl(url), target, features);
 }
 
 /**

@@ -1,56 +1,33 @@
 # @vh5/vsh
 
-一个 Shell 脚本工具集合，用于 Vue Vh5 项目的开发和管理。
+Vue H5 專案的命令行工具集，基於 [cac](https://github.com/cacjs/cac) 構建，封裝了程式碼檢查、依賴檢查、腳手架與 workspace 管理。
 
-## 功能特性
+## 使用方式
 
-- 🚀 基于 Node.js 的现代化 Shell 工具
-- 📦 支持模块化开发和按需加载
-- 🔍 提供依赖检查和分析功能
-- 🔄 支持循环依赖扫描
-- 📝 提供包发布检查功能
-
-## 安装
+本包是 workspace 內部包，二進制名為 `vsh`。在倉庫根目錄可直接透過 pnpm 呼叫：
 
 ```bash
-# 使用 pnpm 安装
-pnpm add -D @vh5/vsh
+# 通用呼叫方式
+pnpm exec vsh <command>
 
-# 或者使用 npm
-npm install -D @vh5/vsh
-
-# 或者使用 yarn
-yarn add -D @vh5/vsh
+# 根 package.json 中已封裝的常用腳本
+pnpm lint        # vsh lint
+pnpm format      # vsh lint --format
+pnpm publint     # vsh publint
+pnpm create-app  # vsh create-app
 ```
 
-## 使用方法
-
-### 全局安装
-
-```bash
-# 全局安装
-pnpm add -g @vh5/vsh
-
-# 使用 vsh 命令
-vsh [command]
-```
-
-### 本地使用
-
-```bash
-# 在 package.json 中添加脚本
-{
-  "scripts": {
-    "vsh": "vsh"
-  }
-}
-
-# 运行命令
-pnpm vsh [command]
-```
+`pnpm exec vsh --help` 可列出所有命令，`pnpm exec vsh <command> --help` 可查看單一命令的選項。
 
 ## 命令列表
 
-- `vsh check-deps`: 检查项目依赖
-- `vsh scan-circular`: 扫描循环依赖
-- `vsh publish-check`: 检查包发布配置
+| 命令 | 說明 |
+| ---- | ---- |
+| `vsh lint` | 執行程式碼檢查（oxfmt / oxlint / eslint / stylelint）；`--format` 自動修復 |
+| `vsh publint` | 檢查各套件 `package.json` 是否符合發佈規範 |
+| `vsh create-app` | 互動式建立一個新的 H5 應用（NutUI / Vant / Varlet） |
+| `vsh check-circular` | 掃描循環依賴（基於 `circular-dependency-scanner`） |
+| `vsh check-dep` | 檢查缺失 / 未使用的依賴（基於 `depcheck`） |
+| `vsh code-workspace` | 依 workspace 套件重新生成 `vh5.code-workspace` |
+
+各命令的詳細用法與選項請參閱文件站的 [CLI（vsh）](https://fonghehe.github.io/vue-h5-template/guide/project/cli) 頁面。

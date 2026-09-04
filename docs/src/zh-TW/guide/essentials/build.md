@@ -1,54 +1,20 @@
-# 建置部署
-
-## 建置
+# 構建與部署
 
 ```bash
-pnpm build
-pnpm build:nutui
 pnpm build:vant
-pnpm build:varlet
+pnpm -F @vh5/h5-vant preview
+pnpm build:docs
+pnpm -F @vh5/docs preview
 ```
 
-建置產物輸出在各應用的 `dist/` 目錄下。
+其他應用替換 `vant` 為 `nutui` / `varlet`。全 build 包含 docs。部署 `apps/h5-<ui>/dist` 為 history SPA，preview 不啟動後端。
 
-## 預覽
+正式環境需自設代理，先 `/api/ai/**` 到 AI，其餘 `/api/**` 到業務，關閉 SSE 緩衝；`VITE_NITRO_MOCK=false`，前端不能放金鑰。
 
-```bash
-cd apps/h5-nutui
-pnpm preview
-```
+`VITE_BASE` 以外還需檢查伺服器 fallback、PWA start URL/導覽回退、根路徑連結，不代表只改 base 就支援子目錄。
 
-## Docker 部署
+PWA 用 `VITE_PWA_ENABLED=true`，只預快取靜態資源，API 不快取。圖片優化為 build-only，Vant 正式設定已開啟。
 
-```bash
-docker build -f scripts/deploy/Dockerfile -t vue-h5-template .
-```
+Dockerfile 目前複製 **playground/dist**，Nginx 未接双後端，使用前必須調整，不能直接當 H5 正式部署。
 
-Nginx 設定模板位於 `scripts/deploy/nginx.conf`。
-
-## GitHub Pages 自動部署
-
-專案內置 GitHub Actions Workflow，推送 `main` 分支時自動建置並部署文件到 GitHub Pages。
-
-**啟用方式**：在儲庫設定 Settings → Pages 將 Source 設置為 **GitHub Actions**。
-
-```yaml
-# .github/workflows/docs.yml
-on:
-  push:
-    branches: [main]
-    paths: ['docs/**']
-```
-
-觸發條件：push 到 `main` 且 `docs/**` 有變更，或手動觸發 `workflow_dispatch`。
-
-## 環境變數
-
-| 變數                      | 說明                 |
-| ------------------------- | -------------------- |
-| `VITE_PORT`               | 開發伺服器埠號       |
-| `VITE_BASE`               | 基礎路徑             |
-| `VITE_GLOB_API_URL`       | API 請求前綴         |
-| `VITE_NITRO_MOCK`         | 是否啟用 Mock 服務   |
-| `VITE_DEVTOOLS`           | 是否啟用 DevTools    |
-| `VITE_INJECT_APP_LOADING` | 是否注入全域 loading |
+文檔輸出 `docs/.vitepress/dist`，base `/vue-h5-template/`；docs workflow 從 main 或手動觸發，release 用 Changesets，需設定發布 token。見[部署](../v2/deployment.md)。

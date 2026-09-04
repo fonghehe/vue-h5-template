@@ -1,87 +1,27 @@
-# 樣式
+# 樣式同 Mobile 主題
 
-## 全域樣式
-
-`packages/styles` 提供全域基礎樣式和各 UI 庫的樣式入口：
+每個應用只載入 `@vh5/styles/global` 加一個主題入口（vant / nutui / varlet）。token 喺 `packages/styles/src/<ui>/index.css`：Vant 藍 `#1989fa`、NutUI 紅 `#fa2c19`、Varlet 紫 `#6750a4`。
 
 ```ts
-import '@vh5/styles/global'; // 全域基礎樣式
-import '@vh5/styles/nutui'; // NutUI 主題樣式（可選）
-import '@vh5/styles/vant'; // Vant 主題樣式（可選）
-import '@vh5/styles/varlet'; // Varlet 主題樣式（可選）
-```
-
-## 按需載入策略
-
-### Vant
-
-- `VantResolver({ importStyle: true })` 完全按需載入，無需 `app.use(Vant)`
-- 不題外導入 `vant/lib/index.css`（由 Resolver 統一管理 CSS 注入順序）
-
-```ts
-// bootstrap.ts方vant）
+// Vant bootstrap; choose only the current app's theme.
 import '@vh5/styles/global';
-// ✅ 不導入 vant/lib/index.css，元件 CSS 由 VantResolver 按需注入
-// ❌ 不使用 app.use(Vant) 全量註冊
+import '@vh5/styles/vant';
 ```
 
-### Varlet
-
-- `VarletImportResolver` 完全按需載入
-- **Snackbar（函式）**：在使用 Snackbar 的檔案中手動導入 CSS
-
-```ts
-import { Snackbar } from '@varlet/ui';
-import '@varlet/ui/es/snackbar/style/index.mjs';
+```css
+/* packages/styles/src/vant/index.css */
+.van-nav-bar {
+  --van-nav-bar-background: var(--app-primary);
+  --van-nav-bar-title-text-color: #fff;
+  --van-nav-bar-icon-color: #fff;
+  --van-nav-bar-text-color: #fff;
+}
 ```
 
-### NutUI
+Vant 變數定義喺元件，避免延遲載入嘅 root CSS 覆蓋主題。頂欄跟 `--app-primary`，標題、返回圖示同文字操作白色。UI 按需載入；NutUI 函數式元件樣式喺 bootstrap 匯入，SCSS 注入只限應用檔案。
 
-- `NutUIResolver` 完全按需載入
-- **函式元件**（Toast/Notify/Dialog/ImagePreview）：在 `bootstrap.ts` 手動導入 CSS
+共享 CSS 喺 `packages/mobile-ui/src/surface.css` 同 scoped SFC，保障 320px grid、換行同 44px 觸控區。共享包排除 px-to-vw，其餘按 375px 設計、600px 最大展示寬度。
 
-```ts
-import '@nutui/nutui/dist/packages/toast/style/css';
-import '@nutui/nutui/dist/packages/notify/style/css';
-import '@nutui/nutui/dist/packages/dialog/style/css';
-import '@nutui/nutui/dist/packages/imagepreview/style/css';
-```
+UnoCSS 喺 `internal/vite-config/src/plugins/unocss.ts`，唔係 root config。用 presetUno/attributify/icons，Varlet 先載入專屬 preset。shortcuts 係 `mobile-card`、`page-shell`、`tap-target`；rules 係 `safe-area-pt/pb/px`、`h-safe-screen`；斷點 375/600/768px。複雜樣式用 scoped CSS。
 
-## 行動端適配
-
-使用 `postcss-mobile-forever` 將 px 自動轉換為 viewport 單位：
-
-- 設計稿寬度：375px
-- 最大顯示寬度：600px（平板等大螢幕自動居中限寬）
-
-## UnoCSS
-
-專案使用 [UnoCSS](https://unocss.dev/) 作為原子化 CSS 引擎，設定檔案位於專案根目錄 `uno.config.ts`。
-
-### 內置快捷方式
-
-| 快捷方式          | 等價於                                      |
-| ----------------- | ------------------------------------------- |
-| `flex-center`     | `flex items-center justify-center`          |
-| `flex-between`    | `flex items-center justify-between`         |
-| `flex-col-center` | `flex flex-col items-center justify-center` |
-
-### 使用示例
-
-```vue
-<template>
-  <div class="flex-center h-full text-lg text-gray-600">Hello UnoCSS</div>
-</template>
-```
-
-支援 attributify 模式：
-
-```vue
-<div flex items-center justify-center text-lg>
-  Hello UnoCSS
-</div>
-```
-
-## BEM 命名
-
-樣式採用 BEM 命名規範，基於 `@vh5-core/design` 設計 Token。
+构建設定改完執行 `pnpm -F @vh5/vite-config stub`。共享 SVG 喺 `packages/mobile-ui/src/assets/icons`，Vant 保留自有圖示。參見[UI 策略](../v2/ui-framework.md)。

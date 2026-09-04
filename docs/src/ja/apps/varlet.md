@@ -1,52 +1,16 @@
 # Varlet
 
-[Varlet](https://varlet.pages.dev/) 3.x ベースのモバイル H5 アプリ。
+3 アプリ共通の Home/List/Member/Examples は `/home`、`/list`、`/member`、`/examples` です。業務画面は `packages/mobile-ui`、ネイティブナビと `/examples/components` はアプリ固有です。英語既定で Home/Member に中日切替があります。テーマ付き AI ボタンは `/ai/chat` を開き、Chat/Login/Cart/Details では隠れます。
 
-## 特徴
-
-- Varlet コンポーネントの完全オンデマンド**ロード**、`VarletImportResolver` で自動登録・ CSS 注入 — `app.use(Varlet)` 不要
-- Material Design スタイル
-- 組み込み Snackbar API コンポーネント
-
-## 起動
+Varlet 3 は `VarletImportResolver` で読み込み、全登録しません。紫 `#6750a4`、`var-app-bar` / `var-bottom-navigation` を使用。言語は `Locale.add(lang, messages)` の後に `Locale.use(lang)` を呼びます。専用 UnoCSS preset はこのアプリだけに適用します。
 
 ```bash
 pnpm dev:varlet
+pnpm dev:services:varlet
+pnpm build:varlet
+pnpm -F @vh5/h5-varlet preview
 ```
 
-デフォルトポート：`5779`
+Port: `5779`.
 
-## オンデマンドロードの説明
-
-```ts
-// bootstrap.ts — VarletImportResolver が自動処理するため全量登録不要
-import '@vh5/styles/global';
-// ❌ app.use(Varlet) や全量 CSS インポートは使用しない
-```
-
-## 使用している Varlet コンポーネント
-
-| コンポーネント          | 用途                        |
-| ----------------------- | --------------------------- |
-| `var-app-bar`           | トップナビゲーションバー    |
-| `var-bottom-navigation` | ボトムタブバー              |
-| `var-cell`              | 商品リスト / リストアイテム |
-| `var-swipe`             | カルーセル                  |
-| `var-input`             | 入力フィールド              |
-| `var-image`             | 画像表示                    |
-| `var-button`            | ボタン                      |
-| `var-space`             | スペーシングレイアウト      |
-| `Snackbar`              | トーストメッセージ（API）   |
-
-| コンポーネント          | 用途                      |
-| ----------------------- | ------------------------- |
-| `var-app-bar`           | トップナビゲーションバー  |
-| `var-bottom-navigation` | ボトムタブバー            |
-| `var-card`              | 商品カード                |
-| `var-swipe`             | カルーセル                |
-| `var-input`             | 入力フィールド            |
-| `var-image`             | 画像表示                  |
-| `var-button`            | ボタン                    |
-| `var-space`             | スペーシングレイアウト    |
-| `var-cell`              | リストアイテム            |
-| `Snackbar`              | トーストメッセージ（API） |
+[バックエンドモード](../guide/essentials/server.md) · [テーマ](../guide/essentials/styles.md) · [ルート動作](../guide/essentials/route.md)

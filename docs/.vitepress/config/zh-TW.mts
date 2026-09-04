@@ -53,12 +53,30 @@ export const zhTW: LocaleSpecificConfig<DefaultTheme.Config> = {
           ],
         },
         {
+          text: 'v2 架構',
+          items: [
+            { text: '架構', link: '/zh-TW/guide/v2/architecture' },
+            { text: '請求層', link: '/zh-TW/guide/v2/request' },
+            { text: '狀態管理', link: '/zh-TW/guide/v2/state-management' },
+            { text: 'AI Chat', link: '/zh-TW/guide/v2/ai-chat' },
+            { text: 'UI 框架', link: '/zh-TW/guide/v2/ui-framework' },
+            { text: '測試', link: '/zh-TW/guide/v2/testing' },
+            { text: '部署', link: '/zh-TW/guide/v2/deployment' },
+            { text: '遷移', link: '/zh-TW/guide/v2/migration-v2' },
+          ],
+        },
+        {
           text: '工程',
           items: [
             { text: '系統架構', link: '/zh-TW/guide/project/architecture' },
             { text: '目錄結構', link: '/zh-TW/guide/project/dir' },
             { text: 'Vite 設定', link: '/zh-TW/guide/project/vite' },
             { text: '程式碼規範', link: '/zh-TW/guide/project/standard' },
+            { text: 'CLI（vsh）', link: '/zh-TW/guide/project/cli' },
+            {
+              text: '多語言文件與翻譯',
+              link: '/zh-TW/guide/project/translating',
+            },
           ],
         },
         {
@@ -85,11 +103,15 @@ export const zhTW: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: '共享套件',
           items: [
+            { text: 'Mobile UI', link: '/zh-TW/packages/mobile-ui' },
+            { text: 'API Client', link: '/zh-TW/packages/api-client' },
+            { text: 'AI Chat', link: '/zh-TW/packages/ai-chat' },
             { text: 'Stores', link: '/zh-TW/packages/stores' },
             { text: 'Locales', link: '/zh-TW/packages/locales' },
             { text: 'Utils', link: '/zh-TW/packages/utils' },
             { text: 'Styles', link: '/zh-TW/packages/styles' },
             { text: 'Vite Config', link: '/zh-TW/packages/vite-config' },
+            { text: 'Core (@vh5-core)', link: '/zh-TW/packages/core' },
           ],
         },
       ],

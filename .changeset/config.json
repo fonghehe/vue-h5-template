@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.2/schema.json",
+  "access": "restricted",
+  "baseBranch": "main",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "fonghehe/vue-h5-template" }
+  ],
+  "commit": false,
+  "fixed": [],
+  "ignore": [
+    "@vh5/backend-mock",
+    "@vh5/docs",
+    "@vh5/h5-nutui",
+    "@vh5/h5-vant",
+    "@vh5/h5-varlet",
+    "@vh5/playground"
+  ],
+  "linked": [],
+  "privatePackages": { "tag": false, "version": true },
+  "updateInternalDependencies": "patch"
+}

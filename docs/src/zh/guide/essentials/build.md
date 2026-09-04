@@ -1,60 +1,20 @@
-# 构建部署
-
-## 构建
+# 构建与部署
 
 ```bash
-# 构建所有应用
-pnpm build
-
-# 构建指定应用
-pnpm build:nutui
 pnpm build:vant
-pnpm build:varlet
+pnpm -F @vh5/h5-vant preview
+pnpm build:docs
+pnpm -F @vh5/docs preview
 ```
 
-构建产物输出在各应用的 `dist/` 目录下。
+其他应用把 `vant` 替换为 `nutui` 或 `varlet`。`pnpm build` 调度所有 workspace build（含文档）。部署所选 `apps/h5-<ui>/dist` 为 history SPA，preview 不启动 Nitro 或配套服务。
 
-## 预览
+产物不包含 Vite 开发代理。生产把 `/api/ai/**` 先转发 AI 服务，其余 `/api/**` 转业务服务，并关闭 SSE 缓冲。生产设 `VITE_NITRO_MOCK=false`，禁止在前端 env 放模型密钥/JWT secret。
 
-```bash
-cd apps/h5-nutui
-pnpm preview
-```
+`VITE_BASE` 配置资源和 router base；子目录还需匹配托管 fallback，并检查 PWA start URL、导航回退和应用根路径链接，不能宣称只改一个变量就完成子目录部署。
 
-## Docker 部署
+`VITE_PWA_ENABLED=true` 可开启静态预缓存/SPA fallback，不缓存 API。`VITE_IMAGE_OPTIMIZE=true` 只在构建优化图片，Vant 生产配置已开启。
 
-项目提供了 Docker 部署配置：
+现有 `scripts/deploy/Dockerfile` 复制的是 **playground/dist**，不是三套 H5 应用；Nginx 模板也未配置双后端。使用前需调整，不是可直接部署 H5 的完整命令。
 
-```bash
-# Dockerfile 位于 scripts/deploy/
-docker build -f scripts/deploy/Dockerfile -t vue-h5-template .
-```
-
-Nginx 配置模板位于 `scripts/deploy/nginx.conf`。
-
-## GitHub Pages 自动部署
-
-项目内置 GitHub Actions Workflow，推送 `main` 分支时自动构建并部署文档到 GitHub Pages。
-
-**启用方式**：在仓库 Settings → Pages 中将 Source 设置为 **GitHub Actions**。
-
-```yaml
-# .github/workflows/docs.yml
-on:
-  push:
-    branches: [main]
-    paths: ['docs/**']
-```
-
-触发条件：push 到 `main` 且 `docs/**` 有变更，或手动触发 `workflow_dispatch`。
-
-## 环境变量
-
-| 变量                      | 说明                 |
-| ------------------------- | -------------------- |
-| `VITE_PORT`               | 开发服务器端口       |
-| `VITE_BASE`               | 基础路径             |
-| `VITE_GLOB_API_URL`       | API 请求前缀         |
-| `VITE_NITRO_MOCK`         | 是否启用 Mock 服务   |
-| `VITE_DEVTOOLS`           | 是否启用 DevTools    |
-| `VITE_INJECT_APP_LOADING` | 是否注入全局 loading |
+文档产物为 `docs/.vitepress/dist`，base 是 `/vue-h5-template/`。docs workflow 在 main 的相关文件变化或手动触发时发布。release workflow 使用 Changesets，公开包发布需仓库/token 配置。参见[部署细节](../v2/deployment.md)。

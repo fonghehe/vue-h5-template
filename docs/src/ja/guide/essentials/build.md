@@ -1,54 +1,20 @@
 # ビルドとデプロイ
 
-## ビルド
-
 ```bash
-pnpm build           # 全アプリをビルド
-pnpm build:nutui     # NutUI 版
-pnpm build:vant      # Vant 版
-pnpm build:varlet    # Varlet 版
+pnpm build:vant
+pnpm -F @vh5/h5-vant preview
+pnpm build:docs
+pnpm -F @vh5/docs preview
 ```
 
-出力は各アプリの `dist/` ディレクトリに生成されます。
+別アプリは `vant` を `nutui` / `varlet` に変更します。全 build は docs を含む workspace を実行。`apps/h5-<ui>/dist` を history SPA として配信します。preview は Nitro や別サービスを起動しません。
 
-## プレビュー
+本番に Vite proxy はありません。`/api/ai/**` を先に AI、残り `/api/**` を業務サービスへ転送し SSE buffering を無効にします。`VITE_NITRO_MOCK=false` を設定し、秘密鍵をフロントに置かないでください。
 
-```bash
-cd apps/h5-nutui
-pnpm preview
-```
+`VITE_BASE` だけでサブパス配信は保証されません。ホストの fallback、PWA start URL、ナビゲーション fallback、ルート相対リンクも確認が必要です。
 
-## Docker
+PWA は `VITE_PWA_ENABLED=true`、静的 precache と SPA fallback のみで API cache はありません。画像最適化は build 時の `VITE_IMAGE_OPTIMIZE=true`、Vant 本番設定は有効です。
 
-```bash
-docker build -f scripts/deploy/Dockerfile -t vue-h5-template .
-```
+既存 Dockerfile は H5 ではなく **playground/dist** をコピーし、Nginx は 2 バックエンドを接続しません。利用前に両方を調整してください。
 
-Nginx 設定テンプレート：`scripts/deploy/nginx.conf`。
-
-## GitHub Pages 自動デプロイ
-
-`main` ブランチにプッシュすると GitHub Actions が自動でドキュメントをビルドして GitHub Pages にデプロイします。
-
-**有効化方法**：リポジトリの Settings → Pages で Source を **GitHub Actions** に設定。
-
-```yaml
-# .github/workflows/docs.yml
-on:
-  push:
-    branches: [main]
-    paths: ['docs/**']
-```
-
-トリガー条件：`main` へのプッシュで `docs/**` に変更がある場合、または手動で `workflow_dispatch`。
-
-## 環境変数
-
-| 変数                      | 説明                         |
-| ------------------------- | ---------------------------- |
-| `VITE_PORT`               | 開發サーバーポート           |
-| `VITE_BASE`               | ベースパス                   |
-| `VITE_GLOB_API_URL`       | API リクエストプレフィックス |
-| `VITE_NITRO_MOCK`         | Mock サービスを有効化        |
-| `VITE_DEVTOOLS`           | DevTools を有効化            |
-| `VITE_INJECT_APP_LOADING` | グローバルローディングを注入 |
+docs 成果物は `docs/.vitepress/dist`、base は `/vue-h5-template/`。docs workflow は main の対象変更または手動で公開。release workflow は Changesets で、公開には token 等の設定が必要です。[詳細](../v2/deployment.md)も参照してください。

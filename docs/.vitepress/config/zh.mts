@@ -53,12 +53,30 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
           ],
         },
         {
+          text: 'v2 架构',
+          items: [
+            { text: '架构', link: '/zh/guide/v2/architecture' },
+            { text: '请求层', link: '/zh/guide/v2/request' },
+            { text: '状态管理', link: '/zh/guide/v2/state-management' },
+            { text: 'AI Chat', link: '/zh/guide/v2/ai-chat' },
+            { text: 'UI 框架', link: '/zh/guide/v2/ui-framework' },
+            { text: '测试', link: '/zh/guide/v2/testing' },
+            { text: '部署', link: '/zh/guide/v2/deployment' },
+            { text: '迁移', link: '/zh/guide/v2/migration-v2' },
+          ],
+        },
+        {
           text: '工程',
           items: [
             { text: '系统架构', link: '/zh/guide/project/architecture' },
             { text: '目录结构', link: '/zh/guide/project/dir' },
             { text: 'Vite 配置', link: '/zh/guide/project/vite' },
             { text: '代码规范', link: '/zh/guide/project/standard' },
+            { text: 'CLI（vsh）', link: '/zh/guide/project/cli' },
+            {
+              text: '多语言文档与翻译',
+              link: '/zh/guide/project/translating',
+            },
           ],
         },
         {
@@ -85,11 +103,15 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: '共享包',
           items: [
+            { text: 'Mobile UI', link: '/zh/packages/mobile-ui' },
+            { text: 'API Client', link: '/zh/packages/api-client' },
+            { text: 'AI Chat', link: '/zh/packages/ai-chat' },
             { text: 'Stores', link: '/zh/packages/stores' },
             { text: 'Locales', link: '/zh/packages/locales' },
             { text: 'Utils', link: '/zh/packages/utils' },
             { text: 'Styles', link: '/zh/packages/styles' },
             { text: 'Vite Config', link: '/zh/packages/vite-config' },
+            { text: 'Core (@vh5-core)', link: '/zh/packages/core' },
           ],
         },
       ],

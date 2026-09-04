@@ -56,7 +56,7 @@ function generatePackageJson(
 ): string {
   return `{
   "name": "@vh5/${name}",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -67,6 +67,7 @@ function generatePackageJson(
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@vh5/api-client": "workspace:*",
     "@vh5/locales": "workspace:*",
     "@vh5/stores": "workspace:*",
     "@vh5/styles": "workspace:*",
@@ -142,14 +143,21 @@ export default defineConfig(async () => {
 }
 
 function generateBootstrap(ui: UILibrary, template: AppTemplate): string {
+  const userStoreImport =
+    ui === 'nutui'
+      ? "import { useUserStore } from './stores/modules/user';"
+      : "import { useUserStore } from './stores/user';";
+
   return `import { createApp, watchEffect } from 'vue';
 
+import { configureApiClient } from '@vh5/api-client';
 import { initStores } from '@vh5/stores';
 import { useTitle } from '@vueuse/core';
 ${template.uiImport ? `\n${template.uiImport}\n` : ''}
 import App from './App.vue';
 import { setupI18n } from './locales';
 import router from './router';
+${userStoreImport}
 
 import 'virtual:uno.css';
 import '@vh5/styles/global';
@@ -158,13 +166,28 @@ async function bootstrap(namespace: string) {
   const app = createApp(App);
   await setupI18n(app);
   await initStores(app, { namespace });
+  const userStore = useUserStore();
+  configureApiClient({
+    getAccessToken: () => userStore.token,
+    onUnauthorized: async () => {
+      userStore.clearSession();
+      const current = router.currentRoute.value;
+      if (current.name !== 'login') {
+        await router.replace({
+          name: 'login',
+          query: { redirect: current.fullPath },
+        });
+      }
+    },
+  });
   app.use(router);
   ${template.uiSetup}
   app.mount('#app');
 
   watchEffect(() => {
     const routeTitle = router.currentRoute.value.meta?.title as string | undefined;
-    const pageTitle = routeTitle ? \`\${routeTitle} - Vue H5 Template\` : 'Vue H5 Template';
+    const appTitle = import.meta.env.VITE_APP_TITLE || 'Vue H5 Template';
+    const pageTitle = routeTitle ? \`\${routeTitle} - \${appTitle}\` : appTitle;
     useTitle(pageTitle);
   });
 }
@@ -202,12 +225,17 @@ function generateAppVue(): string {
 
 function generateIndexHtml(): string {
   return `<!doctype html>
-<html lang="">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#1989fa" />
+    <meta name="description" content="Vue 3 mobile H5 application" />
+    <title>%VITE_APP_TITLE%</title>
   </head>
   <body>
     <div id="app"></div>
@@ -217,8 +245,11 @@ function generateIndexHtml(): string {
 `;
 }
 
-function generateEnvDevelopment(port: number): string {
-  return `# 端口号
+function generateEnvDevelopment(name: string, port: number): string {
+  return `VITE_APP_NAMESPACE=vh5-web-${name}
+VITE_APP_TITLE=Vue H5 Template
+
+# 端口号
 VITE_PORT=${port}
 
 VITE_BASE=/
@@ -234,6 +265,15 @@ VITE_DEVTOOLS=false
 
 # 是否注入全局loading
 VITE_INJECT_APP_LOADING=true
+`;
+}
+
+function generateEnvProduction(name: string): string {
+  return `VITE_APP_NAMESPACE=vh5-web-${name}
+VITE_APP_TITLE=Vue H5 Template
+VITE_NITRO_MOCK=false
+VITE_PWA_ENABLED=false
+VITE_IMAGE_OPTIMIZE=false
 `;
 }
 
@@ -326,6 +366,12 @@ function generateEnvDts(): string {
 function generateEnv(name: string): string {
   return `# 应用标识（用于 Store namespace 隔离）
 VITE_APP_NAMESPACE=vh5-web-${name}
+VITE_APP_TITLE=Vue H5 Template
+
+# Production defaults. Copy values into the matching local env file as needed.
+VITE_NITRO_MOCK=false
+VITE_PWA_ENABLED=false
+VITE_IMAGE_OPTIMIZE=false
 `;
 }
 
@@ -427,8 +473,9 @@ export function defineCreateAppCommand(cli: CAC) {
         'tsconfig.node.json': generateTsconfigNode(),
         'env.d.ts': generateEnvDts(),
         'index.html': generateIndexHtml(),
-        '.env': generateEnv(appName),
-        '.env.development': generateEnvDevelopment(template.devPort),
+        '.env.example': generateEnv(appName),
+        '.env.development': generateEnvDevelopment(appName, template.devPort),
+        '.env.production': generateEnvProduction(appName),
         'src/main.ts': generateMainTs(),
         'src/bootstrap.ts': generateBootstrap(uiType, template),
         'src/App.vue': generateAppVue(),

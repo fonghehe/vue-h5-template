@@ -43,6 +43,19 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
           ],
         },
         {
+          text: 'v2 Architecture',
+          items: [
+            { text: 'Architecture', link: '/guide/v2/architecture' },
+            { text: 'Request Layer', link: '/guide/v2/request' },
+            { text: 'State Management', link: '/guide/v2/state-management' },
+            { text: 'AI Chat', link: '/guide/v2/ai-chat' },
+            { text: 'UI Frameworks', link: '/guide/v2/ui-framework' },
+            { text: 'Testing', link: '/guide/v2/testing' },
+            { text: 'Deployment', link: '/guide/v2/deployment' },
+            { text: 'Migration', link: '/guide/v2/migration-v2' },
+          ],
+        },
+        {
           text: 'Project',
           items: [
             {
@@ -52,6 +65,11 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: 'Directory Structure', link: '/guide/project/dir' },
             { text: 'Vite Config', link: '/guide/project/vite' },
             { text: 'Code Standards', link: '/guide/project/standard' },
+            { text: 'CLI (vsh)', link: '/guide/project/cli' },
+            {
+              text: 'Translating',
+              link: '/guide/project/translating',
+            },
           ],
         },
         {
@@ -78,11 +96,15 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: 'Shared Packages',
           items: [
+            { text: 'Mobile UI', link: '/packages/mobile-ui' },
+            { text: 'API Client', link: '/packages/api-client' },
+            { text: 'AI Chat', link: '/packages/ai-chat' },
             { text: 'Stores', link: '/packages/stores' },
             { text: 'Locales', link: '/packages/locales' },
             { text: 'Utils', link: '/packages/utils' },
             { text: 'Styles', link: '/packages/styles' },
             { text: 'Vite Config', link: '/packages/vite-config' },
+            { text: 'Core (@vh5-core)', link: '/packages/core' },
           ],
         },
       ],

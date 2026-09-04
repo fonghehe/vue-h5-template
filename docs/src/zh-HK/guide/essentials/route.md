@@ -1,87 +1,11 @@
 # 路由同導覽
 
-路由由**特性套件**管理，而非各應用。應用外殼將每個特性嘅 `routes` 導出組合成一個路由實例。
+每個應用喺 `src/router/index.ts` 手寫路由，以 runtime 記錄為準。保留嘅舊 `typed-router.d.ts` 唔係最新生成結果，未啟用檔案路由或者自動路由名稱型別保證。
 
-## 1. 路由實例
+共用 `/home`、`/list`、`/member`、`/examples`，舊 `/mine`、`/example` 會轉址。子頁包括 `/details?id=1`、`/cart`、`/login`、`/ai/chat`、`/examples/{query,request,mobile,svg-icons,pwa,components}`。Vant/Varlet 名稱保留 `mine`、`example`，NutUI 用 `member`、`examples`；跨應用連結用標準路徑。
 
-`@vh5/app-shell` 統一創建路由，適配應用無需配置路由。
+`title` 係翻譯鍵（例如 `app.home`），頂欄同瀏覽器標題會跟語言切換。Tab 只喺四個主頁顯示；Chat/Login/Cart/Details 隱藏 AI 浮動入口。
 
-```ts
-const featureRoutes = mergeRouteModules([
-  ...homeRoutes,
-  ...productRoutes,
-  ...userRoutes,
-]);
+全部應用處理 `guestOnly`，只有 Vant 檢查 `requiresAuth`；示例未設 `requiresAuth: true`。HTTP 401 統一處理。`authority` 型別唔代表角色授權已接入，後端仍然要驗證。
 
-export const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      component: BasicLayout,
-      redirect: '/home',
-      children: featureRoutes,
-    },
-    ...authRoutes,
-    {
-      path: '/:pathMatch(.*)*',
-      component: () => import('../views/NotFound.vue'),
-    },
-  ],
-});
-```
-
-## 2. 特性路由模組
-
-```ts
-export const productRoutes: RouteRecordRaw[] = [
-  {
-    path: 'product',
-    name: 'product-list',
-    component: () => import('./views/List.vue'),
-    meta: { title: '商品列表', authority: ['user', 'admin'], tab: true },
-  },
-];
-```
-
-`meta` 字段說明：
-
-| 字段        | 類型       | 說明                                    |
-| ----------- | ---------- | --------------------------------------- |
-| `title`     | `string`   | 文件標題 + 導航欄標題                   |
-| `authority` | `string[]` | 允許訪問嘅角色（省略 ⇒ 已登錄即可訪問） |
-| `public`    | `boolean`  | 唔需要登錄即可訪問                      |
-| `tab`       | `boolean`  | 喺底部 TabBar 顯示入口                  |
-| `keepAlive` | `boolean`  | 用 `<KeepAlive>` 包裹視圖               |
-
-## 3. 權限守衛
-
-```ts
-router.beforeEach((to) => {
-  startProgress();
-  if (to.meta.public) return true;
-  const auth = useAuthStore();
-  if (!auth.isAuthenticated)
-    return { name: 'login', query: { redirect: to.fullPath } };
-  const required = to.meta.authority as string[] | undefined;
-  if (required && !required.some(auth.hasRole)) return { name: 'forbidden' };
-  return true;
-});
-router.afterEach(() => stopProgress());
-```
-
-## 4. 動態標題
-
-```ts
-watchEffect(() => {
-  const title = router.currentRoute.value.meta?.title as string | undefined;
-  useTitle(title ? `${title} - Vue H5 Template` : 'Vue H5 Template');
-});
-```
-
-```ts
-watchEffect(() => {
-  const routeTitle = router.currentRoute.value.meta?.title;
-  useTitle(routeTitle ? `${routeTitle} - Vue H5 Template` : 'Vue H5 Template');
-});
-```
+三個布局按當前路由嘅 `keepAlive` 條件包裹頁面，切去非快取路由會移除包裹，唔係長期保存嘅跨路由快取。回跳地址用 `getSafeRedirect`。參見[架構](../v2/architecture.md)同[API](./api.md)。

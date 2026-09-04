@@ -1,62 +1,18 @@
-# 紹介
+# 概要
 
-Vue H5 Template は **Turborepo** ベースの Vue 3 モバイル H5 開発テンプレート Monorepo プロジェクトです。
+pnpm + Turborepo で管理するモバイル Vue モノレポです。3 アプリは個別ビルドし、`packages/mobile-ui` で業務画面を共有、ネイティブナビとコンポーネント例は各 UI 実装を保ちます。1 アプリに 3 フレームワークをまとめません。
 
-## 特徴
+英語既定の中日切替、テーマ付きヘッダー・AI ボタン、商品一覧/詳細・ローカルカート、Axios/OpenAPI、Vue Query のページ分割/更新/追加読み込み、停止可能な fetch/SSE チャットと安全な Markdown、SVG、モバイル API 例、任意の PWA と本番画像最適化を備えます。
 
-- **Monorepo 管理** — Turborepo + pnpm workspace で複数のアプリと共有パッケージを統合管理
-- **3つの UI フレームワーク** — NutUI、Vant、Varlet の3バージョンを提供
-- **TypeScript** — 完全な TypeScript サポート，unplugin-vue-router による型安全なファイルルーティング
-- **Vite** — Vite 8 ベースのビルド、自動インポートとコンポーネント自動登録対応
-- **UnoCSS** — アトミック CSS エンジンで全アプリに utility-first スタイルを提供
-- **Pinia** — 状態管理 + 永続化（本番環境では AES 暗号化）
-- **Mock バックエンド** — Nitro ベースの Mock サーバー、認証と商品 API を提供
-- **Eruda** — モバイルデバッグコンソールを内蔵（非本番環境のみ）
-- **統一規約** — ESLint / Prettier / Stylelint / Commitlint の設定を共有
-- **動的タイトル** — ルート切り替時にページタイトルを自動更新
-- **モバイル適応** — postcss-mobile-forever によるビューポート適応（デザイン幅 375px、最大表示幅 600px）
-- **国際化** — 中国語（簡体・繁体）、英語、日本語の4言語をサポート
+| Package | Repository catalog |
+| --- | --- |
+| Vue / Vue Router | 3.5 / 5.2 |
+| TypeScript / Vite | 6.0 / 8.1 (Rolldown) |
+| Pinia / Vue Query | 4.0 / 5.x |
+| Vue I18n / UnoCSS | 11.4 / 66.x |
+| Vant / NutUI / Varlet | 4.10 / 4.3 / 3.19 |
+| Vitest / Playwright | 4.1 / 1.62 |
 
-## 技術スタック
+表は catalog のバージョン系列で、上流の最新版を意味しません。解決済みの値は `pnpm-lock.yaml`、Node/pnpm 条件は[クイックスタート](./quick-start.md)で確認してください。
 
-| 技術                | バージョン | 説明                         |
-| ------------------- | ---------- | ---------------------------- |
-| Vue 3               | 3.5        | フロントエンドフレームワーク |
-| TypeScript          | 6.0        | 型安全                       |
-| Vite                | 8.0        | ビルドツール                 |
-| UnoCSS              | 66.x       | アトミック CSS エンジン      |
-| Turborepo           | 2.9        | Monorepo 管理                |
-| pnpm                | 10.27      | パッケージマネージャー       |
-| Pinia               | 3.0        | 状態管理                     |
-| Vue Router          | 5.0        | ルーティング                 |
-| unplugin-vue-router | 0.19       | 型安全なファイルルーティング |
-| Vue I18n            | 11.3       | 国際化                       |
-| Nitro               | 2.x        | Mock サーバー                |
-| NutUI               | 4.3        | UI コンポーネントライブラリ  |
-| Vant                | 4.9        | UI コンポーネントライブラリ  |
-| Varlet              | 3.12       | UI コンポーネントライブラリ  |
-| VueUse              | 14.x       | コンポジションユーティリティ |
-| Eruda               | 3.x        | モバイルデバッグコンソール   |
-
-## プロジェクト構成
-
-```
-vue-h5-template/
-├── apps/                 # アプリケーション
-│   ├── h5-nutui/         # NutUI H5 アプリ（ポート 5777）
-│   ├── h5-vant/          # Vant H5 アプリ（ポート 5778）
-│   ├── h5-varlet/        # Varlet H5 アプリ（ポート 5779）
-│   └── backend-mock/     # Nitro Mock バックエンド
-├── packages/             # 共有パッケージ
-│   ├── @core/            # コア（デザイン、composables、設定）
-│   ├── locales/          # i18n ロケールメッセージ
-│   ├── stores/           # Pinia 状態管理
-│   ├── styles/           # グローバルスタイル
-│   └── utils/            # ユーティリティ関数
-├── internal/             # 内部設定パッケージ
-│   ├── vite-config/      # 共有 Vite 設定
-│   ├── tsconfig/         # 共有 TypeScript 設定
-│   └── lint-configs/     # 共有 Lint 設定
-├── scripts/              # ビルドスクリプト
-└── docs/                 # ドキュメント（本サイト）
-```
+ルートは手書き、UnoCSS と scoped CSS は併用です。PWA とデバッグは任意です。SSR/SSG、本番アップロード、自動 token 更新、全アプリのロール認可は完成済み機能ではありません。[移行と計画](../v2/migration-v2.md)を参照してください。

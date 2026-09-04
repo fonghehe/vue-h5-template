@@ -1,8 +1,10 @@
 {
+  "mockLoginHint": "Nitro Mock mode: sign in with user / 123456.",
+  "serviceLoginHint": "Business Service mode: use your server account (default demo seed: user / 123456).",
   "home": "Home",
   "list": "List",
-  "mine": "Mine",
-  "example": "Example",
+  "mine": "Member",
+  "example": "Examples",
   "login": "Login",
   "details": "Details",
   "title": "Vue H5 Template",

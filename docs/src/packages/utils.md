@@ -61,6 +61,7 @@ unmountGlobalLoading();
 import { formatDate, formatDateTime } from '@vh5/utils';
 
 formatDate(new Date()); // '2024-01-01'
+formatDate(new Date(), 'YYYY-MM-DD HH:mm'); // '2024-01-01 12:00'
 formatDateTime(new Date()); // '2024-01-01 12:00:00'
 ```
 
@@ -83,18 +84,28 @@ const token = storage.getItem('token');
 
 // Clear all prefixed keys
 storage.clear();
+
+// Clear all expired items
+storage.clearExpiredItems();
 ```
 
 ## File Download
 
 ```ts
-import { downloadFileFromUrl, downloadFileFromBlob } from '@vh5/utils';
+import {
+  downloadFileFromUrl,
+  downloadFileFromBase64,
+  downloadFileFromBlob,
+} from '@vh5/utils';
 
 await downloadFileFromUrl({
   source: 'https://example.com/file.pdf',
   fileName: 'report.pdf',
 });
 downloadFileFromBlob({ source: blob, fileName: 'export.xlsx' });
+
+// Download via Base64
+downloadFileFromBase64({ source: base64String, fileName: 'image.png' });
 ```
 
 ## Other Utilities
@@ -106,5 +117,8 @@ downloadFileFromBlob({ source: blob, fileName: 'export.xlsx' });
 | `isEqual()`       | Deep comparison (es-toolkit)        |
 | `cn()`            | Merge CSS class names (clsx + tw)   |
 | `openWindow()`    | Safely open a new window            |
+| `diffObj()`       | Object diff comparison              |
 | `generateTree()`  | Convert array to tree structure     |
 | `flatTree()`      | Flatten tree structure              |
+| `isUrl()`         | URL format validation               |
+| `unmountGlobalLoading()` | Remove global skeleton screen    |

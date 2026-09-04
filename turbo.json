@@ -42,6 +42,9 @@
     },
     "typecheck": {
       "outputs": []
+    },
+    "test": {
+      "outputs": ["coverage/**"]
     }
   }
 }

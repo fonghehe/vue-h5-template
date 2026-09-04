@@ -1,88 +1,27 @@
-# スタイル
+# スタイルとモバイルテーマ
 
-## グローバルスタイル
-
-`packages/styles` がグローバル基本スタイルと各 UI ライブラリのスタイルエントリを提供します：
+各アプリは `@vh5/styles/global` と 1 つのテーマ（vant / nutui / varlet）のみ読み込みます。3 テーマを一緒に使わないでください。`packages/styles/src/<ui>/index.css` に Vant 青 `#1989fa`、NutUI 赤 `#fa2c19`、Varlet 紫 `#6750a4` を定義します。
 
 ```ts
-import '@vh5/styles/global'; // グローバル基本スタイル
-import '@vh5/styles/nutui'; // NutUI テーマスタイル（オプション）
-import '@vh5/styles/vant'; // Vant テーマスタイル（オプション）
-import '@vh5/styles/varlet'; // Varlet テーマスタイル（オプション）
-```
-
-## オンデマンドロード戦略
-
-### Vant
-
-- `VantResolver({ importStyle: true })` で完全オンデマンドロード、`app.use(Vant)` 不要
-- `vant/lib/index.css` の別途インポート不要（Resolver に CSS 注入順序を任せる）
-
-```ts
-// bootstrap.ts (vant)
+// Vant bootstrap; choose only the current app's theme.
 import '@vh5/styles/global';
-// ✅ Vant コンポーネント CSS は VantResolver が自動注入
-// ❌ app.use(Vant) 不要
+import '@vh5/styles/vant';
 ```
 
-### Varlet
-
-- `VarletImportResolver` で完全オンデマンドロード
-- **Snackbar（関数式）**：Snackbar を使用するファイルで手動インポートが必要
-
-```ts
-import { Snackbar } from '@varlet/ui';
-import '@varlet/ui/es/snackbar/style/index.mjs';
+```css
+/* packages/styles/src/vant/index.css */
+.van-nav-bar {
+  --van-nav-bar-background: var(--app-primary);
+  --van-nav-bar-title-text-color: #fff;
+  --van-nav-bar-icon-color: #fff;
+  --van-nav-bar-text-color: #fff;
+}
 ```
 
-### NutUI
+Vant の変数を `:root` だけでなくコンポーネントに設定し、後から読み込む CSS による白背景への上書きを防ぎます。背景は `--app-primary`、タイトル・戻るアイコン・テキスト操作は白です。resolver が UI を必要時に読み込みます。NutUI の関数型 Toast/Notify/Dialog/ImagePreview は bootstrap で CSS を明示し、SCSS 変数注入はアプリ内のみです。
 
-- `NutUIResolver` で完全オンデマンドロード
-- **関数式コンポーネント**（Toast/Notify/Dialog/ImagePreview）：`bootstrap.ts` で手動インポート
+共有 CSS は `packages/mobile-ui/src/surface.css` と scoped SFC。320px でグリッド、折り返し、44px タッチ領域を保ちます。共有パッケージは px-to-vw の対象外、他は設計幅 375px、最大表示幅 600px です。
 
-```ts
-import '@nutui/nutui/dist/packages/toast/style/css';
-import '@nutui/nutui/dist/packages/notify/style/css';
-import '@nutui/nutui/dist/packages/dialog/style/css';
-import '@nutui/nutui/dist/packages/imagepreview/style/css';
-```
+UnoCSS はルートではなく `internal/vite-config/src/plugins/unocss.ts` にあります。presetUno/attributify/icons、Varlet のみ専用 preset。shortcut は `mobile-card`、`page-shell`、`tap-target`。rule は `safe-area-pt/pb/px`、`h-safe-screen`。ブレークポイントは 375/600/768px。複雑な画面は scoped CSS を使います。
 
-## NutUI SCSS 変数
-
-NutUI のグローバル変数は Vite SCSS `additionalData` 関数式注入で、アプリ自身の SCSS ファイルにのみ適用されます。
-
-## モバイル対応
-
-`postcss-mobile-forever` で px を viewport 単位に自動変換（デザイン幅 375px、最大表示幅 600px）。
-
-## UnoCSS
-
-[UnoCSS](https://unocss.dev/) をアトミック CSS エンジンとして使用。設定ファイルはプロジェクトルートの `uno.config.ts`。
-
-### 内蔵ショートカット
-
-| ショートカット    | 相当するクラス                              |
-| ----------------- | ------------------------------------------- |
-| `flex-center`     | `flex items-center justify-center`          |
-| `flex-between`    | `flex items-center justify-between`         |
-| `flex-col-center` | `flex flex-col items-center justify-center` |
-
-### 使用例
-
-```vue
-<template>
-  <div class="flex-center h-full text-lg text-gray-600">Hello UnoCSS</div>
-</template>
-```
-
-Attributify モードもサポート：
-
-```vue
-<div flex items-center justify-center text-lg>
-  Hello UnoCSS
-</div>
-```
-
-## BEM 命名
-
-`@vh5-core/design` デザイントークンに基づく BEM 命名規則。
+ビルド設定変更後は `pnpm -F @vh5/vite-config stub`。共有 SVG は `packages/mobile-ui/src/assets/icons`、Vant 固有アイコンも残ります。[UI 戦略](../v2/ui-framework.md)を参照してください。

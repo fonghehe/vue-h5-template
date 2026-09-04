@@ -1,19 +1,7 @@
-# Locales
+# @vh5/locales
 
-`packages/locales` provides the `vue-i18n` based internationalization core module.
+## Package Reference
 
-## Supported Languages
+`packages/locales`: `setupI18n`, `loadLocaleMessages`, `loadLocalesMap`, `loadLocalesMapFromDir`, `i18n`, `useI18n`, `$t`, `$te`, `SupportedLanguagesType`.
 
-```ts
-type SupportedLanguagesType = 'en-US' | 'ja-JP' | 'zh-CN';
-```
-
-## Exports
-
-```ts
-export { $t, $te, i18n, loadLocaleMessages, setupI18n };
-```
-
-## Usage
-
-Each app initializes i18n in `src/locales/index.ts` and can inject app-specific translations and UI library locales via the `loadMessages` callback.
+[See the implementation guide](../guide/essentials/locale.md)

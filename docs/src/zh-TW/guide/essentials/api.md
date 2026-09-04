@@ -1,139 +1,27 @@
 # HTTP 與 API 層
 
-HTTP 棧拆分為三個套件，每個套件職責單一：
+REST 統一使用 `packages/api-client` 的 Axios 客戶端。應用的 `src/api` 保留相容重新匯出，不要各自建立 fetch 封裝。
 
-| 套件            | 職責                                                |
-| --------------- | --------------------------------------------------- |
-| `@vh5/request`  | 型別化 `fetch` 封裝、攔截器、Token 刷新、錯誤標準化 |
-| `@vh5/api`      | 介面定義與請求/響應 DTO（無副作用）                 |
-| `@vh5/services` | 領域服務，消費 `@vh5/api` 並回傳領域模型            |
-
-應用與特性模組**不直接呼叫** `fetch`。
-
-## 1. 請求客戶端（`@vh5/request`）
+網路契約為 `ApiResponse<T>`：`{ code, message, data, error? }`，成功碼為 0；函式直接回傳**解包後的 data**。商品列表回傳 `PaginationResponse<ProductItem>`，欄位為 `items、page、pageSize、total、hasMore`，不是陣列。
 
 ```ts
-export const request = createRequest({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
-  timeout: 15_000,
-});
+import { getProductList, loginApi, isApiError } from '@vh5/api-client';
 
-// 注入 Access Token
-request.interceptors.request.use((config) => {
-  const token = useAuthStore().accessToken;
-  if (token) config.headers.set('Authorization', `Bearer ${token}`);
-  return config;
-});
+const session = await loginApi({ username: 'user', password: '123456' });
+const products = await getProductList({ page: 1, pageSize: 4 });
+console.log(session.accessToken, products.items, products.hasMore);
 
-// 401 時單請求刷新
-request.interceptors.response.use(undefined, async (error) => {
-  if (error.httpStatus === 401 && !error.config._retried) {
-    await useAuthStore().refresh();
-    error.config._retried = true;
-    return request(error.config);
-  }
-  throw error;
-});
-```
-
-`RequestError` 資料結構：
-
-```ts
-class RequestError extends Error {
-  code: number; // 後端業務碼
-  httpStatus: number; // HTTP 狀態碼
-  payload?: unknown; // 原始響應體
-  config: RequestConfig; // 原始請求設定
+try {
+  await getProductList({ page: 2 });
+} catch (error: unknown) {
+  if (isApiError(error)) console.error(error.kind, error.message);
 }
 ```
 
-## 2. API SDK（`@vh5/api`）
+商品快取與分頁使用 `@vh5/mobile-ui/queries`；Request 頁只示範直接呼叫。
 
-介面定義為純聲明——不引入 Vue、Pinia 或 Toast。
+bootstrap 統一以 `configureApiClient` 設定地址、token、語言及 HTTP 401 回呼。請求按需帶上 Bearer token、`Accept-Language`、可選的 `X-Request-ID`；預設逾時 15 秒並啟用 credentials。
 
-```ts
-// packages/api/src/product.ts
-export interface ProductDTO {
-  id: number;
-  title: string;
-  price: string;
-  imgUrl: string;
-  description?: string;
-}
+`ApiError.kind` 為 `business | configuration | http | network | timeout | unauthorized | unknown`。HTTP 401 清除工作階段並跳轉登入；HTTP 200 中的業務錯誤走不同分支。**尚未實作 token 自動更新**。端點須為相對 API base 的路徑。
 
-export const productApi = {
-  list: (params: { page: number; size: number }) =>
-    request.get<{ items: ProductDTO[]; total: number }>('/product/list', {
-      params,
-    }),
-  detail: (id: number) =>
-    request.get<ProductDTO>('/product/detail', { params: { id } }),
-};
-```
-
-## 3. 領域服務（`@vh5/services`）
-
-服務層將 DTO 轉換為領域模型，集中業務規則。
-
-```ts
-// packages/services/src/product.service.ts
-export interface Product {
-  id: number;
-  title: string;
-  price: number; // 領域模型使用 number 而非 string
-  imgUrl: string;
-  description: string;
-}
-
-export const ProductService = {
-  async getList(page = 1, size = 20) {
-    const { items, total } = await productApi.list({ page, size });
-    return { items: items.map(toProduct), total };
-  },
-  getDetail: (id: number) => productApi.detail(id).then(toProduct),
-};
-```
-
-## 4. 在視圖中消費服務
-
-透過特性 Composable 而非直接在範本中呼叫服務。Composable 負責管理 `loading`、`error`、取消與刷新。
-
-```ts
-// packages/features/product/composables/use-product-detail.ts
-import { ProductService } from '@vh5/services';
-import { tryOnScopeDispose } from '@vueuse/core';
-
-export function useProductDetail(id: MaybeRef<number>) {
-  const data = ref<Product | null>(null);
-  const error = ref<Error | null>(null);
-  const loading = ref(false);
-  const ac = new AbortController();
-  tryOnScopeDispose(() => ac.abort());
-
-  watch(
-    () => unref(id),
-    async (value) => {
-      if (!value) return;
-      loading.value = true;
-      try {
-        data.value = await ProductService.getDetail(value);
-        error.value = null;
-      } catch (err) {
-        error.value = err as Error;
-      } finally {
-        loading.value = false;
-      }
-    },
-    { immediate: true },
-  );
-
-  return { data, error, loading };
-}
-```
-
-## 5. 新增介面
-
-1. 在 `packages/api/src/<domain>.ts` 中新增 DTO 及介面定義。
-2. 如需領域轉換，在 `packages/services/src/<domain>.service.ts` 中新增。
-3. 在特性套件的 Composable 中封裝（`packages/features/<domain>/composables/`）。
-4. 在視圖中使用該 Composable。
+新增端點時，先修改 `openapi/schema.yaml` 並執行 `pnpm api:generate`，再於 `packages/api-client/src/modules` 加入並匯出函式，同步 Nitro handler、測試及需要的 Query hook。生成型別只保障編譯期契約，不做執行期 schema 驗證。串流使用獨立的 `@vh5/ai-chat` fetch 通道。參見[請求架構](../v2/request.md)及[後端模式](./server.md)。

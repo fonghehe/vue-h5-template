@@ -11,7 +11,7 @@
 - **状态管理**：Pinia 持久化存储方案
 - **共享包设计**：locales、stores、utils 等包的模块化设计
 - **Vite 配置**：统一的 Vite 构建配置方案
-- **代码规范**：ESLint、Prettier、Stylelint、Commitlint 等统一规范配置
+- **代码规范**：ESLint、Oxfmt、Stylelint、Commitlint 等统一规范配置
 
 > **仓库地址**：[https://github.com/vbenjs/vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
 >

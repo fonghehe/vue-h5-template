@@ -10,11 +10,11 @@ import type {
 import viteVue from '@vitejs/plugin-vue';
 import viteVueJsx from '@vitejs/plugin-vue-jsx';
 import { visualizer as viteVisualizerPlugin } from 'rollup-plugin-visualizer';
-import VueRouter from 'unplugin-vue-router/vite';
 import viteCompressPlugin from 'vite-plugin-compression';
 import viteDtsPlugin from 'vite-plugin-dts';
 import Eruda from 'vite-plugin-eruda-pro';
 import { createHtmlPlugin as viteHtmlPlugin } from 'vite-plugin-html';
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import { VitePWA } from 'vite-plugin-pwa';
 import viteVueDevTools from 'vite-plugin-vue-devtools';
 
@@ -55,12 +55,6 @@ async function loadCommonPlugins(
     {
       condition: true,
       plugins: () => [
-        // VueRouter must be before Vue plugin
-        VueRouter({
-          routesFolder: 'src/views',
-          dts: 'types/typed-router.d.ts',
-          extensions: ['.vue'],
-        }),
         viteVue({
           script: {
             defineModel: true,
@@ -88,7 +82,7 @@ async function loadCommonPlugins(
         viteVisualizerPlugin({
           filename: './node_modules/.cache/visualizer/stats.html',
           gzipSize: true,
-          open: true,
+          open: false,
         }) as PluginOption,
       ],
     },
@@ -111,6 +105,7 @@ async function loadApplicationPlugins(
     compressTypes,
     extraAppConfig,
     html,
+    imageOptimize,
     importmap,
     importmapOptions,
     injectAppLoading,
@@ -171,9 +166,15 @@ async function loadApplicationPlugins(
       condition: pwa,
       plugins: () =>
         VitePWA({
-          injectRegister: false,
+          injectRegister: 'auto',
+          registerType: 'autoUpdate',
           workbox: {
-            globPatterns: [],
+            cleanupOutdatedCaches: true,
+            globPatterns: ['**/*.{css,html,ico,js,png,svg,webp,woff2}'],
+            // The cached SPA shell is the navigation fallback. API requests are
+            // explicitly excluded and therefore never receive stale app data.
+            navigateFallback: '/index.html',
+            navigateFallbackDenylist: [/^\/api\//],
           },
           ...pwaOptions,
           manifest: {
@@ -183,6 +184,22 @@ async function loadApplicationPlugins(
             ...pwaOptions?.manifest,
           },
         }),
+    },
+    {
+      condition: isBuild && !!imageOptimize,
+      plugins: () => [
+        ViteImageOptimizer({
+          includePublic: true,
+          jpeg: { quality: 82 },
+          jpg: { quality: 82 },
+          png: { quality: 82 },
+          svg: {
+            multipass: true,
+            plugins: ['preset-default'],
+          },
+          webp: { quality: 82 },
+        }),
+      ],
     },
     {
       condition: isBuild && !!compress,

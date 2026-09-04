@@ -22,7 +22,9 @@ const stepperValue = ref(1);
   <div class="p-3">
     <!-- Button -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Button 按钮</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.button')
+      }}</span>
       <div class="flex flex-wrap gap-2">
         <nut-button type="primary" @click="showNutToast">
           {{ t('app.buttonPrimary') }}
@@ -34,22 +36,30 @@ const stepperValue = ref(1);
         <nut-button type="success">{{ t('app.buttonSuccess') }}</nut-button>
       </div>
       <div class="flex flex-wrap gap-2 mt-2">
-        <nut-button type="primary" plain>Plain</nut-button>
-        <nut-button type="primary" round>Round</nut-button>
-        <nut-button type="primary" size="small">Small</nut-button>
-        <nut-button type="primary" size="mini">Mini</nut-button>
-        <nut-button type="primary" loading>Loading</nut-button>
-        <nut-button type="primary" disabled>Disabled</nut-button>
+        <nut-button type="primary" plain>{{ t('demo.plain') }}</nut-button>
+        <nut-button type="primary" round>{{ t('demo.round') }}</nut-button>
+        <nut-button type="primary" size="small">
+          {{ t('demo.small') }}
+        </nut-button>
+        <nut-button type="primary" size="mini">{{ t('demo.mini') }}</nut-button>
+        <nut-button type="primary" loading>
+          {{ t('mobile.loading') }}
+        </nut-button>
+        <nut-button type="primary" disabled>
+          {{ t('demo.disabled') }}
+        </nut-button>
       </div>
     </section>
 
     <!-- Cell -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Cell 单元格</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.cell')
+      }}</span>
       <nut-cell-group>
-        <nut-cell title="标题" desc="描述" />
-        <nut-cell title="带箭头" is-link />
-        <nut-cell title="带图标" desc="描述">
+        <nut-cell :title="t('demo.title')" :desc="t('demo.description')" />
+        <nut-cell :title="t('demo.arrow')" is-link />
+        <nut-cell :title="t('demo.icon')" :desc="t('demo.description')">
           <template #icon><Dongdong /></template>
         </nut-cell>
       </nut-cell-group>
@@ -57,74 +67,92 @@ const stepperValue = ref(1);
 
     <!-- Form -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Input 输入框</span>
-      <nut-input v-model="inputValue" placeholder="请输入内容" />
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.input')
+      }}</span>
+      <nut-input v-model="inputValue" :placeholder="t('demo.placeholder')" />
     </section>
 
     <!-- Switch -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Switch 开关</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.switch')
+      }}</span>
       <nut-switch v-model="switchValue" />
     </section>
 
     <!-- Radio -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Radio 单选</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.radio')
+      }}</span>
       <nut-radio-group v-model="radioValue" direction="horizontal">
-        <nut-radio label="1">选项一</nut-radio>
-        <nut-radio label="2">选项二</nut-radio>
-        <nut-radio label="3">选项三</nut-radio>
+        <nut-radio label="1">{{ t('demo.option1') }}</nut-radio>
+        <nut-radio label="2">{{ t('demo.option2') }}</nut-radio>
+        <nut-radio label="3">{{ t('demo.option3') }}</nut-radio>
       </nut-radio-group>
     </section>
 
     <!-- Checkbox -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Checkbox 复选</span>
-      <nut-checkbox v-model="checkboxValue" label="勾选我" />
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.checkbox')
+      }}</span>
+      <nut-checkbox v-model="checkboxValue" :label="t('demo.check')" />
     </section>
 
     <!-- Rate -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Rate 评分</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.rate')
+      }}</span>
       <nut-rate v-model="rate" />
     </section>
 
     <!-- Progress -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Progress 进度条</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.progress')
+      }}</span>
       <nut-progress :percentage="progress" />
     </section>
 
     <!-- Range -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Range 滑块</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.slider')
+      }}</span>
       <nut-range v-model="rangeValue" />
     </section>
 
     <!-- Stepper -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600"
-        >InputNumber 步进器</span
-      >
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.stepper')
+      }}</span>
       <nut-input-number v-model="stepperValue" />
     </section>
 
     <!-- Tag -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Tag 标签</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.tag')
+      }}</span>
       <div class="flex flex-wrap gap-2">
-        <nut-tag type="primary">Primary</nut-tag>
-        <nut-tag type="success">Success</nut-tag>
-        <nut-tag type="danger">Danger</nut-tag>
-        <nut-tag type="warning">Warning</nut-tag>
-        <nut-tag plain>Plain</nut-tag>
-        <nut-tag round type="primary">Round</nut-tag>
+        <nut-tag type="primary">{{ t('app.buttonPrimary') }}</nut-tag>
+        <nut-tag type="success">{{ t('app.buttonSuccess') }}</nut-tag>
+        <nut-tag type="danger">{{ t('app.buttonDanger') }}</nut-tag>
+        <nut-tag type="warning">{{ t('app.buttonWarning') }}</nut-tag>
+        <nut-tag plain>{{ t('demo.plain') }}</nut-tag>
+        <nut-tag round type="primary">{{ t('demo.round') }}</nut-tag>
       </div>
     </section>
 
     <!-- Badge -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Badge 徽标</span>
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.badge')
+      }}</span>
       <div class="flex gap-5">
         <nut-badge :value="8"><Dongdong width="24" height="24" /></nut-badge>
         <nut-badge :value="99"><Star width="24" height="24" /></nut-badge>
@@ -134,8 +162,10 @@ const stepperValue = ref(1);
 
     <!-- Empty -->
     <section class="mb-4">
-      <span class="inline-block mb-3 text-16px font-600">Empty 空状态</span>
-      <nut-empty description="暂无数据" />
+      <span class="inline-block mb-3 text-16px font-600">{{
+        t('demo.empty')
+      }}</span>
+      <nut-empty :description="t('mobile.empty')" />
     </section>
   </div>
 </template>

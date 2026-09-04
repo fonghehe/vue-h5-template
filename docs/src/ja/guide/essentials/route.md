@@ -1,80 +1,11 @@
 # ルーティング
 
-ルートは各アプリではなく**特性パッケージ**が管理します。アプリケーションシェルが各特性の `routes` エクスポートを 1 つのルーターインスタンスに合成します。
+各アプリの `src/router/index.ts` にルートを手書きします。残っている旧 `typed-router.d.ts` ではなく、実行時レコードが正です。ファイルルーティングやルート名の自動生成保証はありません。
 
-## 1. ルーターインスタンス
+共通パスは `/home`、`/list`、`/member`、`/examples`。旧 `/mine` と `/example` はリダイレクトします。子画面は `/details?id=1`、`/cart`、`/login`、`/ai/chat`、`/examples/{query,request,mobile,svg-icons,pwa,components}`。Vant/Varlet の名前は `mine` / `example`、NutUI は `member` / `examples` のため、共有リンクはパスを使います。
 
-`@vh5/app-shell` がルーターを一元作成します。アダプターアプリはルートを設定しません。
+`title` は `app.home` などの翻訳キーです。ナビバーと document title は言語変更に追従します。タブは 4 つの主要画面のみ、AI ボタンは Chat/Login/Cart/Details では非表示です。
 
-```ts
-const featureRoutes = mergeRouteModules([
-  ...homeRoutes,
-  ...productRoutes,
-  ...userRoutes,
-]);
+全アプリが `guestOnly` を処理しますが、`requiresAuth` を評価するのは Vant のみです。デモルートに `requiresAuth: true` はありません。HTTP 401 処理は全アプリ共通です。`authority` 型だけでロール認可は実行されません。バックエンド認可が必要です。
 
-export const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      component: BasicLayout,
-      redirect: '/home',
-      children: featureRoutes,
-    },
-    ...authRoutes,
-    {
-      path: '/:pathMatch(.*)*',
-      component: () => import('../views/NotFound.vue'),
-    },
-  ],
-});
-```
-
-## 2. 特性ルートモジュール
-
-```ts
-export const productRoutes: RouteRecordRaw[] = [
-  {
-    path: 'product',
-    name: 'product-list',
-    component: () => import('./views/List.vue'),
-    meta: { title: '商品一覧', authority: ['user', 'admin'], tab: true },
-  },
-];
-```
-
-`meta` フィールドの説明：
-
-| フィールド  | 型         | 説明                                              |
-| ----------- | ---------- | ------------------------------------------------- |
-| `title`     | `string`   | ドキュメントタイトル + ナビバータイトル           |
-| `authority` | `string[]` | アクセス可能なロール（省略 ⇒ 認証済みであれば可） |
-| `public`    | `boolean`  | ログイン不要でアクセス可能                        |
-| `tab`       | `boolean`  | 下部タブバーにエントリを表示                      |
-| `keepAlive` | `boolean`  | `<KeepAlive>` で View をラップ                    |
-
-## 3. 権限ガード
-
-```ts
-router.beforeEach((to) => {
-  startProgress();
-  if (to.meta.public) return true;
-  const auth = useAuthStore();
-  if (!auth.isAuthenticated)
-    return { name: 'login', query: { redirect: to.fullPath } };
-  const required = to.meta.authority as string[] | undefined;
-  if (required && !required.some(auth.hasRole)) return { name: 'forbidden' };
-  return true;
-});
-router.afterEach(() => stopProgress());
-```
-
-## 4. 動的タイトル
-
-```ts
-watchEffect(() => {
-  const title = router.currentRoute.value.meta?.title as string | undefined;
-  useTitle(title ? `${title} - Vue H5 Template` : 'Vue H5 Template');
-});
-```
+全レイアウトが現在のルートの `keepAlive` に応じてラップします。非キャッシュルートへ移動するとラッパーは消えるため、永続的なルート間キャッシュではありません。ログイン後の転送先は `getSafeRedirect` で検証します。[設計](../v2/architecture.md)と[API](./api.md)も参照してください。

@@ -1,34 +1,17 @@
 # 常見問題
 
-## 安裝問題
+## 安裝同模組解析
 
-### `pnpm install` 失敗
+用 Node 22.x 嘅 22.18+ 或 24.x、pnpm 11.10.0。workspace 改完要 install。舊服務解析唔到 `@vh5/mobile-ui/...` 時停咗嗰個進程，重啟 `pnpm dev:vant` 再 refresh；另一 Port 測試成功唔等於原進程修復。
 
-請確保使用了正確的版本：
+## Port
 
-- Node.js >= 20.12.0
-- pnpm >= 10.0.0
+Vant 5778 佔用會報錯，可用 `VITE_PORT=5788 pnpm dev:vant`。Mock 出事先確認 5320 進程，插件唔會替換。服務模式要 8002/8001 已起，帳號由業務服務決定。
 
-### 埠號被佔用
+## 頂欄同型別
 
-可以修改對應應用的 `.env.development` 中的 `VITE_PORT`。
+導入 `@vh5/styles/vant`，頂欄變數放 `.van-nav-bar`，避免 root 樣式覆蓋。用 `pnpm typecheck`，唔係舊 `pnpm check:type`。UI/API/AI/Vite config 獨立檢查，Vant 包 node 設定；路由仍然手寫。
 
-## 開發問題
+## 新增同部署
 
-### Mock 服務不工作
-
-確保 `.env.development` 中設定了 `VITE_NITRO_MOCK=true`。
-
-### 如何新增頁面？
-
-1. 在 `src/views/` 中建立 `.vue` 檔案
-2. 在 `src/router/` 中新增路由
-3. 如果頁面需要 tabbar 入口，更新 layout 設定
-
-## 其他
-
-### 如何移除不需要的 UI 框架應用？
-
-1. 刪除應用目錄（如 `apps/h5-varlet/`）
-2. 從根目錄 `package.json` 中移除對應的指令碼命令
-3. 執行 `pnpm install` 更新 workspace
+見[功能](../essentials/contributing-features.md)、[後端](../essentials/server.md)、[構建](../essentials/build.md)、[樣式](../essentials/styles.md)。子目錄/PWA、舊 Dockerfile 要另行確認；唔好首先刪 lockfile。

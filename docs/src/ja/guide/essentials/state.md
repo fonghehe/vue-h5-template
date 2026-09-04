@@ -1,91 +1,11 @@
 # 状態管理
 
-`vue-h5-template` の状態は 3 つのティアに分割されています。適切なティアを選ぶことで Store を小さく保ち、データフローを予測可能にします。
+Pinia はセッションとクライアント状態、TanStack Query は商品・読み込み・再試行・ページ分割・更新、Vue refs は画面内操作を担当します。チャットは `useStreamingChat`、言語は Vue I18n と localStorage の `vh5:locale` が所有します。
 
-## 1. 3 ティアモデル
+各アプリの QueryClient は `staleTime: 30_000`、`retry: 1`。`packages/mobile-ui/src/queries.ts` の `useProductPage(page, pageSize)` と `useInfiniteProducts(pageSize)` は言語をキーに含めます。`/examples/query` はページ分割、お気に入り mutation、ボタンによる追加読み込みの例です。自動スクロール検出ではありません。Pinia に結果を複製しないでください。
 
-| ティア | ツール | ライフタイム | 永続化 | 例 |
-| --- | --- | --- | --- | --- |
-| ローカル UI 状態 | `ref` / `reactive` | コンポーネント内 | なし | フォーム入力・ダイアログ開閉 |
-| サーバーキャッシュ | 特性 Composable + `ref` | View スコープ | なし | 商品リスト・商品詳細 |
-| アプリ / セッション状態 | Pinia Store | アプリセッション | あり（AES） | Auth Token・ユーザー情報・ロール |
+セッション store は Vant/Varlet の `src/stores/user.ts`、NutUI の `src/store/modules/user.ts`。ログイン後は token と公開ユーザー情報を保存します。共有カートは選択した商品スナップショット・数量・選択状態であり、バックエンド同期カートではありません。
 
-**経験則**：データがただ 1 つの View だけに属するなら Pinia には入れません。
+`initStores(app, { namespace })` のキーは `${namespace}-${storeId}`。既定ストレージは開発で localStorage、本番で SecureLS ですが、現在の user/cart は両環境とも localStorage を明示します。ブラウザ暗号化は XSS 対策ではありません。`resetAllStores()` は Query キャッシュや言語設定を消しません。
 
-## 2. Pinia 初期化（`@vh5/stores`）
-
-- **開発環境**：`localStorage` に永続化（デバッグしやすい）
-- **本番環境**：`secure-ls` で AES 暗号化 + 圧縮
-- Key 形式：`${namespace}-${storeId}`（3 アプリ間のキャッシュ衝突を防ぐ）
-
-## 3. 特性 Store の定義
-
-```ts
-export const useAuthStore = defineStore('auth', {
-  state: (): AuthState => ({ accessToken: '', user: null, roles: [] }),
-  getters: {
-    isAuthenticated: (s) => !!s.accessToken,
-    hasRole: (s) => (role: string) => s.roles.includes(role),
-  },
-  actions: {
-    async login(credentials: Credentials) {
-      const session = await AuthService.login(credentials);
-      this.$patch({
-        accessToken: session.accessToken,
-        user: session.user,
-        roles: session.user.roles,
-      });
-    },
-    logout() {
-      this.$reset();
-    },
-  },
-  persist: { pick: ['accessToken', 'user', 'roles'] },
-});
-```
-
-ガイドライン：
-
-- Store は**サービスを呼び出します**。`@vh5/api` や `fetch` を直接呼び出しません。
-- `persist.pick` で永続化が必要なフィールドのみを選択します。
-- ログアウト時は `resetAllStores()` ですべての Store をリセットします。
-
-## 4. アプリ設定 Store
-
-特性横断の設定は `@vh5/app-shell/store/app.ts` に置きます：
-
-```ts
-export const useAppStore = defineStore('app', {
-  state: () => ({ locale: 'ja', theme: 'light' as 'light' | 'dark' }),
-  actions: {
-    setLocale(locale: SupportedLanguage) {
-      this.locale = locale;
-    },
-    setTheme(theme: 'light' | 'dark') {
-      this.theme = theme;
-    },
-  },
-  persist: true,
-});
-```
-
-## 5. サーバーデータは Composable で、Pinia は使わない
-
-```ts
-// ✅ 推奨
-const { data, error, loading } = useProductDetail(id);
-
-// ❌ アンチパターン
-productStore.fetchDetail(id);
-const data = computed(() => productStore.detail);
-```
-
-## 6. 状態のリセット
-
-```ts
-import { resetAllStores } from '@vh5/stores';
-
-await AuthService.logout();
-resetAllStores();
-router.replace('/login');
-```
+[状態境界](../v2/state-management.md)と[API](./api.md)も参照してください。

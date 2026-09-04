@@ -1,26 +1,34 @@
 import type { EventHandlerRequest, H3Event } from 'h3';
 
-import type { UserInfo } from './mock-data';
+import type { PublicUserInfo } from './mock-data';
 
 import { getHeader } from 'h3';
 import jwt from 'jsonwebtoken';
 
-import { MOCK_USERS } from './mock-data';
+import { MOCK_USERS, toPublicUser } from './mock-data';
 
-// TODO: Replace with your own secret key
-const ACCESS_TOKEN_SECRET = 'access_token_secret';
-const REFRESH_TOKEN_SECRET = 'refresh_token_secret';
+function resolveSecret(name: 'ACCESS_TOKEN_SECRET' | 'REFRESH_TOKEN_SECRET') {
+  const configured = process.env[name];
+  if (configured) return configured;
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(`${name} is required in production`);
+  }
+  return `development-only-${name.toLowerCase()}`;
+}
 
-export interface UserPayload extends UserInfo {
+const ACCESS_TOKEN_SECRET = resolveSecret('ACCESS_TOKEN_SECRET');
+const REFRESH_TOKEN_SECRET = resolveSecret('REFRESH_TOKEN_SECRET');
+
+export interface UserPayload extends PublicUserInfo {
   iat: number;
   exp: number;
 }
 
-export function generateAccessToken(user: UserInfo) {
+export function generateAccessToken(user: PublicUserInfo) {
   return jwt.sign(user, ACCESS_TOKEN_SECRET, { expiresIn: '7d' });
 }
 
-export function generateRefreshToken(user: UserInfo) {
+export function generateRefreshToken(user: PublicUserInfo) {
   return jwt.sign(user, REFRESH_TOKEN_SECRET, {
     expiresIn: '30d',
   });
@@ -28,7 +36,7 @@ export function generateRefreshToken(user: UserInfo) {
 
 export function verifyAccessToken(
   event: H3Event<EventHandlerRequest>,
-): null | Omit<UserInfo, 'password'> {
+): null | PublicUserInfo {
   const authHeader = getHeader(event, 'Authorization');
   if (!authHeader?.startsWith('Bearer')) {
     return null;
@@ -50,27 +58,21 @@ export function verifyAccessToken(
     if (!user) {
       return null;
     }
-    const { password: _pwd, ...userinfo } = user;
-    return userinfo;
+    return toPublicUser(user);
   } catch {
     return null;
   }
 }
 
-export function verifyRefreshToken(
-  token: string,
-): null | Omit<UserInfo, 'password'> {
+export function verifyRefreshToken(token: string): null | PublicUserInfo {
   try {
     const decoded = jwt.verify(token, REFRESH_TOKEN_SECRET) as UserPayload;
     const username = decoded.username;
-    const user = MOCK_USERS.find(
-      (item) => item.username === username,
-    ) as UserInfo;
+    const user = MOCK_USERS.find((item) => item.username === username);
     if (!user) {
       return null;
     }
-    const { password: _pwd, ...userinfo } = user;
-    return userinfo;
+    return toPublicUser(user);
   } catch {
     return null;
   }

@@ -26,7 +26,7 @@ In traditional multi-repo setups, shared code (utils, stores, styles, configs) m
 
 With Monorepo, all apps share the same:
 
-- ESLint, Prettier, Stylelint configurations
+- ESLint, Oxfmt, Stylelint configurations
 - TypeScript configuration
 - Commit conventions and CI/CD pipelines
 - Dependency versions via pnpm catalog
@@ -48,7 +48,7 @@ You can choose one or use multiple simultaneously.
 The project adopts strict quality standards:
 
 - **Type Safety**: Full TypeScript coverage
-- **Code Style**: ESLint + Prettier + Stylelint with shared configs
+- **Code Style**: ESLint + Oxfmt + Stylelint with shared configs
 - **Commit Convention**: Commitlint with Conventional Commits
 - **Git Hooks**: Lefthook for pre-commit and commit-msg checks
 - **Spell Checking**: CSpell for catching typos

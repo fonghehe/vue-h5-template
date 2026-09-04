@@ -1,139 +1,38 @@
 # HTTP と API 層
 
-HTTP スタックは責務ごとに 3 つのパッケージに分割されています。
+REST は `packages/api-client` の Axios クライアントに統一しています。アプリの `src/api` は互換用の再エクスポートです。各アプリに別の fetch ラッパーを追加しないでください。
 
-| パッケージ | 責務 |
-| --- | --- |
-| `@vh5/request` | 型付き `fetch` ラッパー・インターセプター・Token 更新・エラー正規化 |
-| `@vh5/api` | エンドポイント定義とリクエスト/レスポンス DTO（副作用なし） |
-| `@vh5/services` | ドメインサービス。`@vh5/api` を消費してドメインモデルを返す |
+## 公開契約
 
-アプリと特性モジュールは **`fetch` を直接呼び出しません**。
-
-## 1. リクエストクライアント（`@vh5/request`）
+通信形式は `ApiResponse<T>`（`{ code, message, data, error? }`）で成功コードは 0 です。関数は**展開済みの data**を返します。商品一覧は配列ではなく、`items, page, pageSize, total, hasMore` を持つ `PaginationResponse<ProductItem>` です。
 
 ```ts
-export const request = createRequest({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
-  timeout: 15_000,
-});
+import { getProductList, loginApi, isApiError } from '@vh5/api-client';
 
-// Access Token を注入
-request.interceptors.request.use((config) => {
-  const token = useAuthStore().accessToken;
-  if (token) config.headers.set('Authorization', `Bearer ${token}`);
-  return config;
-});
+const session = await loginApi({ username: 'user', password: '123456' });
+const products = await getProductList({ page: 1, pageSize: 4 });
+console.log(session.accessToken, products.items, products.hasMore);
 
-// 401 時に単一リクエストでリフレッシュ
-request.interceptors.response.use(undefined, async (error) => {
-  if (error.httpStatus === 401 && !error.config._retried) {
-    await useAuthStore().refresh();
-    error.config._retried = true;
-    return request(error.config);
-  }
-  throw error;
-});
-```
-
-`RequestError` の構造：
-
-```ts
-class RequestError extends Error {
-  code: number; // バックエンドのビジネスコード
-  httpStatus: number; // HTTP ステータスコード
-  payload?: unknown; // 生のレスポンスボディ
-  config: RequestConfig; // 元のリクエスト設定
+try {
+  await getProductList({ page: 2 });
+} catch (error: unknown) {
+  if (isApiError(error)) console.error(error.kind, error.message);
 }
 ```
 
-## 2. API SDK（`@vh5/api`）
+商品画面のキャッシュとページ分割には `@vh5/mobile-ui/queries` を使います。Request 画面は直接呼び出しの例であり、別のサーバー状態ストアではありません。
 
-エンドポイントは純粋な宣言です。Vue・Pinia・Toast を一切インポートしません。
+## 初期化とエラー
 
-```ts
-// packages/api/src/product.ts
-export interface ProductDTO {
-  id: number;
-  title: string;
-  price: string;
-  imgUrl: string;
-  description?: string;
-}
+bootstrap で `configureApiClient` に URL、現在の token、言語、HTTP 401 コールバックを設定します。必要に応じて Bearer token、`Accept-Language`、`X-Request-ID` を付けます。タイムアウトは既定で 15 秒、credentials は有効です。
 
-export const productApi = {
-  list: (params: { page: number; size: number }) =>
-    request.get<{ items: ProductDTO[]; total: number }>('/product/list', {
-      params,
-    }),
-  detail: (id: number) =>
-    request.get<ProductDTO>('/product/detail', { params: { id } }),
-};
-```
+`ApiError.kind` は `business | configuration | http | network | timeout | unauthorized | unknown`。HTTP 401 はセッションを消してログインへ移動します。HTTP 200 内の業務エラーは別の経路です。**token の自動更新は未実装**です。エンドポイントは API base に対する相対パスにしてください。
 
-## 3. ドメインサービス（`@vh5/services`）
+## エンドポイント追加
 
-サービス層は DTO をドメインモデルに変換し、ビジネスルールを一元管理します。
+1. `openapi/schema.yaml` を変更し、`pnpm api:generate` を実行します。
+2. `packages/api-client/src/modules` に型付き関数を追加・公開します。
+3. Nitro handler とテストを追加します。
+4. キャッシュや mutation が必要なら Query hook を追加します。
 
-```ts
-// packages/services/src/product.service.ts
-export interface Product {
-  id: number;
-  title: string;
-  price: number; // ドメインモデルでは number（string ではない）
-  imgUrl: string;
-  description: string;
-}
-
-export const ProductService = {
-  async getList(page = 1, size = 20) {
-    const { items, total } = await productApi.list({ page, size });
-    return { items: items.map(toProduct), total };
-  },
-  getDetail: (id: number) => productApi.detail(id).then(toProduct),
-};
-```
-
-## 4. View でのサービス利用
-
-テンプレートから直接サービスを呼び出すのではなく、特性 Composable を経由します。Composable は `loading`・`error`・キャンセル・リフレッシュを管理します。
-
-```ts
-// packages/features/product/composables/use-product-detail.ts
-import { ProductService } from '@vh5/services';
-import { tryOnScopeDispose } from '@vueuse/core';
-
-export function useProductDetail(id: MaybeRef<number>) {
-  const data = ref<Product | null>(null);
-  const error = ref<Error | null>(null);
-  const loading = ref(false);
-  const ac = new AbortController();
-  tryOnScopeDispose(() => ac.abort());
-
-  watch(
-    () => unref(id),
-    async (value) => {
-      if (!value) return;
-      loading.value = true;
-      try {
-        data.value = await ProductService.getDetail(value);
-        error.value = null;
-      } catch (err) {
-        error.value = err as Error;
-      } finally {
-        loading.value = false;
-      }
-    },
-    { immediate: true },
-  );
-
-  return { data, error, loading };
-}
-```
-
-## 5. 新しいエンドポイントの追加
-
-1. `packages/api/src/<domain>.ts` に DTO とエンドポイントを追加。
-2. ドメイン変換が必要な場合は `packages/services/src/<domain>.service.ts` に追加。
-3. 特性パッケージの Composable でラップ（`packages/features/<domain>/composables/`）。
-4. View で Composable を使用。
+生成型はコンパイル時の契約であり、実行時 schema 検証ではありません。ストリームは `@vh5/ai-chat` の fetch 経路です。[リクエスト設計](../v2/request.md)と[バックエンドモード](./server.md)を参照してください。

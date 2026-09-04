@@ -1,80 +1,21 @@
 # 常见问题
 
-## 安装问题
+## 安装和模块解析
 
-### `pnpm install` 失败
+使用 Node 22.x 的 22.18+ 或 24.x、pnpm 11.10.0。workspace 依赖变化后运行 `pnpm install`。旧服务出现 `Failed to resolve import @vh5/mobile-ui/...` 时，停止旧进程，重启 `pnpm dev:vant`，刷新浏览器。另一个端口的构建/测试通过不等于旧进程已恢复。
 
-请确保使用了正确的版本：
+## 端口和 Mock
 
-- Node.js >= 20.12.0
-- pnpm >= 10.0.0
+5778 占用时 Vant 会报错；可显式 `VITE_PORT=5788 pnpm dev:vant`。Mock 异常先确认 5320 正在运行什么，插件不会替换已有进程。服务模式需确认业务 8002、AI 8001 已启动，不能默认使用 Nitro 账号。
 
-```bash
-node -v
-pnpm -v
-```
+## Vant 顶栏变白
 
-如果版本过旧，请升级：
+导入 `@vh5/styles/vant`，导航变量应定义在 `.van-nav-bar`，不能仅靠 `:root`，否则后加载默认样式会覆盖。见[样式](../essentials/styles.md)。
 
-```bash
-npm i -g corepack
-corepack enable
-corepack prepare pnpm@latest --activate
-```
+## 类型与修改
 
-### 端口被占用
+运行 `pnpm typecheck`，不是旧 `pnpm check:type`。共享 UI/API/AI/Vite 配置都有独立检查，Vant 同时检查应用及 `tsconfig.node.json`。Vite 生成自动导入声明，路由仍然手写。
 
-如果默认端口被占用，可以修改对应应用的 `.env.development` 中的 `VITE_PORT`，或直接设置：
+## 新增功能与部署
 
-```bash
-VITE_PORT=3000 pnpm dev:nutui
-```
-
-## 开发问题
-
-### Mock 服务不工作
-
-确保 `.env.development` 中设置了 `VITE_NITRO_MOCK=true`。Mock 服务默认运行在端口 `5320`。
-
-### 自动导入不生效
-
-运行一次 `pnpm dev` 生成自动导入的类型声明文件。生成的文件（`auto-imports.d.ts`、`components.d.ts`）应提交到版本控制。
-
-### 如何添加新页面？
-
-1. 在 `src/views/` 中创建 `.vue` 文件
-2. 在 `src/router/` 中添加路由
-3. 如果页面需要 tabbar 入口，更新 layout 配置
-
-### 如何添加新的 API 接口？
-
-1. 在 `src/api/` 中创建 API 函数
-2. 如果使用 mock 数据，在 `apps/backend-mock/api/` 中添加 mock 处理器
-
-## 构建问题
-
-### 构建内存溢出
-
-根目录 `package.json` 已设置 `NODE_OPTIONS=--max-old-space-size=8192`。如果仍然不够，可以增大该值。
-
-### 如何部署到子目录？
-
-在 `.env.production` 中设置 `VITE_BASE`：
-
-```bash
-VITE_BASE=/my-app/
-```
-
-## 其他
-
-### 如何移除不需要的 UI 框架应用？
-
-1. 删除应用目录（如 `apps/h5-varlet/`）
-2. 从根目录 `package.json` 中移除对应的脚本命令
-3. 运行 `pnpm install` 更新 workspace
-
-### 如何添加新的共享包？
-
-1. 在 `packages/` 下创建新目录
-2. 添加 `package.json` 并使用 `@vh5/` 作用域
-3. 在应用中通过 `"@vh5/my-package": "workspace:*"` 引用
+参见[功能指南](../essentials/contributing-features.md)、[后端模式](../essentials/server.md)、[构建](../essentials/build.md)。子目录/PWA 和旧 playground Dockerfile 需要按环境审查。安装失败时不要首先删除 lockfile。

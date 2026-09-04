@@ -1,6 +1,26 @@
 :root {
-  --nut-navbar-background: #3a7afe;
+  --app-primary: #fa2c19;
+  --app-primary-deep: #c91d11;
+  --app-primary-soft: #fff0ed;
+  --app-primary-rgb: 250 44 25;
+  --app-surface: #fff8f6;
+  --app-surface-raised: #fff;
+  --app-text: #2c2221;
+  --app-text-muted: #857573;
+  --app-border: #f2dfdc;
+  --app-card-shadow: 0 10px 30px rgb(153 45 31 / 9%);
+  --nut-primary-color: var(--app-primary);
+  --nut-primary-color-start: var(--app-primary);
+  --nut-primary-color-end: #ff654c;
+  --nut-navbar-background: var(--app-primary);
   --nut-navbar-color: #fff;
   --nut-navbar-height: 54px;
   --nut-navbar-title-font: 16px;
+  --nut-navbar-title-font-color: #fff;
+  --nut-tabbar-active-color: var(--app-primary);
+}
+
+body {
+  color: var(--app-text);
+  background: var(--app-surface);
 }

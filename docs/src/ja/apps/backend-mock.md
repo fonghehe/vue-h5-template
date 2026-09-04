@@ -1,80 +1,20 @@
-# Mock サーバー
+# Nitro Mock バックエンド
 
-Nitro ベースの Mock バックエンド、開発時に H5 アプリ向けの API シミュレーションを提供します。
+`pnpm dev:<ui>` が 5320 の Nitro を起動または再利用します。単体は `pnpm -F @vh5/backend-mock exec nitro dev --port 5320`。本番業務サーバーとして使わないでください。
 
-## 起動
+| Method | Path | Result |
+| --- | --- | --- |
+| POST | `/api/auth/login` | public user + accessToken |
+| POST | `/api/auth/logout` | refresh cookie cleared |
+| POST | `/api/auth/refresh` | access token string (legacy endpoint) |
+| GET | `/api/user/info` | user; Bearer token required |
+| GET | `/api/product/list?page=1&pageSize=4` | paginated products |
+| GET | `/api/product/detail?id=1` | product |
+| POST | `/api/product/favorite` | `{ productId, favorite }` |
+| POST | `/api/ai/chat` | SSE: start / delta / finish / [DONE] |
 
-Mock サーバーは `nitro-mock` Vite プラグイン経由で `http://localhost:5320` に自動起動します。
+Nitro アカウントは `user / 123456`、`admin / 123456`。ログインは公開情報と token を返し、パスワードは返しません。access token は 7 日、refresh cookie は 30 日。旧 refresh は token 文字列を返しますがブラウザからは未使用で、自動更新もありません。
 
-手動起動：
+商品は `Accept-Language` に応じて英語（既定）・中国語・日本語を返します。お気に入りは検証して値を返すだけで永続化しません。AI は実際の SSE チャンクです。**`/api/upload` handler と完成したアップロード画面はありません**。
 
-```bash
-cd apps/backend-mock
-pnpm start
-```
-
-## API エンドポイント
-
-### 認証
-
-| メソッド | パス                | 説明                            |
-| -------- | ------------------- | ------------------------------- |
-| POST     | `/api/auth/login`   | ログイン、accessToken を返却    |
-| POST     | `/api/auth/logout`  | ログアウト、refreshToken を削除 |
-| POST     | `/api/auth/refresh` | accessToken を更新              |
-
-### ユーザー
-
-| メソッド | パス             | 説明                                  |
-| -------- | ---------------- | ------------------------------------- |
-| GET      | `/api/user/info` | ユーザー情報取得（Bearer Token 必要） |
-
-### 商品
-
-| メソッド | パス                  | 説明                                     |
-| -------- | --------------------- | ---------------------------------------- |
-| GET      | `/api/product/list`   | 商品リスト（`?page=1&pageSize=10` 対応） |
-| GET      | `/api/product/detail` | 商品詳細（`?id=1`）                      |
-
-### アップロード
-
-| メソッド | パス          | 説明                                      |
-| -------- | ------------- | ----------------------------------------- |
-| POST     | `/api/upload` | ファイルアップロード（モック URL を返却） |
-
-## テストアカウント
-
-| ユーザー名 | パスワード | 役割         |
-| ---------- | ---------- | ------------ |
-| user       | 123456     | 一般ユーザー |
-| admin      | 123456     | 管理者       |
-
-## ログインリクエスト例
-
-```bash
-curl -X POST http://localhost:5320/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"user","password":"123456"}'
-```
-
-レスポンス：
-
-```json
-{
-  "code": 0,
-  "data": {
-    "id": 0,
-    "realName": "テストユーザー",
-    "avatar": "...",
-    "roles": ["user"],
-    "username": "user",
-    "accessToken": "eyJhbGciOiJIUzI1NiI..."
-  },
-  "message": "ok"
-}
-```
-
-## JWT 認証
-
-- Access Token 有効期限：7日間
-- Refresh Token 有効期限：30日間（HttpOnly Cookie に保存）
+別の 2 サービスは[バックエンドモード](../guide/essentials/server.md)を参照。アカウントと永続化・認証は Nitro と独立しています。

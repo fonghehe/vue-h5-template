@@ -20,7 +20,7 @@ Vue H5 Template 旨在通過一個結構良好、生產就緒的 Monorepo 範本
 
 ### 統一規範
 
-所有應用共享相同的 ESLint、Prettier、Stylelint、TypeScript 設定。
+所有應用共享相同的 ESLint、Oxfmt、Stylelint、TypeScript 設定。
 
 ### 多 UI 框架支援
 

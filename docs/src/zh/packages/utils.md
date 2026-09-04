@@ -32,18 +32,16 @@ if (err) {
 console.log(data);
 ```
 
-项目中所有列表页和详情页均使用此模式：
+`to()` 可用于不需要缓存的一次性调用；商品列表和详情页目前使用 TanStack Query。共享 API 已经返回解包后的数据：
 
 ```ts
-// apps/h5-vant/src/views/list/index.vue
+// 一次性请求示例
 const [err, data] = await to(getProductList());
 if (err) {
   console.error('获取商品列表失败', err);
   return;
 }
-if (data.code === 0) {
-  list.value = data.data;
-}
+console.log(data.items);
 ```
 
 ## 进度条

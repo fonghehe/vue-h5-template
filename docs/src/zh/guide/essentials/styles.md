@@ -1,114 +1,27 @@
-# 样式
+# 样式与移动主题
 
-## 全局样式
-
-`packages/styles` 提供全局基础样式和各 UI 库的样式入口：
+每个应用只加载一个主题入口：`@vh5/styles/vant`、`nutui` 或 `varlet`，加上 `@vh5/styles/global`，不要同时导入三个主题。token 位于 `packages/styles/src/<ui>/index.css`：Vant 蓝 `#1989fa`、NutUI 红 `#fa2c19`、Varlet 紫 `#6750a4`。
 
 ```ts
-import '@vh5/styles/global'; // 全局基础样式（CSS Reset + 公共组件样式）
-import '@vh5/styles/nutui'; // NutUI 主题样式（可选）
-import '@vh5/styles/vant'; // Vant 主题样式（可选）
-import '@vh5/styles/varlet'; // Varlet 主题样式（可选）
-```
-
-所有应用在 `bootstrap.ts` 中统一引入 `@vh5/styles/global`。
-
-## 按需加载策略
-
-三个应用均采用按需加载，策略略有差异：
-
-### Vant
-
-- **组件 JS + CSS**：通过 `VantResolver({ importStyle: true })`（默认值）完全按需加载，无需 `app.use(Vant)` 全量注册
-- **不额外导入** `vant/lib/index.css`，由 Resolver 统一管理每个组件的 CSS 注入顺序
-
-> **为什么不能同时导入 `vant/lib/index.css` 和使用 Resolver 按需注入？** 全量 CSS 和按需 CSS 会导致同一组件的样式被注入两次，且第二次（按需）的 Popup CSS 顺序排在 Toast CSS 之后，造成白色背景覆盖深色 Toast 背景。正确做法：只用 Resolver 按需注入，不额外引入全量 CSS。
-
-```ts
-// bootstrap.ts（vant）
+// Vant bootstrap; choose only the current app's theme.
 import '@vh5/styles/global';
-// ✅ 不导入 vant/lib/index.css，组件 CSS 由 VantResolver 按需注入
-// ❌ 不使用 app.use(Vant) 全量注册
+import '@vh5/styles/vant';
 ```
 
-### Varlet
-
-- **组件 JS + CSS**：通过 `VarletImportResolver` 完全按需加载，模板中使用的组件自动注入对应 CSS
-- **Snackbar（函数式）**：在使用 Snackbar 的文件中手动导入 CSS 依赖链
-
-```ts
-// 在使用 Snackbar 的组件文件中
-import { Snackbar } from '@varlet/ui';
-import '@varlet/ui/es/snackbar/style/index.mjs'; // 手动导入 Snackbar CSS
-```
-
-### NutUI
-
-- **组件 JS + CSS**：通过 `NutUIResolver` 完全按需加载
-- **函数式组件**（Toast/Notify/Dialog/ImagePreview）：在 `bootstrap.ts` 中手动导入 CSS
-
-```ts
-// bootstrap.ts（nutui）
-import '@nutui/nutui/dist/packages/toast/style/css';
-import '@nutui/nutui/dist/packages/notify/style/css';
-import '@nutui/nutui/dist/packages/dialog/style/css';
-import '@nutui/nutui/dist/packages/imagepreview/style/css';
-```
-
-## NutUI SCSS 变量
-
-NutUI 版通过 Vite SCSS 配置函数式注入全局变量，仅作用于 app 自身的 SCSS 文件：
-
-```ts
-css: {
-  preprocessorOptions: {
-    scss: {
-      additionalData: (source: string, filename: string) => {
-        if (filename.includes('/apps/h5-nutui/src/')) {
-          return `@use "@nutui/nutui/dist/styles/variables.scss" as *;\n${source}`;
-        }
-        return source;
-      },
-    },
-  },
+```css
+/* packages/styles/src/vant/index.css */
+.van-nav-bar {
+  --van-nav-bar-background: var(--app-primary);
+  --van-nav-bar-title-text-color: #fff;
+  --van-nav-bar-icon-color: #fff;
+  --van-nav-bar-text-color: #fff;
 }
 ```
 
-## 移动端适配
+Vant 顶栏变量定义在组件上，而不只在 `:root`，避免后加载的 Vant CSS 把顶栏覆盖成白色。背景跟随 `--app-primary`，标题、返回图标、文字操作为白色。UI JS/CSS 由 resolver 按需加载；NutUI 函数式 Toast/Notify/Dialog/ImagePreview 样式在 bootstrap 显式导入，SCSS 变量注入仅限应用文件。
 
-使用 `postcss-mobile-forever` 将 px 自动转换为 viewport 单位：
+共享样式在 `packages/mobile-ui/src/surface.css` 和 SFC scoped CSS。响应式网格、标题换行、44px 触控区保障 320px 列表可读性。共享包排除 `postcss-mobile-forever` 转换，其他应用样式按 375px 设计宽度、600px 最大展示宽度处理。
 
-- 设计稿宽度：375px
-- 最大显示宽度：600px（平板等大屏自动居中限宽）
+实际 UnoCSS 配置在 `internal/vite-config/src/plugins/unocss.ts`，不是根 `uno.config.ts`。使用 presetUno、attributify、icons，Varlet 才加载对应 preset。已有 shortcuts：`mobile-card`、`page-shell`、`tap-target`；rules：`safe-area-pt`、`safe-area-pb`、`safe-area-px`、`h-safe-screen`；断点为 375/600/768px。复杂组件仍用 scoped CSS。
 
-## UnoCSS
-
-项目使用 [UnoCSS](https://unocss.dev/) 作为原子化 CSS 引擎，配置文件位于项目根目录 `uno.config.ts`。
-
-### 内置快捷方式
-
-| 快捷方式          | 等价于                                      |
-| ----------------- | ------------------------------------------- |
-| `flex-center`     | `flex items-center justify-center`          |
-| `flex-between`    | `flex items-center justify-between`         |
-| `flex-col-center` | `flex flex-col items-center justify-center` |
-
-### 使用示例
-
-```vue
-<template>
-  <div class="flex-center h-full text-lg text-gray-600">Hello UnoCSS</div>
-</template>
-```
-
-支持 attributify 模式：
-
-```vue
-<div flex items-center justify-center text-lg>
-  Hello UnoCSS
-</div>
-```
-
-## BEM 命名
-
-样式采用 BEM 命名规范，基于 `@vh5-core/design` 设计 Token。
+构建配置改动后执行 `pnpm -F @vh5/vite-config stub`。共享 SVG 资源在 `packages/mobile-ui/src/assets/icons`，Vant 还保留应用图标目录。参见[UI 策略](../v2/ui-framework.md)。

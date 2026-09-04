@@ -19,7 +19,7 @@ const stepperValue = ref(1);
 <template>
   <div class="p-3">
     <!-- Button -->
-    <div class="font-600 mb-3">Button 按钮</div>
+    <div class="font-600 mb-3">{{ t('demo.button') }}</div>
     <van-space direction="vertical" fill>
       <van-space wrap>
         <van-button type="primary" @click="demo">
@@ -31,70 +31,86 @@ const stepperValue = ref(1);
         <van-button type="warning">{{ t('app.buttonWarning') }}</van-button>
       </van-space>
       <van-space wrap>
-        <van-button type="primary" plain>Plain</van-button>
-        <van-button type="primary" round>Round</van-button>
-        <van-button type="primary" size="small">Small</van-button>
-        <van-button type="primary" size="mini">Mini</van-button>
-        <van-button type="primary" loading loading-text="Loading" />
-        <van-button type="primary" disabled>Disabled</van-button>
+        <van-button type="primary" plain>{{ t('demo.plain') }}</van-button>
+        <van-button type="primary" round>{{ t('demo.round') }}</van-button>
+        <van-button type="primary" size="small">
+          {{ t('demo.small') }}
+        </van-button>
+        <van-button type="primary" size="mini">{{ t('demo.mini') }}</van-button>
+        <van-button
+          type="primary"
+          loading
+          :loading-text="t('mobile.loading')"
+        />
+        <van-button type="primary" disabled>
+          {{ t('demo.disabled') }}
+        </van-button>
       </van-space>
     </van-space>
 
     <!-- Cell -->
-    <div class="font-600 mt-4 mb-3">Cell 单元格</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.cell') }}</div>
     <van-cell-group inset>
-      <van-cell title="标题" value="内容" />
-      <van-cell title="带箭头" is-link />
-      <van-cell title="带图标" icon="location-o" value="描述" />
+      <van-cell :title="t('demo.title')" :value="t('demo.content')" />
+      <van-cell :title="t('demo.arrow')" is-link />
+      <van-cell
+        :title="t('demo.icon')"
+        icon="location-o"
+        :value="t('demo.description')"
+      />
     </van-cell-group>
 
     <!-- Field -->
-    <div class="font-600 mt-4 mb-3">Field 输入框</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.input') }}</div>
     <van-cell-group inset>
-      <van-field v-model="inputValue" label="文本" placeholder="请输入内容" />
+      <van-field
+        v-model="inputValue"
+        :label="t('demo.text')"
+        :placeholder="t('demo.placeholder')"
+      />
     </van-cell-group>
 
     <!-- Switch -->
-    <div class="font-600 mt-4 mb-3">Switch 开关</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.switch') }}</div>
     <van-switch v-model="switchValue" />
 
     <!-- Radio -->
-    <div class="font-600 mt-4 mb-3">Radio 单选</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.radio') }}</div>
     <van-radio-group v-model="radioValue" direction="horizontal">
-      <van-radio name="1">选项一</van-radio>
-      <van-radio name="2">选项二</van-radio>
-      <van-radio name="3">选项三</van-radio>
+      <van-radio name="1">{{ t('demo.option1') }}</van-radio>
+      <van-radio name="2">{{ t('demo.option2') }}</van-radio>
+      <van-radio name="3">{{ t('demo.option3') }}</van-radio>
     </van-radio-group>
 
     <!-- Checkbox -->
-    <div class="font-600 mt-4 mb-3">Checkbox 复选</div>
-    <van-checkbox v-model="checkboxValue">勾选我</van-checkbox>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.checkbox') }}</div>
+    <van-checkbox v-model="checkboxValue">{{ t('demo.check') }}</van-checkbox>
 
     <!-- Rate -->
-    <div class="font-600 mt-4 mb-3">Rate 评分</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.rate') }}</div>
     <van-rate v-model="rate" />
 
     <!-- Slider -->
-    <div class="font-600 mt-4 mb-3">Slider 滑块</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.slider') }}</div>
     <van-slider v-model="sliderValue" />
 
     <!-- Stepper -->
-    <div class="font-600 mt-4 mb-3">Stepper 步进器</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.stepper') }}</div>
     <van-stepper v-model="stepperValue" />
 
     <!-- Tag -->
-    <div class="font-600 mt-4 mb-3">Tag 标签</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.tag') }}</div>
     <van-space wrap>
-      <van-tag type="primary">Primary</van-tag>
-      <van-tag type="success">Success</van-tag>
-      <van-tag type="danger">Danger</van-tag>
-      <van-tag type="warning">Warning</van-tag>
-      <van-tag plain type="primary">Plain</van-tag>
-      <van-tag round type="primary">Round</van-tag>
+      <van-tag type="primary">{{ t('app.buttonPrimary') }}</van-tag>
+      <van-tag type="success">{{ t('app.buttonSuccess') }}</van-tag>
+      <van-tag type="danger">{{ t('app.buttonDanger') }}</van-tag>
+      <van-tag type="warning">{{ t('app.buttonWarning') }}</van-tag>
+      <van-tag plain type="primary">{{ t('demo.plain') }}</van-tag>
+      <van-tag round type="primary">{{ t('demo.round') }}</van-tag>
     </van-space>
 
     <!-- Badge -->
-    <div class="font-600 mt-4 mb-3">Badge 徽标</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.badge') }}</div>
     <van-space class="gap-5">
       <van-badge :content="8"><van-icon name="chat-o" size="24" /></van-badge>
       <van-badge :content="99"><van-icon name="like-o" size="24" /></van-badge>
@@ -102,22 +118,19 @@ const stepperValue = ref(1);
     </van-space>
 
     <!-- Progress -->
-    <div class="font-600 mt-4 mb-3">Progress 进度条</div>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.progress') }}</div>
     <van-progress :percentage="68" />
 
     <!-- Notice Bar -->
-    <div class="font-600 mt-4 mb-3">NoticeBar 通知栏</div>
-    <van-notice-bar
-      left-icon="volume-o"
-      text="这是一条通知消息，用于展示 Vant 的 NoticeBar 组件效果"
-    />
+    <div class="font-600 mt-4 mb-3">{{ t('demo.notice') }}</div>
+    <van-notice-bar left-icon="volume-o" :text="t('demo.noticeText')" />
 
     <!-- Divider -->
-    <div class="font-600 mt-4 mb-3">Divider 分割线</div>
-    <van-divider>文字</van-divider>
+    <div class="font-600 mt-4 mb-3">{{ t('demo.divider') }}</div>
+    <van-divider>{{ t('demo.text') }}</van-divider>
 
     <!-- Empty -->
-    <div class="font-600 mt-4 mb-3">Empty 空状态</div>
-    <van-empty description="暂无数据" />
+    <div class="font-600 mt-4 mb-3">{{ t('demo.empty') }}</div>
+    <van-empty :description="t('mobile.empty')" />
   </div>
 </template>

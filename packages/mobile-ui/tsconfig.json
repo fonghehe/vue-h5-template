@@ -1,0 +1,4 @@
+{
+  "extends": "@vh5/tsconfig/web.json",
+  "include": ["src/**/*.ts", "src/**/*.vue"]
+}

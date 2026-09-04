@@ -1,10 +1,13 @@
-export interface UserInfo {
+export interface PublicUserInfo {
   id: number;
-  password: string;
   realName: string;
   avatar: string;
   roles: string[];
   username: string;
+}
+
+export interface UserInfo extends PublicUserInfo {
+  password: string;
 }
 
 export interface ProductItem {
@@ -23,7 +26,7 @@ export const MOCK_USERS: UserInfo[] = [
   {
     id: 0,
     password: '123456',
-    realName: '测试用户',
+    realName: 'test',
     avatar:
       'https://img12.360buyimg.com/imagetools/jfs/t1/143702/31/16654/116794/5fc6f541Edebf8a57/4138097748889987.png',
     roles: ['user'],
@@ -32,7 +35,7 @@ export const MOCK_USERS: UserInfo[] = [
   {
     id: 1,
     password: '123456',
-    realName: '管理员',
+    realName: 'admin',
     avatar:
       'https://img12.360buyimg.com/imagetools/jfs/t1/143702/31/16654/116794/5fc6f541Edebf8a57/4138097748889987.png',
     roles: ['admin'],
@@ -40,11 +43,16 @@ export const MOCK_USERS: UserInfo[] = [
   },
 ];
 
+export function toPublicUser(user: UserInfo): PublicUserInfo {
+  const { password: _password, ...publicUser } = user;
+  return publicUser;
+}
+
 export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 1,
     imgUrl:
-      '//img10.360buyimg.com/n2/s400x400_jfs/t1/210890/22/4728/163829/6163a590Eb7c6f4b5/6390526d49791cb9.jpg!q70.jpg',
+      'https://img10.360buyimg.com/n2/s400x400_jfs/t1/210890/22/4728/163829/6163a590Eb7c6f4b5/6390526d49791cb9.jpg!q70.jpg',
     title:
       '【活蟹】湖塘煙雨 阳澄湖大闸蟹公4.5两 母3.5两 4对8只 鲜活生鲜螃蟹现货水产礼盒海鲜水',
     price: '388',
@@ -58,7 +66,7 @@ export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 2,
     imgUrl:
-      '//m.360buyimg.com/mobilecms/s400x400_jfs/t1/181328/3/31476/203233/63b66ef1F60f5f0f8/f4e8c4b6df4194d6.jpg!q70.dpg.webp',
+      'https://m.360buyimg.com/mobilecms/s400x400_jfs/t1/181328/3/31476/203233/63b66ef1F60f5f0f8/f4e8c4b6df4194d6.jpg!q70.dpg.webp',
     title:
       '【礼券】湖塘烟雨 海鲜卡券海产提货礼品卡春节年夜饭年货生鲜过年海鲜礼盒大礼包',
     price: '598',
@@ -71,7 +79,7 @@ export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 3,
     imgUrl:
-      '//m.360buyimg.com/mobilecms/s400x400_jfs/t1/214199/39/25134/127357/63c2b3adFed9c98f4/54126e85c23d0893.jpg!q80.dpg',
+      'https://m.360buyimg.com/mobilecms/s400x400_jfs/t1/214199/39/25134/127357/63c2b3adFed9c98f4/54126e85c23d0893.jpg!q80.dpg',
     title:
       '苏泊尔（SUPOR） 电饭煲远红外加热IH本釜内胆 电饭锅4L智能预约家用煮饭锅一键柴火饭SF40HC81',
     price: '1759',
@@ -84,7 +92,7 @@ export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 4,
     imgUrl:
-      '//m.360buyimg.com/mobilecms/s1265x1265_jfs/t20280402/412326/20/12475/54533/69cf75afFc560cac6/0a02320320cce0f2.jpg!q70.dpg.webp',
+      'https://m.360buyimg.com/mobilecms/s1265x1265_jfs/t20280402/412326/20/12475/54533/69cf75afFc560cac6/0a02320320cce0f2.jpg!q70.dpg.webp',
     title: 'Apple/苹果 iPhone 17 256GB 白色 支持移动联通电信5G 双卡双待手机',
     price: '5999',
     vipPrice: '5999',

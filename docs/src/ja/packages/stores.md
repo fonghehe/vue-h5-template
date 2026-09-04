@@ -1,30 +1,9 @@
-# Stores
+# @vh5/stores
 
-`packages/stores` は Pinia 状態管理の初期化と永続化設定を提供します。
+## パッケージ参照
 
-## 使用方法
+`packages/stores`: `initStores(app, { namespace })`, `resetAllStores()`, `defineStore`, `storeToRefs`.
 
-### 初期化
+[実装ガイド](../guide/essentials/state.md)
 
-`bootstrap.ts` で `initStores()` を呼び出します：
-
-```ts
-import { initStores } from '@vh5/stores';
-
-await initStores(app, { namespace: 'my-app-v1-dev' });
-```
-
-### 永続化戦略
-
-- **開発環境**：`localStorage` を直接使用
-- **本番環境**：`SecureLS`（AES 暗号化 + 圧縮）を使用
-
-Key 形式：`${namespace}-${storeId}`
-
-### すべてのストアをリセット
-
-```ts
-import { resetAllStores } from '@vh5/stores';
-
-resetAllStores();
-```
+実行時 workspace 依存です。`initStores` の既定ストレージを現在の user/cart は localStorage で上書きします。`resetAllStores` は Pinia のみをリセットします。詳細は上記ガイドを参照。

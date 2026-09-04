@@ -9,15 +9,6 @@ export default defineConfig(async () => {
       uiLibrary: 'varlet',
     },
     vite: {
-      server: {
-        proxy: {
-          '/api': {
-            changeOrigin: true,
-            target: 'http://localhost:5320',
-            ws: true,
-          },
-        },
-      },
       resolve: {
         alias: {
           '@': fileURLToPath(new URL('src', import.meta.url)),

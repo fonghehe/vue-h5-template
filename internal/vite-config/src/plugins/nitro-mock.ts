@@ -46,7 +46,7 @@ export const viteNitroMockPlugin = ({
 };
 
 async function runNitroServer(rootDir: string, port: number, verbose: boolean) {
-  let nitro: any;
+  let nitro: Awaited<ReturnType<typeof createNitro>> | undefined;
   const reload = async () => {
     if (nitro) {
       consola.info('Restarting dev server...');
@@ -73,8 +73,12 @@ async function runNitroServer(rootDir: string, port: number, verbose: boolean) {
                 `Nitro config updated:\n${diff.map((entry) => `  ${entry.toString()}`).join('\n')}`,
               );
             }
+            // The watcher may fire before createNitro has finished assigning
+            // the instance. Initial configuration is already used by creation.
+            const currentNitro = nitro;
+            if (!currentNitro) return;
             await (diff.every((e) => hmrKeyRe.test(e.key))
-              ? nitro.updateConfig(newConfig.config)
+              ? currentNitro.updateConfig(newConfig.config)
               : reload());
           },
         },

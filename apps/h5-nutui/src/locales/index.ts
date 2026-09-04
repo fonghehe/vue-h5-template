@@ -41,6 +41,11 @@ async function loadThirdPartyMessage(lang: SupportedLanguagesType) {
       NutLocale.use(lang, locale.default);
       break;
     }
+    case 'ja-JP': {
+      const locale = await import('./nutui-ja');
+      NutLocale.use(lang, locale.default);
+      break;
+    }
     case 'zh-CN':
     case 'zh-TW': {
       const locale =
@@ -48,7 +53,6 @@ async function loadThirdPartyMessage(lang: SupportedLanguagesType) {
       NutLocale.use('zh-CN', locale.default);
       break;
     }
-    // NutUI 没有 ja-JP，使用英文兜底
     default: {
       const locale =
         await import('@nutui/nutui/dist/packages/locale/lang/en-US');
@@ -59,7 +63,7 @@ async function loadThirdPartyMessage(lang: SupportedLanguagesType) {
 
 async function setupI18n(app: App, options: LocaleSetupOptions = {}) {
   await coreSetup(app, {
-    defaultLocale: 'zh-CN',
+    defaultLocale: 'en-US',
     loadMessages,
     missingWarn: !import.meta.env.PROD,
     ...options,

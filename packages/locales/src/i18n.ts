@@ -14,6 +14,7 @@ import { createI18n } from 'vue-i18n';
 import { useSimpleLocale } from '@vh5-core/composables';
 
 const i18n = createI18n({
+  fallbackLocale: 'en-US',
   globalInjection: true,
   legacy: false,
   locale: '',
@@ -95,16 +96,32 @@ function loadLocalesMapFromDir(
  */
 function setI18nLanguage(locale: SupportedLanguagesType) {
   i18n.global.locale.value = locale as Locale;
+  try {
+    localStorage.setItem('vh5:locale', locale);
+  } catch {
+    /* Language still works without storage. */
+  }
 
   document?.querySelector('html')?.setAttribute('lang', locale);
 }
 
 async function setupI18n(app: App, options: LocaleSetupOptions = {}) {
-  const { defaultLocale = 'zh-CN' } = options;
+  const { defaultLocale = 'en-US' } = options;
   // app可以自行扩展一些第三方库和组件库的国际化
   loadMessages = options.loadMessages || (async () => ({}));
   app.use(i18n);
-  await loadLocaleMessages(defaultLocale);
+  const fallback = await localesMap['en-US']?.();
+  if (fallback?.default)
+    i18n.global.setLocaleMessage('en-US', fallback.default);
+  let initialLocale = defaultLocale;
+  try {
+    const saved = localStorage.getItem('vh5:locale');
+    if (saved === 'en-US' || saved === 'zh-CN' || saved === 'ja-JP')
+      initialLocale = saved;
+  } catch {
+    /* Storage can be unavailable in private WebViews. */
+  }
+  await loadLocaleMessages(initialLocale);
 
   // 在控制台打印警告
   i18n.global.setMissingHandler((locale, key) => {

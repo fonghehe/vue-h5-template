@@ -1,8 +1,33 @@
 :root {
-  --van-nav-bar-background: #3a7afe;
+  --app-primary: #1989fa;
+  --app-primary-deep: #0969da;
+  --app-primary-soft: #eaf4ff;
+  --app-primary-rgb: 25 137 250;
+  --app-surface: #f4f8fc;
+  --app-surface-raised: #fff;
+  --app-text: #1f2a37;
+  --app-text-muted: #748094;
+  --app-border: #e3ebf4;
+  --app-card-shadow: 0 10px 30px rgb(23 84 145 / 9%);
+  --van-primary-color: var(--app-primary);
+  --van-blue: var(--app-primary);
+  --van-tabbar-item-active-color: var(--app-primary);
+  --van-back-top-background: var(--app-primary);
+  --van-font-bold: 500;
+}
+
+/* Set component tokens locally so lazy-loaded Vant :root defaults cannot
+   override the application header theme. */
+.van-nav-bar {
+  --van-nav-bar-background: var(--app-primary);
   --van-nav-bar-height: 54px;
   --van-nav-bar-title-font-size: 16px;
   --van-nav-bar-title-text-color: #fff;
   --van-nav-bar-icon-color: #fff;
-  --van-font-bold: 500;
+  --van-nav-bar-text-color: #fff;
+}
+
+body {
+  color: var(--app-text);
+  background: var(--app-surface);
 }

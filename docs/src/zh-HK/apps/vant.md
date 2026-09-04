@@ -1,46 +1,16 @@
-# Vant 版 H5
+# Vant
 
-基於 [Vant](https://vant-ui.github.io/vant/) 4.x 的行動端 H5 應用。
+三個應用統一 Home/List/Member/Examples，路徑係 `/home`、`/list`、`/member`、`/examples`。業務頁來自 `packages/mobile-ui`，原生導覽同 `/examples/components` 保留應用實作。預設英文，Home/Member 可切換中日文。AI 浮動按鈕打開 `/ai/chat`，喺 Chat/Login/Cart/Details 隱藏。
 
-## 特點
-
-- Vant 元件**按需載入**，透過 `VantResolver` 自動註冊，無需 `app.use(Vant)`
-- CSS 全量載入（`vant/lib/index.css`），確保 Toast/Dialog 等函式元件樣式順序正確
-- 內置 `showToast`、`showDialog` 等 API 式呼叫
-
-## 啟動
+Vant 4 用 `VantResolver` 按需載入，唔做全域註冊或者全量 CSS。頂欄藍色 `#1989fa` 配白色標題同返回圖示，用元件變數避免 root 樣式覆蓋。導覽係 `van-nav-bar` / `van-tabbar`，登入用可測試 LoginForm，商品列表係共享頁面。
 
 ```bash
 pnpm dev:vant
+pnpm dev:services:vant
+pnpm build:vant
+pnpm -F @vh5/h5-vant preview
 ```
 
-預設埠號：`5778`
+Port: `5778`.
 
-## 按需載入說明
-
-```ts
-// bootstrap.ts
-// ✅ 只導入全局基礎樣式，vant 元件 CSS 由 VantResolver 按需注入
-import '@vh5/styles/global';
-// ❌ 不使用 app.use(Vant) 全量註冊
-// ❌ 不額外導入 vant/lib/index.css（避免與 Resolver 按需注入衝突）
-```
-
-`VantResolver` 預設使用 `importStyle: true`，在元件被使用時自動注入對應 CSS。
-
-## 使用的 Vant 元件
-
-| 元件                          | 用途              |
-| ----------------------------- | ----------------- |
-| `van-nav-bar`                 | 頂部導覽列        |
-| `van-tabbar`                  | 底部標籤列        |
-| `van-cell` / `van-cell-group` | 商品列表 / 列表項 |
-| `van-swipe`                   | 輪播圖            |
-| `van-form` / `van-field`      | 登入表單          |
-| `van-image`                   | 圖片展示          |
-| `van-button`                  | 按鈕              |
-| `van-tag`                     | 標籤              |
-| `van-empty`                   | 空狀態            |
-| `van-back-top`                | 返回頂部          |
-| `showToast`                   | 訊息提示（API）   |
-| `showDialog`                  | 對話框（API）     |
+[後端模式](../guide/essentials/server.md) · [主題](../guide/essentials/styles.md) · [路由行為](../guide/essentials/route.md)

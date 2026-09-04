@@ -63,7 +63,7 @@ async function loadThirdPartyMessage(lang: SupportedLanguagesType) {
 
 async function setupI18n(app: App, options: LocaleSetupOptions = {}) {
   await coreSetup(app, {
-    defaultLocale: 'zh-CN',
+    defaultLocale: 'en-US',
     loadMessages,
     missingWarn: !import.meta.env.PROD,
     ...options,

@@ -37,34 +37,39 @@ async function loadThirdPartyMessage(lang: SupportedLanguagesType) {
   switch (lang) {
     case 'en-US': {
       const locale = await import('@varlet/ui/es/locale/en-US.mjs');
-      VarletLocale.use(locale.default);
+      VarletLocale.add(lang, locale.default);
+      VarletLocale.use(lang);
       break;
     }
     case 'ja-JP': {
       const locale = await import('@varlet/ui/es/locale/ja-JP.mjs');
-      VarletLocale.use(locale.default);
+      VarletLocale.add(lang, locale.default);
+      VarletLocale.use(lang);
       break;
     }
     case 'zh-CN': {
       const locale = await import('@varlet/ui/es/locale/zh-CN.mjs');
-      VarletLocale.use(locale.default);
+      VarletLocale.add(lang, locale.default);
+      VarletLocale.use(lang);
       break;
     }
     case 'zh-TW': {
       const locale = await import('@varlet/ui/es/locale/zh-TW.mjs');
-      VarletLocale.use(locale.default);
+      VarletLocale.add(lang, locale.default);
+      VarletLocale.use(lang);
       break;
     }
     default: {
       const locale = await import('@varlet/ui/es/locale/zh-CN.mjs');
-      VarletLocale.use(locale.default);
+      VarletLocale.add(lang, locale.default);
+      VarletLocale.use(lang);
     }
   }
 }
 
 async function setupI18n(app: App, options: LocaleSetupOptions = {}) {
   await coreSetup(app, {
-    defaultLocale: 'zh-CN',
+    defaultLocale: 'en-US',
     loadMessages,
     missingWarn: !import.meta.env.PROD,
     ...options,

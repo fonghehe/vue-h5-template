@@ -3,58 +3,137 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { startProgress, stopProgress } from '@vh5/utils';
 
 import Layout from '@/layout/index.vue';
+import { useUserStore } from '@/stores/user';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior: () => ({ top: 0 }),
   routes: [
     { path: '/', redirect: '/home' },
     {
       path: '/',
       component: Layout,
       children: [
+        { path: 'mine', redirect: '/member' },
+        { path: 'example', redirect: '/examples' },
         {
           path: 'home',
           name: 'home',
           component: () => import('@/views/home/index.vue'),
-          meta: { title: '首页' },
+          meta: { title: 'app.home' },
         },
         {
           path: 'list',
           name: 'list',
           component: () => import('@/views/list/index.vue'),
-          meta: { title: '列表' },
+          meta: { title: 'app.list' },
         },
         {
           path: 'details',
           name: 'details',
           component: () => import('@/views/list/details/index.vue'),
-          meta: { title: '详情' },
+          meta: { title: 'app.details' },
         },
         {
-          path: 'mine',
+          path: 'cart',
+          name: 'cart',
+          component: () => import('@/views/cart/index.vue'),
+          meta: { keepAlive: true, title: 'mobile.cart' },
+        },
+        {
+          path: 'member',
+
           name: 'mine',
           component: () => import('@/views/mine/index.vue'),
-          meta: { title: '我的' },
+          meta: { title: 'app.mine' },
         },
         {
-          path: 'example',
+          path: 'examples',
+
           name: 'example',
+          component: () => import('@/views/examples/index.vue'),
+          meta: { title: 'app.example' },
+        },
+        {
+          path: 'examples/components',
+          name: 'components-example',
           component: () => import('@/views/example/index.vue'),
-          meta: { title: '示例' },
+          meta: { title: 'mobile.components' },
         },
         {
           path: 'login',
           name: 'login',
           component: () => import('@/views/login/index.vue'),
-          meta: { title: '登录' },
+          meta: { guestOnly: true, title: 'app.login' },
+        },
+        {
+          path: 'ai/chat',
+          name: 'ai-chat',
+          component: () => import('@/views/ai/chat/index.vue'),
+          meta: { title: 'mobile.chat' },
+        },
+        {
+          path: 'examples/request',
+          name: 'request-example',
+          component: () => import('@/views/examples/request/index.vue'),
+          meta: { title: 'mobile.request' },
+        },
+        {
+          path: 'examples/query',
+          name: 'query-example',
+          component: () => import('@/views/examples/query/index.vue'),
+          meta: { keepAlive: true, title: 'mobile.query' },
+        },
+        {
+          path: 'examples/svg-icons',
+          name: 'svg-icons-example',
+          component: () => import('@/views/examples/svg-icons/index.vue'),
+          meta: { title: 'mobile.icons' },
+        },
+        {
+          path: 'examples/pwa',
+          name: 'pwa-example',
+          component: () => import('@/views/examples/pwa/index.vue'),
+          meta: { title: 'mobile.pwa' },
+        },
+        {
+          path: 'examples/mobile',
+          name: 'mobile-example',
+          component: () => import('@/views/examples/mobile/index.vue'),
+          meta: { title: 'mobile.mobile' },
         },
       ],
     },
+    {
+      path: '/offline',
+      name: 'offline',
+      component: () => import('@/views/system/offline/index.vue'),
+      meta: { title: 'Offline' },
+    },
+    { path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
   ],
 });
 
-router.beforeEach(() => {
+router.beforeEach(async (to) => {
   startProgress();
+  const userStore = useUserStore();
+  if (to.meta.guestOnly && userStore.isLoggedIn) return { name: 'mine' };
+  if (!to.meta.requiresAuth) return true;
+
+  if (!userStore.isLoggedIn) {
+    return { name: 'login', query: { redirect: to.fullPath } };
+  }
+  if (
+    userStore.getUserInfo.id === null ||
+    userStore.getUserInfo.id === undefined
+  ) {
+    try {
+      await userStore.fetchUserInfo();
+    } catch {
+      return false;
+    }
+  }
+  return true;
 });
 
 router.afterEach(() => {

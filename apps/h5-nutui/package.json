@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --mode development",
+    "dev:services": "vite --mode services",
     "build": "pnpm vite build --mode production",
     "build:analyze": "pnpm vite build --mode analyze",
     "preview": "vite preview",
@@ -15,8 +16,13 @@
   "dependencies": {
     "@nutui/icons-vue": "catalog:",
     "@nutui/nutui": "catalog:",
+    "@tanstack/vue-query": "catalog:",
+    "@vh5-core/composables": "workspace:*",
+    "@vh5/api-client": "workspace:*",
     "@vh5/locales": "workspace:*",
+    "@vh5/mobile-ui": "workspace:*",
     "@vh5/stores": "workspace:*",
+    "@vh5/styles": "workspace:*",
     "@vh5/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "@vueuse/integrations": "catalog:",
@@ -26,7 +32,6 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
-    "@vh5/styles": "workspace:*",
     "@vitejs/plugin-vue": "catalog:",
     "@vitejs/plugin-vue-jsx": "catalog:",
     "@vue/eslint-config-prettier": "catalog:",

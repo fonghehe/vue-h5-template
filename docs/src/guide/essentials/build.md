@@ -1,54 +1,20 @@
 # Build & Deploy
 
-## Build
-
 ```bash
-pnpm build           # Build all apps
-pnpm build:nutui     # Build NutUI version
-pnpm build:vant      # Build Vant version
-pnpm build:varlet    # Build Varlet version
+pnpm build:vant
+pnpm -F @vh5/h5-vant preview
+pnpm build:docs
+pnpm -F @vh5/docs preview
 ```
 
-Output in each app's `dist/` directory.
+Replace `vant` with `nutui` or `varlet` for another app. `pnpm build` orchestrates all workspace build scripts, including docs. Deploy the selected `apps/h5-<ui>/dist` as a history-mode SPA. `preview` does not start Nitro or the companion services.
 
-## Preview
+Vite's dev proxy is not included in the output. Configure production `/api/ai/**` to the AI service and other `/api/**` to the business service; put the AI rule first and disable SSE buffering. Set `VITE_NITRO_MOCK=false` for production. Provider keys and JWT secrets must never be frontend env values.
 
-```bash
-cd apps/h5-nutui
-pnpm preview
-```
+`VITE_BASE` configures the asset/router base. Subdirectory deployment also needs matching host fallback rules and a review of PWA start URL, navigation fallback and root-relative app links; changing that variable alone is not a verified subpath deployment.
 
-## Docker
+Optional: `VITE_PWA_ENABLED=true` adds static precaching and the SPA shell fallback; APIs are not runtime-cached. `VITE_IMAGE_OPTIMIZE=true` enables build-only image optimization (already true in Vant production config).
 
-```bash
-docker build -f scripts/deploy/Dockerfile -t vue-h5-template .
-```
+The existing `scripts/deploy/Dockerfile` copies **playground/dist**, not one of the three H5 apps; its Nginx template does not wire the two services. Treat it as a starting point and adapt both before use, not a ready H5 deployment command.
 
-Nginx config template: `scripts/deploy/nginx.conf`.
-
-## GitHub Pages Auto Deploy
-
-The project includes a GitHub Actions workflow that automatically builds and deploys the documentation to GitHub Pages when pushing to the `main` branch.
-
-**How to enable**: In repository Settings → Pages, set Source to **GitHub Actions**.
-
-```yaml
-# .github/workflows/docs.yml
-on:
-  push:
-    branches: [main]
-    paths: ['docs/**']
-```
-
-Trigger condition: push to `main` with changes under `docs/**`, or manual `workflow_dispatch`.
-
-## Environment Variables
-
-| Variable                  | Description           |
-| ------------------------- | --------------------- |
-| `VITE_PORT`               | Dev server port       |
-| `VITE_BASE`               | Base path             |
-| `VITE_GLOB_API_URL`       | API request prefix    |
-| `VITE_NITRO_MOCK`         | Enable mock service   |
-| `VITE_DEVTOOLS`           | Enable DevTools       |
-| `VITE_INJECT_APP_LOADING` | Inject global loading |
+Docs output is `docs/.vitepress/dist`, base `/vue-h5-template/`. `.github/workflows/docs.yml` deploys docs on relevant `main` changes or manual dispatch. `.github/workflows/release.yml` uses Changesets; public package publication needs repository/token configuration. See [deployment details](../v2/deployment.md).

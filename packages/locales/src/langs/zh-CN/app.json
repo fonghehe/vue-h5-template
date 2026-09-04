@@ -1,7 +1,9 @@
 {
+  "mockLoginHint": "Nitro Mock 模式：使用 user / 123456 登录。",
+  "serviceLoginHint": "Business Service 模式：使用后端账号登录（默认演示种子账号 user / 123456）。",
   "home": "首页",
   "list": "列表",
-  "mine": "我的",
+  "mine": "会员",
   "example": "示例",
   "login": "登录",
   "details": "详情",

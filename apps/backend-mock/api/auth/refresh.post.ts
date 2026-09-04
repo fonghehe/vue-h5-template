@@ -4,8 +4,12 @@ import {
   getRefreshTokenFromCookie,
   setRefreshTokenCookie,
 } from '~/utils/cookie-utils';
-import { generateAccessToken, verifyRefreshToken } from '~/utils/jwt-utils';
-import { MOCK_USERS } from '~/utils/mock-data';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from '~/utils/jwt-utils';
+import { MOCK_USERS, toPublicUser } from '~/utils/mock-data';
 import { forbiddenResponse } from '~/utils/response';
 
 export default defineEventHandler(async (event) => {
@@ -27,9 +31,11 @@ export default defineEventHandler(async (event) => {
   if (!findUser) {
     return forbiddenResponse(event);
   }
-  const accessToken = generateAccessToken(findUser);
+  const publicUser = toPublicUser(findUser);
+  const accessToken = generateAccessToken(publicUser);
+  const nextRefreshToken = generateRefreshToken(publicUser);
 
-  setRefreshTokenCookie(event, refreshToken);
+  setRefreshTokenCookie(event, nextRefreshToken);
 
   return accessToken;
 });

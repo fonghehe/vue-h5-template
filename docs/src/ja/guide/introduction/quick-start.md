@@ -1,78 +1,23 @@
 # クイックスタート
 
-## 環境要件
+**Node.js 22.x の 22.18 以降、または 24.x** と **pnpm 11**（`pnpm@11.10.0`）を使います。制約はルート `package.json` が正で、Node 20/pnpm 10 は対象外です。
 
-- **Node.js** >= 20.12.0
-- **pnpm** >= 10.0.0
-
-## インストール
+クローン後にルートで必要なコマンドを実行します。`pnpm install` は内部ビルド用パッケージの `stub` も実行します。
 
 ```bash
-# プロジェクトをクローン
-git clone https://github.com/fonghehe/vue-h5-template.git
-cd vue-h5-template
-
-# 依存関係をインストール
 pnpm install
-```
-
-## 開発
-
-```bash
-# すべてのアプリを起動（対話式選択）
-pnpm dev
-
-# 特定のアプリを起動
-pnpm dev:nutui    # NutUI バージョン
-pnpm dev:vant     # Vant バージョン
-pnpm dev:varlet   # Varlet バージョン
-```
-
-Mock サーバーは Nitro 経由で `http://localhost:5320` に自動起動し、フロントエンドは Vite proxy で `/api` リクエストをプロキシします。
-
-## ビルド
-
-```bash
-# すべてのアプリをビルド
-pnpm build
-
-# 特定のアプリをビルド
-pnpm build:nutui
+pnpm dev:vant
+# alternatives: pnpm dev:nutui / pnpm dev:varlet
+pnpm check
+pnpm test:e2e
 pnpm build:vant
-pnpm build:varlet
+pnpm -F @vh5/h5-vant preview
 ```
 
-## プレビュー
+`pnpm dev` は 1 パッケージを対話選択します。一括起動ではありません。既定ポートは NutUI 5777、Vant 5778、Varlet 5779、Nitro 5320。`user / 123456`、`admin / 123456` は Nitro 専用です。
 
-```bash
-cd apps/h5-nutui
-pnpm preview
-```
+画面は英語で開始し、Home/Member で中国語・日本語に切り替えられます。共通タブと AI ボタンを備えます。[サービスモード](../essentials/server.md)では 2 つのバックエンドを別途起動してください。
 
-## クリーンアップ
+`.env.example` から必要な値をローカル設定へコピーし、既存設定を上書きしないでください。workspace 追加後は install と再起動が必要です。Vant は使用中のポートで起動に失敗します。ターミナルの URL を確認してください。
 
-```bash
-# すべての node_modules、dist、.turbo キャッシュを削除
-pnpm clean
-
-# ロックファイルも削除
-pnpm clean --del-lock
-```
-
-## 新しいアプリの作成
-
-```bash
-# CLI で対話式に新しい H5 アプリを作成
-pnpm create-app
-```
-
-Varlet / Vant / NutUI をサポートし、完全なプロジェクト構造を自動生成します。詳細は[アプリ作成](/ja/guide/essentials/create-app)を参照してください。
-
-## テストアカウント
-
-Mock サーバーは以下のテストアカウントを提供しています：
-
-| ユーザー名 | パスワード | 役割         |
-| ---------- | ---------- | ------------ |
-| user       | 123456     | 一般ユーザー |
-| admin      | 123456     | 管理者       |
+`pnpm build` は workspace と docs もビルドします。アプリ成果物は `apps/h5-<ui>/dist`。preview は静的配信だけで Mock はありません。文書は `pnpm dev:docs` / `pnpm build:docs`。CLI は `pnpm create-app` です。[アプリ作成](../essentials/create-app.md)を参照してください。

@@ -1,49 +1,9 @@
-# Stores
+# @vh5/stores
 
-`packages/stores` 提供 Pinia 状态管理的初始化和持久化配置。
+## 包参考
 
-## 安装
+`packages/stores`: `initStores(app, { namespace })`, `resetAllStores()`, `defineStore`, `storeToRefs`.
 
-已作为 workspace 依赖，在 H5 应用的 `package.json` 中引用：
+[完整实现说明](../guide/essentials/state.md)
 
-```json
-{
-  "devDependencies": {
-    "@vh5/stores": "workspace:*"
-  }
-}
-```
-
-## 使用
-
-### 初始化
-
-在 `bootstrap.ts` 中调用 `initStores()` 初始化 Pinia：
-
-```ts
-import { initStores } from '@vh5/stores';
-
-await initStores(app, { namespace: 'my-app-v1-dev' });
-```
-
-### 持久化策略
-
-- **开发环境**：直接使用 `localStorage`
-- **生产环境**：使用 `SecureLS`（AES 加密 + 压缩）
-
-Key 格式：`${namespace}-${storeId}`
-
-### 重置所有 Store
-
-```ts
-import { resetAllStores } from '@vh5/stores';
-
-resetAllStores();
-```
-
-## 导出
-
-```ts
-export { defineStore, storeToRefs } from 'pinia';
-export { initStores, resetAllStores } from './setup';
-```
+作为运行时 workspace 依赖安装。`initStores` 配置默认持久化，但当前 user/cart 通过 localStorage 覆盖；`resetAllStores` 只重置 Pinia，Query 与存储边界见上方指南。

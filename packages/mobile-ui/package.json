@@ -1,0 +1,30 @@
+{
+  "name": "@vh5/mobile-ui",
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "type-check": "vue-tsc --noEmit"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "**/*.vue"
+  ],
+  "exports": {
+    "./*.vue": "./src/*.vue",
+    "./cart": "./src/cart.ts",
+    "./queries": "./src/queries.ts"
+  },
+  "dependencies": {
+    "@tanstack/vue-query": "catalog:",
+    "@vh5-core/composables": "workspace:*",
+    "@vh5/ai-chat": "workspace:*",
+    "@vh5/api-client": "workspace:*",
+    "@vh5/locales": "workspace:*",
+    "dompurify": "catalog:",
+    "marked": "catalog:",
+    "pinia": "catalog:",
+    "pinia-plugin-persistedstate": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  }
+}

@@ -18,44 +18,28 @@ hero:
       link: https://github.com/fonghehe/vue-h5-template
 
 features:
-  - icon: 🏗️
-    title: Monorepo 架構
-    details: 基於 Turborepo + pnpm workspace，統一管理多個 H5 應用和共享套件，建置快取加速開發。
-    link: /zh-TW/guide/project/dir
-    linkText: 目錄結構
-  - icon: 📱
-    title: 三套 UI 框架
-    details: 分別提供 NutUI、Vant、Varlet 版本，自由選擇適合的行動端 UI 元件庫。
-    link: /zh-TW/apps/nutui
-    linkText: 檢視應用
-  - icon: 🔧
-    title: 統一工程設定
-    details: 共享 ESLint、Prettier、Stylelint、TypeScript 設定，減少重複，保持團隊規範一致。
-    link: /zh-TW/guide/project/standard
-    linkText: 程式碼規範
-  - icon: 🗄️
-    title: Nitro Mock 服務
-    details: 內建 Nitro Mock 後端，提供登入認證、商品列表等完整介面模擬，開發無需等待後端。
-    link: /zh-TW/apps/backend-mock
-    linkText: Mock 文件
-  - icon: 📦
-    title: 狀態管理
-    details: Pinia + 持久化外掛，生產環境 AES 加密儲存，多 Tab 狀態同步。
-    link: /zh-TW/packages/stores
-    linkText: Stores 文件
-  - icon: ⚡
-    title: Vite 建置
-    details: 共享 Vite 設定，支援自動匯入、px-to-viewport 行動適配、PWA 等開箱即用。
-    link: /zh-TW/guide/project/vite
-    linkText: Vite 設定
-  - icon: 🌐
-    title: 國際化
-    details: 內建 vue-i18n，支援簡體中文、繁體中文、英文、日文四語言，共享 locales 套件跨應用複用。
+  - title: "共享行動業務"
+    details: "Vant/NutUI/Varlet 共用四個主頁，保留各自的主題。"
+    link: /zh-TW/guide/v2/ui-framework
+  - title: "串流 AI Chat"
+    details: "浮動入口、增量 SSE、停止、重試、重新生成及安全 Markdown。"
+    link: /zh-TW/guide/v2/ai-chat
+  - title: "狀態分工"
+    details: "Query 管伺服器快取與更新，Pinia 管工作階段及本機購物車。"
+    link: /zh-TW/guide/essentials/state
+  - title: "型別化 REST"
+    details: "共享 Axios 錯誤、請求標頭與 OpenAPI 生成契約。"
+    link: /zh-TW/guide/essentials/api
+  - title: "Mock 或配套服務"
+    details: "使用 Nitro fixture 或獨立 AI 與業務後端。"
+    link: /zh-TW/guide/essentials/server
+  - title: "英文優先多語"
+    details: "英中日頁面切換、保存偏好並同步原生 UI 語言。"
     link: /zh-TW/guide/essentials/locale
-    linkText: 國際化文件
-  - icon: 🔒
-    title: TypeScript
-    details: 全量 TypeScript 覆蓋，嚴格型別檢查，完整的型別宣告，提升程式碼可維護性。
-    link: /zh-TW/guide/introduction/about
-    linkText: 了解更多
+  - title: "行動構建"
+    details: "Vite 8/Rolldown、安全區、響應式 CSS、可選 PWA 與構建圖片優化。"
+    link: /zh-TW/guide/essentials/styles
+  - title: "工程驗證"
+    details: "共享包獨立型別檢查、Vitest、三應用 Playwright；AGENTS.md 說明邊界。"
+    link: /zh-TW/guide/v2/testing
 ---

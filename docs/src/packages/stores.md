@@ -1,30 +1,9 @@
-# Stores
+# @vh5/stores
 
-`packages/stores` provides Pinia state management initialization and persistence.
+## Package Reference
 
-## Usage
+`packages/stores`: `initStores(app, { namespace })`, `resetAllStores()`, `defineStore`, `storeToRefs`.
 
-### Initialization
+[See the implementation guide](../guide/essentials/state.md)
 
-Call `initStores()` in `bootstrap.ts`:
-
-```ts
-import { initStores } from '@vh5/stores';
-
-await initStores(app, { namespace: 'my-app-v1-dev' });
-```
-
-### Persistence Strategy
-
-- **Development**: Uses `localStorage` directly
-- **Production**: Uses `SecureLS` (AES encryption + compression)
-
-Key format: `${namespace}-${storeId}`
-
-### Reset All Stores
-
-```ts
-import { resetAllStores } from '@vh5/stores';
-
-resetAllStores();
-```
+Register as a runtime workspace dependency. `initStores` configures default persistence; current user/cart stores override it with localStorage. `resetAllStores` only resets Pinia. See the linked guide for Query and storage boundaries.

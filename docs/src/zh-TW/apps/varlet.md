@@ -1,39 +1,16 @@
-# Varlet 版 H5
+# Varlet
 
-基於 [Varlet](https://varlet.pages.dev/) 3.x 的行動端 H5 應用。
+三個應用統一 Home/List/Member/Examples，路徑為 `/home`、`/list`、`/member`、`/examples`。業務頁來自 `packages/mobile-ui`，原生導覽與 `/examples/components` 保留應用實作。預設英文，Home/Member 可切換中日文。AI 浮動按鈕開啟 `/ai/chat`，在 Chat/Login/Cart/Details 隱藏。
 
-## 特點
-
-- Varlet 元件**完全按需載入**，透過 `VarletImportResolver` 自動註冊和注入 CSS，無需 `app.use(Varlet)`
-- Material Design 風格
-- 內置 Snackbar API 式元件
-
-## 啟動
+Varlet 3 按需使用 `VarletImportResolver`，主題紫 `#6750a4`，導覽為 `var-app-bar` / `var-bottom-navigation`。語言先 `Locale.add` 再 `Locale.use`，只有本應用載入 Varlet UnoCSS preset。
 
 ```bash
 pnpm dev:varlet
+pnpm dev:services:varlet
+pnpm build:varlet
+pnpm -F @vh5/h5-varlet preview
 ```
 
-預設埠號：`5779`
+Port: `5779`.
 
-## 按需載入說明
-
-```ts
-// bootstrap.ts — 無需全量註冊，VarletImportResolver 自動處理
-import '@vh5/styles/global';
-// ❌ 不再使用 app.use(Varlet) 和全量 CSS 匯入
-```
-
-## 使用的 Varlet 元件
-
-| 元件                    | 用途              |
-| ----------------------- | ----------------- |
-| `var-app-bar`           | 頂部導覽列        |
-| `var-bottom-navigation` | 底部標籤列        |
-| `var-cell`              | 商品列表 / 列表項 |
-| `var-swipe`             | 輪播圖            |
-| `var-input`             | 輸入框            |
-| `var-image`             | 圖片展示          |
-| `var-button`            | 按鈕              |
-| `var-space`             | 間距佈局          |
-| `Snackbar`              | 訊息提示（API）   |
+[後端模式](../guide/essentials/server.md) · [主題](../guide/essentials/styles.md) · [路由行為](../guide/essentials/route.md)

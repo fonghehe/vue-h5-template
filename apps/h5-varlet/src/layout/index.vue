@@ -1,70 +1,65 @@
 <script setup lang="ts">
+import FloatingAiButton from '@vh5/mobile-ui/FloatingAiButton.vue';
+
+import { useNetworkStatus, useVisualViewport } from '@vh5-core/composables';
+
 import { t } from '@/locales';
 
 const router = useRouter();
 const route = useRoute();
+const { isOnline } = useNetworkStatus();
+const { viewportHeight } = useVisualViewport();
+const shellStyle = computed(() => ({
+  height: viewportHeight.value ? `${viewportHeight.value}px` : '100dvh',
+}));
 const tabItem = [
-  { key: 'home', icon: 'home' },
-  { key: 'list', icon: 'format-list-checkbox' },
-  { key: 'mine', icon: 'account-circle-outline' },
-  { key: 'example', icon: 'information-outline' },
+  { icon: 'home', key: 'home', path: '/home' },
+  { icon: 'format-list-checkbox', key: 'list', path: '/list' },
+  { icon: 'account-circle-outline', key: 'mine', path: '/member' },
+  { icon: 'information-outline', key: 'example', path: '/examples' },
 ];
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
-const showBorder = ref(true);
 watch(
-  () => router,
-  () => {
-    const path = router.currentRoute.value.path.replace('/', '');
-    const judgeRoute = tabItem.some((item) => item.key === path);
-    activeTab.value = tabItem.findIndex((item) => item.key === path);
-    tabbarVisible.value = judgeRoute;
-    showBorder.value = judgeRoute;
+  () => route.path,
+  (path) => {
+    const index = tabItem.findIndex((item) => item.path === path);
+    activeTab.value = Math.max(index, 0);
+    tabbarVisible.value = index !== -1;
   },
-  { deep: true, immediate: true },
+  { immediate: true },
 );
-const tabSwitch = (_item: any, index: number) => {
-  switch (index) {
-    case 0: {
-      router.push('/home');
-      break;
-    }
-    case 1: {
-      router.push('/list');
-      break;
-    }
-    case 2: {
-      router.push('/mine');
-      break;
-    }
-    case 3: {
-      router.push('/example');
-      break;
-    }
-  }
+const tabSwitch = (item: (typeof tabItem)[number], index: number) => {
+  router.push(item.path);
   activeTab.value = index;
 };
 const goBack = () => {
-  router.go(-1);
+  if (globalThis.history.length > 1) router.go(-1);
+  else router.replace('/home');
 };
-const navTitle = computed(
-  () => (router.currentRoute.value.meta?.title as string) || '首页',
+const navTitle = computed(() =>
+  t(typeof route.meta.title === 'string' ? route.meta.title : 'app.home'),
 );
 </script>
 
 <template>
-  <div class="flex flex-col w-100dvw h-100dvh">
-    <var-app-bar :title="navTitle" title-position="center">
+  <div class="app-shell flex flex-col w-100dvw" :style="shellStyle">
+    <var-app-bar
+      :title="navTitle"
+      color="var(--app-primary)"
+      text-color="#fff"
+      title-position="center"
+    >
       <template v-if="!tabbarVisible" #left>
         <var-button text round @click="goBack">
           <var-icon name="chevron-left" :size="24" />
         </var-button>
       </template>
     </var-app-bar>
-    <div
-      class="flex-1 min-h-0 overflow-hidden overflow-y-auto"
-      :class="{ 'px-15px': showBorder }"
-    >
+    <div v-if="!isOnline" class="offline-banner" role="status">
+      {{ t('mobile.offlineBanner') }}
+    </div>
+    <div class="app-content flex-1 min-h-0 overflow-hidden overflow-y-auto">
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />
@@ -80,11 +75,44 @@ const navTitle = computed(
         <var-bottom-navigation-item
           v-for="(item, index) in tabItem"
           :key="item.key"
+          :data-testid="`tab-${item.key === 'mine' ? 'member' : item.key === 'example' ? 'examples' : item.key}`"
           :label="t(`app.${item.key}`)"
           :icon="item.icon"
           @click="tabSwitch(item, index)"
         />
       </var-bottom-navigation>
     </div>
+    <FloatingAiButton :with-tabs="tabbarVisible" />
   </div>
 </template>
+
+<style scoped>
+.app-content {
+  overscroll-behavior: contain;
+}
+
+.app-shell,
+.app-content {
+  background: var(--app-surface);
+}
+
+.app-shell {
+  --color-primary: var(--app-primary);
+  --color-primary-container: var(--app-primary-soft);
+  --bottom-navigation-item-active-color: var(--app-primary);
+  --bottom-navigation-item-variant-active-background-color: var(
+    --app-primary-soft
+  );
+
+  position: relative;
+}
+
+.offline-banner {
+  min-height: 34px;
+  padding: 7px 12px;
+  font-size: 12px;
+  color: var(--app-primary-deep);
+  text-align: center;
+  background: var(--app-primary-soft);
+}
+</style>

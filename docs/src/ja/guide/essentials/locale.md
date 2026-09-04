@@ -1,55 +1,11 @@
 # 国際化
 
-`vue-i18n` を使用した国際化。簡体字中国語、繁体字中国語、英語、日本語の4言語をサポート。
+画面の既定は英語 `en-US`。Home と Member で English、简体中文 `zh-CN`、日本語 `ja-JP` を選択できます。`vh5:locale` の保存済み設定を優先し、`<html lang>` も更新します。ドキュメントの 5 言語とアプリの 3 言語は別の設定です。
 
-## 使用方法
+共有文言は `packages/locales/src/langs/{en-US,zh-CN,ja-JP}/{app,mobile,demo}.json`。アクセシビリティ、エラー、ルートタイトルも同じキー構成で翻訳します。既存の `zh-TW` はカスタム利用向けで、新しい mobile/demo の全キーはなく、標準セレクターには含みません。
 
-```vue
-<template>
-  <div>{{ t('app.home') }}</div>
-</template>
+各 `src/locales/index.ts` がアプリと UI ライブラリの言語を読み込みます。NutUI 日本語は `nutui-ja.ts`、Varlet は登録後に選択、Vant はネイティブ言語パックです。共有コンポーネントは `useI18n()`、アプリは `@/locales` の `t` を使います。
 
-<script setup>
-import { t } from '@/locales';
-</script>
-```
+`await loadLocaleMessages('ja-JP')` で必要な言語を読み込んでから切り替えます。共有フォールバックは英語です。言語追加では型、辞書、保存許可リスト、LanguageSelect、ネイティブアダプター、テストを更新します。
 
-## 言語切り替え
-
-```ts
-import { loadLocaleMessages } from '@vh5/locales';
-await loadLocaleMessages('ja-JP');
-```
-
-「マイページ」に言語切り替え機能が内蔵されており、アプリ内で直接言語を切り替えることができます。
-
-## 国際化の削除方法
-
-プロジェクトに国際化が不要な場合は、以下の手順で削除できます：
-
-### 1. ロケールファイルの削除
-
-```bash
-rm -rf packages/locales/src/langs/
-rm -rf apps/h5-nutui/src/locales/langs/
-rm -rf apps/h5-vant/src/locales/langs/
-rm -rf apps/h5-varlet/src/locales/langs/
-```
-
-### 2. locales/index.ts の簡略化
-
-各アプリの `src/locales/index.ts` を簡単な文字列マップに置き換えます。
-
-### 3. setupI18n の削除
-
-各アプリの `bootstrap.ts` から `await setupI18n(app)` を削除します。
-
-### 4. 依存関係の削除
-
-```bash
-pnpm remove vue-i18n @intlify/core-base -r
-```
-
-### 5. コンポーネントのクリーンアップ
-
-コンポーネントから言語切り替え関連のコードを削除します。
+REST/AI は `Accept-Language` を送信します。Nitro は商品 fixture を翻訳しますが、実際のバックエンドと AI 出力の翻訳はサーバー側の責任です。Query キーにも言語を含めます。共有画面が依存するため、辞書だけを削除しないでください。

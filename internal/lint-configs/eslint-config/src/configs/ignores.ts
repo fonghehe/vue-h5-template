@@ -42,6 +42,7 @@ export async function ignores(): Promise<Linter.Config[]> {
         '**/.vitepress/cache/**',
         '**/auto-import?(s).d.ts',
         '**/components.d.ts',
+        '**/typed-router.d.ts',
         '**/vite.config.mts.*',
         '**/*.sh',
         '**/*.ttf',

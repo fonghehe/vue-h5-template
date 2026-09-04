@@ -1,79 +1,76 @@
 <script lang="ts" setup name="BasicLayoutPage">
+import FloatingAiButton from '@vh5/mobile-ui/FloatingAiButton.vue';
+
+import { useNetworkStatus, useVisualViewport } from '@vh5-core/composables';
+
 import { Home, Horizontal, Location, My } from '@nutui/icons-vue';
 
 import { t } from '@/locales';
 
 const tabItem = [
-  { key: 'home', icon: Home, label: () => t('app.home') },
-  { key: 'list', icon: Horizontal, label: () => t('app.list') },
-  { key: 'mine', icon: My, label: () => t('app.mine') },
-  { key: 'example', icon: Location, label: () => t('app.example') },
+  { icon: Home, key: 'home', label: () => t('app.home'), path: '/home' },
+  {
+    icon: Horizontal,
+    key: 'list',
+    label: () => t('app.list'),
+    path: '/list',
+  },
+  {
+    icon: My,
+    key: 'member',
+    label: () => t('app.mine'),
+    path: '/member',
+  },
+  {
+    icon: Location,
+    key: 'examples',
+    label: () => t('app.example'),
+    path: '/examples',
+  },
 ];
 
 const route = useRoute();
 const router = useRouter();
+const { isOnline } = useNetworkStatus();
+const { viewportHeight } = useVisualViewport();
+const shellStyle = computed(() => ({
+  height: viewportHeight.value ? `${viewportHeight.value}px` : '100dvh',
+}));
 const activeTab = ref(0);
-
 const tabbarVisible = ref(true);
-
-const showBorder = ref(true);
-
-const navTitle = computed(() => (route.meta.title as string) || '默认标题');
-
-watch(
-  () => router,
-  () => {
-    const judgeRoute = tabItem.some(
-      (item) => item.key === router.currentRoute.value.path.replace('/', ''),
-    );
-    activeTab.value = tabItem.findIndex(
-      (item) => item.key === router.currentRoute.value.path.replace('/', ''),
-    );
-    tabbarVisible.value = judgeRoute;
-    showBorder.value = judgeRoute;
-  },
-  { deep: true, immediate: true },
+const navTitle = computed(() =>
+  t(typeof route.meta.title === 'string' ? route.meta.title : 'app.home'),
 );
 
-const tabSwitch = (_item: any, index: number) => {
-  switch (index) {
-    case 0: {
-      router.push('/home');
-      break;
-    }
-    case 1: {
-      router.push('/list');
-      break;
-    }
-    case 2: {
-      router.push('/mine');
-      break;
-    }
-    case 3: {
-      router.push('/example');
-      break;
-    }
-  }
-  activeTab.value = index;
-};
+watch(
+  () => route.path,
+  (path) => {
+    const index = tabItem.findIndex((item) => item.path === path);
+    activeTab.value = Math.max(index, 0);
+    tabbarVisible.value = index !== -1;
+  },
+  { immediate: true },
+);
 
 const goBack = () => {
-  router.go(-1);
+  if (globalThis.history.length > 1) router.go(-1);
+  else router.replace('/home');
 };
 </script>
 
 <template>
-  <div class="flex flex-col w-100dvw h-100dvh">
+  <div class="app-shell flex flex-col w-100dvw" :style="shellStyle">
     <nut-navbar
       :title="navTitle"
       :left-show="!tabbarVisible"
       @click-back="goBack"
     />
 
-    <div
-      class="flex-1 min-h-0 overflow-hidden overflow-y-auto"
-      :class="{ 'px-15px': showBorder }"
-    >
+    <div v-if="!isOnline" class="offline-banner" role="status">
+      {{ t('mobile.offlineBanner') }}
+    </div>
+
+    <div class="app-content flex-1 min-h-0 overflow-hidden overflow-y-auto">
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />
@@ -83,24 +80,48 @@ const goBack = () => {
     </div>
 
     <nut-tabbar
-      unactive-color="#364636"
-      active-color="#1989fa"
       v-model="activeTab"
       v-show="tabbarVisible"
-      @tab-switch="tabSwitch"
+      active-color="var(--app-primary)"
+      unactive-color="var(--app-text-muted)"
     >
       <nut-tabbar-item
         v-for="item in tabItem"
         :key="item.key"
+        :data-testid="`tab-${item.key}`"
         :tab-title="item.label()"
         :icon="item.icon"
+        :to="item.path"
       />
     </nut-tabbar>
+    <FloatingAiButton :with-tabs="tabbarVisible" />
   </div>
 </template>
 
 <style scoped>
+.app-shell {
+  position: relative;
+}
+
+.app-content {
+  overscroll-behavior: contain;
+}
+
 .nut-navbar {
   margin-bottom: 0;
+}
+
+.app-shell,
+.app-content {
+  background: var(--app-surface);
+}
+
+.offline-banner {
+  min-height: 34px;
+  padding: 7px 12px;
+  font-size: 12px;
+  color: var(--app-primary-deep);
+  text-align: center;
+  background: var(--app-primary-soft);
 }
 </style>

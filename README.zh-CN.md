@@ -8,6 +8,14 @@
 
 </div>
 
+## 一致的移动端体验
+
+三套应用共享 Home / List / Member / Examples、商品详情与购物车、Query 与请求示例及流式对话。原生导航和组件展示保留各框架特色，共享页面使用应用自己的主题色。
+
+页面默认英文，首页和 Member 可切换中文、日文；保存语言选择，并同步页面文案、浏览器语言、路由标题和 Mock 商品语言。AI 悬浮按钮位于底部 Tab 上方，在聊天输入和结算相关页面隐藏。商品卡片在 320px 屏幕仍保持实际 44px 触控尺寸。
+
+三个目标均支持 Mock 和独立 AI/Business 服务。使用 `pnpm test:e2e` 验证 Vant、NutUI、Varlet。参见[UI 架构](docs/src/zh/guide/v2/ui-framework.md)。
+
 ## 简介
 
 Vue H5 Template 是一个免费开源的移动端 H5 开发模板，基于 Turborepo Monorepo 架构，使用最新的 Vue 3、Vite、TypeScript 等主流技术栈，提供 NutUI、Vant、Varlet 三套 UI 框架的 H5 应用模板。
@@ -16,13 +24,18 @@ Vue H5 Template 是一个免费开源的移动端 H5 开发模板，基于 Turbo
 
 - **Monorepo 架构**：基于 Turborepo + pnpm workspace，统一管理多个 H5 应用和共享包
 - **三套 UI 框架**：分别提供 NutUI、Vant、Varlet 版本，自由选择适合的 UI 组件库
-- **TypeScript**：全面的 TypeScript 支持，配合 unplugin-vue-router 实现类型安全的文件路由
+- **独立视觉系统**：Vant 蓝、NutUI 红、Varlet 紫分别使用完整设计 Token，避免跨框架颜色混用
+- **类型安全基础设施**：严格 TypeScript、显式懒路由、OpenAPI 自动生成类型与统一 API Error
+- **Streaming AI Chat**：厂商无关的 SSE/ReadableStream Client、AbortController 与安全 Markdown
+- **Server State**：TanStack Vue Query 提供缓存、Mutation、分页与 Infinite Query 示例
+- **移动端生产基线**：Safe Area、键盘友好的输入栏、可选 PWA 与仅生产构建执行的图片压缩
+- **真实移动业务模式**：错误边界、离线状态、Visual Viewport、下拉刷新、Web Share、剪贴板与持久化购物车
 - **Vite 构建**：基于 Vite 的构建配置，支持自动导入和组件自动注册
 - **UnoCSS**：原子化 CSS 引擎，全局使用 utility-first 风格写样式
 - **状态管理**：Pinia + 持久化插件，生产环境 AES 加密存储
 - **Mock 服务**：基于 Nitro 的 Mock 后端，提供登录认证、商品列表等接口
 - **Eruda**：内置移动端调试控制台，仅在非生产环境开启
-- **统一规范**：共享 ESLint / Prettier / Stylelint / Commitlint 配置
+- **统一规范**：共享 ESLint / OxLint / Stylelint / Oxfmt / Commitlint 配置
 - **移动适配**：postcss-mobile-forever 移动端适配方案（设计稿宽 375px，最大显示宽 600px）
 - **国际化**：支持简体中文、繁体中文、英文、日文四种语言
 
@@ -32,25 +45,26 @@ Vue H5 Template 是一个免费开源的移动端 H5 开发模板，基于 Turbo
 | ------------------- | ----- | ------------------ |
 | Vue 3               | 3.5   | 前端框架           |
 | TypeScript          | 6.0   | 类型安全           |
-| Vite                | 8.0   | 构建工具           |
+| Vite                | 8.1   | 构建工具           |
 | UnoCSS              | 66.x  | 原子化 CSS 引擎    |
-| Turborepo           | 2.9   | Monorepo 管理      |
-| pnpm                | 10.27 | 包管理器           |
-| Pinia               | 3.0   | 状态管理           |
+| Turborepo           | 2.10   | Monorepo 管理      |
+| pnpm                | 11.10 | 包管理器           |
+| Pinia               | 4.0   | 状态管理           |
 | Vue Router          | 5.0   | 路由               |
-| unplugin-vue-router | 0.19  | 类型安全的文件路由 |
-| Vue I18n            | 11.3  | 国际化             |
+| TanStack Vue Query  | 5.x   | 服务端状态与缓存   |
+| Axios               | 1.x   | 类型安全 REST 传输 |
+| Vue I18n            | 11.4  | 国际化             |
 | Nitro               | 2.x   | Mock 服务器        |
 | NutUI               | 4.3   | UI 组件库          |
-| Vant                | 4.9   | UI 组件库          |
-| Varlet              | 3.12  | UI 组件库          |
+| Vant                | 4.10   | UI 组件库          |
+| Varlet              | 3.19  | UI 组件库          |
 | VueUse              | 14.x  | 组合式工具集       |
 | Eruda               | 3.x   | 移动端调试控制台   |
 
 ## 环境要求
 
-- [Node.js](https://nodejs.org/) >= 20.12.0
-- [pnpm](https://pnpm.io/) >= 10.0.0
+- [Node.js](https://nodejs.org/) >= 22.18.0
+- [pnpm](https://pnpm.io/) >= 11.0.0
 - [Git](https://git-scm.com/)
 
 ## 安装使用
@@ -72,6 +86,8 @@ pnpm dev:vant     # Vant 版
 pnpm dev:varlet   # Varlet 版
 ```
 
+开发环境默认使用内置 Nitro Mock。需要连接配套的 `vue-h5-template-business-service`（`:8002`）和 `vue-h5-template-ai-service`（`:8001`）时，先启动两个后端，再执行 `pnpm dev:services:vant`、`pnpm dev:services:nutui` 或 `pnpm dev:services:varlet`。代理规则和环境变量见[请求架构文档](https://fonghehe.github.io/vue-h5-template/zh/guide/v2/request)。
+
 ## 构建
 
 ```bash
@@ -85,6 +101,14 @@ pnpm build:varlet
 
 # 构建文档
 pnpm build:docs
+
+# 完整质量门禁（lint + 类型 + 单测 + build）
+pnpm check
+pnpm test:e2e
+
+# 生成 API 类型 / 分析 Bundle
+pnpm api:generate
+pnpm build:analyze
 ```
 
 ## 项目结构
@@ -98,17 +122,21 @@ vue-h5-template/
 │   └── h5-varlet/          # Varlet H5 应用（端口 5779）
 ├── docs/                   # VitePress 文档站
 ├── internal/
-│   ├── lint-configs/       # ESLint、Stylelint、Commitlint 配置
+│   ├── lint-configs/       # ESLint、OxLint、Stylelint、Oxfmt、Commitlint 配置
 │   ├── node-utils/         # Node.js 工具
 │   ├── tsconfig/           # 共享 TypeScript 配置
 │   └── vite-config/        # 共享 Vite 配置
 ├── packages/
-│   ├── @core/              # 核心包（base、composables、preferences）
+│   ├── @core/              # 核心包（base/shared、design、typings、composables）
+│   ├── ai-chat/            # 厂商无关的流式对话
+│   ├── api-client/         # Axios Client 与 OpenAPI 类型
 │   ├── locales/            # 国际化语言包
 │   ├── stores/             # Pinia 状态管理
 │   ├── styles/             # 共享样式
 │   └── utils/              # 共享工具
-└── scripts/                # 构建脚本和 CLI 工具
+├── openapi/                # Mock Backend Schema
+├── scripts/                # 构建脚本和 CLI 工具
+└── AGENTS.md               # AI Coding 架构约束
 ```
 
 ## 测试账号
@@ -126,11 +154,11 @@ Mock 服务提供以下测试账号：
 
 ## 浏览器支持
 
-支持现代浏览器和移动端浏览器，不支持 IE。
+生产构建目标为 Chrome / Android WebView 111+ 与 Safari / iOS WebView 16.4+，支持基于这些内核的近期微信和企业微信 WebView；不支持 IE 与旧版 Android WebView。
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
 | --- | --- | --- | --- |
-| Edge ≥ 80 | Firefox ≥ 78 | Chrome ≥ 80 | Safari ≥ 14 |
+| Edge ≥ 111 | Firefox ≥ 115 | Chrome ≥ 111 | Safari ≥ 16.4 |
 
 ## 贡献
 

@@ -5,7 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "stub": "pnpm exec tsdown"
+    "stub": "pnpm exec tsdown",
+    "type-check": "tsc --noEmit"
   },
   "files": [
     "dist"
@@ -32,6 +33,7 @@
     "resolve.exports": "catalog:",
     "unocss": "catalog:",
     "vite-plugin-eruda-pro": "catalog:",
+    "vite-plugin-image-optimizer": "catalog:",
     "vite-plugin-pwa": "catalog:",
     "vite-plugin-vue-devtools": "catalog:"
   },
@@ -42,6 +44,7 @@
     "@types/html-minifier-terser": "catalog:",
     "@unocss/preset-attributify": "catalog:",
     "@unocss/preset-icons": "catalog:",
+    "@unocss/preset-uno": "catalog:",
     "@unocss/preset-wind4": "catalog:",
     "@varlet/import-resolver": "catalog:",
     "@varlet/preset-unocss": "catalog:",
@@ -54,9 +57,10 @@
     "postcss-mobile-forever": "catalog:",
     "rollup-plugin-visualizer": "catalog:",
     "sass": "catalog:",
+    "sharp": "catalog:",
+    "svgo": "catalog:",
     "unplugin-auto-import": "catalog:",
     "unplugin-vue-components": "catalog:",
-    "unplugin-vue-router": "catalog:",
     "vite": "catalog:",
     "vite-plugin-compression": "catalog:",
     "vite-plugin-dts": "catalog:",

@@ -4,25 +4,44 @@ import type { ImportmapPluginOptions } from './typing';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-const getDefaultPwaOptions = (name: string): Partial<PwaPluginOptions> => ({
-  manifest: {
-    description: 'Mobile H5 starter template with Turborepo monorepo',
-    icons: [
-      {
-        sizes: '192x192',
-        src: 'https://cdn.jsdelivr.net/gh/fonghehe/picture/vue-h5-template/logo.png',
-        type: 'image/png',
-      },
-      {
-        sizes: '512x512',
-        src: 'https://cdn.jsdelivr.net/gh/fonghehe/picture/vue-h5-template/logo.png',
-        type: 'image/png',
-      },
-    ],
-    name: `${name}${isDevelopment ? ' dev' : ''}`,
-    short_name: `${name}${isDevelopment ? ' dev' : ''}`,
-  },
-});
+const UI_THEME = {
+  nut: { background: '#fff8f6', primary: '#fa2c19' },
+  vant: { background: '#f4f8fc', primary: '#1989fa' },
+  varlet: { background: '#f8f6fc', primary: '#6750a4' },
+} as const;
+
+const getDefaultPwaOptions = (
+  name: string,
+  uiLibrary: 'none' | keyof typeof UI_THEME = 'none',
+): Partial<PwaPluginOptions> => {
+  const theme =
+    uiLibrary === 'none'
+      ? { background: '#f6f7fb', primary: '#1989fa' }
+      : UI_THEME[uiLibrary];
+  return {
+    manifest: {
+      description: 'Mobile H5 starter template with Turborepo monorepo',
+      icons: [
+        {
+          sizes: '192x192',
+          src: '/pwa-192x192.png',
+          type: 'image/png',
+        },
+        {
+          sizes: '512x512',
+          src: '/pwa-512x512.png',
+          type: 'image/png',
+        },
+      ],
+      name: `${name}${isDevelopment ? ' dev' : ''}`,
+      short_name: `${name}${isDevelopment ? ' dev' : ''}`,
+      display: 'standalone',
+      start_url: '/',
+      theme_color: theme.primary,
+      background_color: theme.background,
+    },
+  };
+};
 
 /**
  * importmap CDN 暂时不开启，因为有些包不支持，且网络不稳定

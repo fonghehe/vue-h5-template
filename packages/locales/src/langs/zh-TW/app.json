@@ -1,4 +1,6 @@
 {
+  "mockLoginHint": "Nitro Mock 模式：使用 user / 123456 登入。",
+  "serviceLoginHint": "Business Service 模式：使用後端帳號登入（預設示範種子帳號 user / 123456）。",
   "home": "首頁",
   "list": "列表",
   "mine": "我的",

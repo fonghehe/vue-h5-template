@@ -1,7 +1,9 @@
 {
+  "mockLoginHint": "Nitro Mock モード：user / 123456 でログインします。",
+  "serviceLoginHint": "Business Service モード：サーバーのアカウントでログインします（既定のデモアカウント：user / 123456）。",
   "home": "ホーム",
   "list": "リスト",
-  "mine": "マイページ",
+  "mine": "メンバー",
   "example": "サンプル",
   "login": "ログイン",
   "details": "詳細",

@@ -1,39 +1,16 @@
 # Varlet
 
-Mobile H5 app based on [Varlet](https://varlet.pages.dev/) 3.x.
+All three apps have Home, List, Member and Examples tabs at `/home`, `/list`, `/member`, `/examples`. Product views come from `packages/mobile-ui`; native navigation and `/examples/components` remain app-specific. English is the default, with Chinese and Japanese switching on Home/Member. The themed floating AI button opens `/ai/chat` and hides on Chat/Login/Cart/Details.
 
-## Features
-
-- Varlet components **fully on-demand**, auto-registered and CSS injected via `VarletImportResolver` — no `app.use(Varlet)` needed
-- Material Design style
-- Built-in Snackbar API component
-
-## Run
+Varlet 3 uses `VarletImportResolver` without global registration. The theme is purple `#6750a4`; layout uses `var-app-bar` and `var-bottom-navigation`. Native locale setup calls `Locale.add(lang, messages)` before `Locale.use(lang)`. Varlet's UnoCSS preset is loaded only for this app.
 
 ```bash
 pnpm dev:varlet
+pnpm dev:services:varlet
+pnpm build:varlet
+pnpm -F @vh5/h5-varlet preview
 ```
 
-Default port: `5779`
+Port: `5779`.
 
-## On-demand Loading
-
-```ts
-// bootstrap.ts — no global registration needed, VarletImportResolver handles everything
-import '@vh5/styles/global';
-// ❌ No longer using app.use(Varlet) or full CSS import
-```
-
-## Varlet Components Used
-
-| Component               | Usage               |
-| ----------------------- | ------------------- |
-| `var-app-bar`           | Top navigation bar  |
-| `var-bottom-navigation` | Bottom tab bar      |
-| `var-cell`              | Product list / item |
-| `var-swipe`             | Carousel            |
-| `var-input`             | Input field         |
-| `var-image`             | Image display       |
-| `var-button`            | Button              |
-| `var-space`             | Spacing layout      |
-| `Snackbar`              | Toast message (API) |
+[Backend modes](../guide/essentials/server.md) · [Themes](../guide/essentials/styles.md) · [Route behavior](../guide/essentials/route.md)

@@ -8,16 +8,6 @@ export default defineConfig(async () => {
       uiLibrary: 'nut',
     },
     vite: {
-      server: {
-        proxy: {
-          '/api': {
-            changeOrigin: true,
-            // mock代理目标地址
-            target: 'http://localhost:5320',
-            ws: true,
-          },
-        },
-      },
       resolve: {
         alias: {
           '@': fileURLToPath(new URL('src', import.meta.url)),

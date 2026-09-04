@@ -1,10 +1,7 @@
-# 樣式套件 (@vh5/styles)
+# @vh5/styles
 
-共享樣式套件，提供全域樣式和各 UI 庫的樣式入口。
+## 套件參考
 
-## 結構
+`packages/styles`: `./global`, `./vant`, `./nutui`, `./varlet`. `--app-primary`, `--app-primary-deep`, `--app-primary-soft`, `--app-surface`, `--app-text`.
 
-- `src/index.scss`：全域公共樣式
-- `src/nutui/`：NutUI 相關樣式
-- `src/vant/`：Vant 相關樣式
-- `src/varlet/`：Varlet 相關樣式
+[完整實作說明](../guide/essentials/styles.md)

@@ -25,9 +25,28 @@ describe('openWindow', () => {
 
     // 验证 window.open 是否被正确地调用
     expect(window.open).toHaveBeenCalledWith(
-      url,
+      new URL(url).href,
       options.target,
       'noopener=yes,noreferrer=yes',
     );
+  });
+
+  it('resolves relative application URLs before opening them', () => {
+    window.open = vi.fn();
+
+    openWindow('/account');
+
+    expect(window.open).toHaveBeenCalledWith(
+      new URL('/account', window.location.href).href,
+      '_blank',
+      'noopener=yes,noreferrer=yes',
+    );
+  });
+
+  it('rejects executable URL schemes', () => {
+    window.open = vi.fn();
+
+    expect(() => openWindow('javascript:alert(1)')).toThrow(TypeError);
+    expect(window.open).not.toHaveBeenCalled();
   });
 });

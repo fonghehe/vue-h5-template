@@ -15,6 +15,8 @@ dist.war
 *-dist.tar
 *-dist.war
 coverage
+playwright-report
+test-results
 *.local
 **/.vitepress/cache
 .cache
@@ -28,8 +30,11 @@ package-lock.json
 **/backend-mock/data
 
 # Local env files
+.env
 .env.local
 .env.*.local
+!.env.example
+!**/.env.example
 .eslintcache
 
 logs

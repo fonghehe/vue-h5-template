@@ -53,12 +53,30 @@ export const zhHK: LocaleSpecificConfig<DefaultTheme.Config> = {
           ],
         },
         {
+          text: 'v2 架構',
+          items: [
+            { text: '架構', link: '/zh-HK/guide/v2/architecture' },
+            { text: 'Request', link: '/zh-HK/guide/v2/request' },
+            { text: 'State', link: '/zh-HK/guide/v2/state-management' },
+            { text: 'AI Chat', link: '/zh-HK/guide/v2/ai-chat' },
+            { text: 'UI Framework', link: '/zh-HK/guide/v2/ui-framework' },
+            { text: 'Testing', link: '/zh-HK/guide/v2/testing' },
+            { text: 'Deployment', link: '/zh-HK/guide/v2/deployment' },
+            { text: 'Migration', link: '/zh-HK/guide/v2/migration-v2' },
+          ],
+        },
+        {
           text: '工程',
           items: [
             { text: '系統架構', link: '/zh-HK/guide/project/architecture' },
             { text: '目錄結構', link: '/zh-HK/guide/project/dir' },
             { text: 'Vite 配置', link: '/zh-HK/guide/project/vite' },
             { text: '代碼規範', link: '/zh-HK/guide/project/standard' },
+            { text: 'CLI（vsh）', link: '/zh-HK/guide/project/cli' },
+            {
+              text: '多語言文件同翻譯',
+              link: '/zh-HK/guide/project/translating',
+            },
           ],
         },
         {
@@ -85,11 +103,15 @@ export const zhHK: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: '共享套件',
           items: [
+            { text: 'Mobile UI', link: '/zh-HK/packages/mobile-ui' },
+            { text: 'API Client', link: '/zh-HK/packages/api-client' },
+            { text: 'AI Chat', link: '/zh-HK/packages/ai-chat' },
             { text: 'Stores', link: '/zh-HK/packages/stores' },
             { text: 'Locales', link: '/zh-HK/packages/locales' },
             { text: 'Utils', link: '/zh-HK/packages/utils' },
             { text: 'Styles', link: '/zh-HK/packages/styles' },
             { text: 'Vite Config', link: '/zh-HK/packages/vite-config' },
+            { text: 'Core (@vh5-core)', link: '/zh-HK/packages/core' },
           ],
         },
       ],

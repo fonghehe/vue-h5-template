@@ -1,59 +1,23 @@
 # 快速開始
 
-## 環境要求
+使用 **Node.js 22.x 的 22.18+ 或 24.x**、**pnpm 11**（`pnpm@11.10.0`），以根 `package.json` 為準，舊 Node 20/pnpm 10 不再適用。
 
-- **Node.js** >= 20.12.0
-- **pnpm** >= 10.0.0
-
-## 安裝
+克隆後進入根目錄，按需執行。install 會執行 workspace 的 `stub` 以準備內部構建套件。
 
 ```bash
-# 複製專案
-git clone https://github.com/fonghehe/vue-h5-template.git
-cd vue-h5-template
-
-# 安裝相依套件
 pnpm install
-```
-
-## 開發
-
-```bash
-# 啟動所有應用（互動式選擇）
-pnpm dev
-
-# 啟動指定應用
-pnpm dev:nutui    # NutUI 版
-pnpm dev:vant     # Vant 版
-pnpm dev:varlet   # Varlet 版
-```
-
-Mock 服務會在 `http://localhost:5320` 自動啟動。
-
-## 建置
-
-```bash
-# 建置所有應用
-pnpm build
-
-# 建置指定應用
-pnpm build:nutui
+pnpm dev:vant
+# alternatives: pnpm dev:nutui / pnpm dev:varlet
+pnpm check
+pnpm test:e2e
 pnpm build:vant
-pnpm build:varlet
+pnpm -F @vh5/h5-vant preview
 ```
 
-## 建立新應用
+`pnpm dev` 互動選擇一個套件，不是全部啟動。預設 NutUI 5777、Vant 5778、Varlet 5779、Nitro 5320。測試帳號 `user / 123456`、`admin / 123456` 僅供 Nitro。
 
-```bash
-# 透過 CLI 互動式建立新的 H5 應用
-pnpm create-app
-```
+預設英文，Home/Member 支援中日切換，共用業務 Tab 與 AI 浮動入口。[服務模式](../essentials/server.md)需自行啟動兩個配套後端。
 
-支援選擇 Varlet / Vant / NutUI，自動生成完整的專案結構。詳見[建立應用](/zh-TW/guide/essentials/create-app)。
+參照應用 `.env.example` 設定本機檔案，不要覆寫既有值。新增 workspace 依賴後需 install 並重啟。Vant 連接埠佔用時報錯，請確認終端 URL。
 
-## 測試帳號
-
-| 使用者名稱 | 密碼   | 角色       |
-| ---------- | ------ | ---------- |
-| user       | 123456 | 一般使用者 |
-| admin      | 123456 | 管理員     |
+`pnpm build` 包含 workspace 與文檔，應用輸出在 `apps/h5-<ui>/dist`。preview 不含 Mock。文檔用 `pnpm dev:docs` / `pnpm build:docs`，CLI 用 `pnpm create-app`，參見[建立應用](../essentials/create-app.md)。

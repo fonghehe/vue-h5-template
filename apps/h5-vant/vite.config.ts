@@ -9,15 +9,9 @@ export default defineConfig(async () => {
       uiLibrary: 'vant',
     },
     vite: {
-      server: {
-        proxy: {
-          '/api': {
-            changeOrigin: true,
-            target: 'http://localhost:5320',
-            ws: true,
-          },
-        },
-      },
+      // Do not silently start a second instance while the browser still uses
+      // the old server (and its cached workspace dependency resolution).
+      server: { strictPort: true },
       resolve: {
         alias: {
           '@': fileURLToPath(new URL('src', import.meta.url)),

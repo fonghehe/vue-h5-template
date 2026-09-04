@@ -1,63 +1,16 @@
-# NutUI 版
+# NutUI
 
-基于 [NutUI](https://nutui.jd.com/) 4.x 的移动端 H5 应用。
+三套应用统一 Home、List、Member、Examples Tab，对应 `/home`、`/list`、`/member`、`/examples`。业务页来自 `packages/mobile-ui`，原生导航和 `/examples/components` 保留应用实现。默认英文，Home/Member 可切换中日文。主题色 AI 悬浮按钮打开 `/ai/chat`，在聊天/登录/购物车/详情隐藏。
 
-## 特点
-
-- NutUI 组件**按需加载**（通过 `NutUIResolver` 自动注册和注入 CSS）
-- SCSS 全局变量支持（函数式注入，仅作用于 app 自身文件）
-- NutUI 图标库 `@nutui/icons-vue`
-
-## 运行
+NutUI 4 使用 `NutUIResolver` 和 `@nutui/icons-vue`，主题红 `#fa2c19`。布局使用 `NutNavbar`，Tab 通过 `NutTabbarItem.to` 导航。原生日文标签来自 `src/locales/nutui-ja.ts`。函数式 Toast/Notify/Dialog/ImagePreview CSS 在 bootstrap 显式导入；SCSS 变量只注入本应用源码。
 
 ```bash
 pnpm dev:nutui
+pnpm dev:services:nutui
+pnpm build:nutui
+pnpm -F @vh5/h5-nutui preview
 ```
 
-默认端口：`5777`
+Port: `5777`.
 
-## 函数式组件样式
-
-NutUI 的 `showToast`、`showNotify`、`showDialog`、`showImagePreview` 等函数式组件无法被 Resolver 自动引入样式，需在 `bootstrap.ts` 中手动导入：
-
-```ts
-import '@nutui/nutui/dist/packages/toast/style/css';
-import '@nutui/nutui/dist/packages/notify/style/css';
-import '@nutui/nutui/dist/packages/dialog/style/css';
-import '@nutui/nutui/dist/packages/imagepreview/style/css';
-```
-
-## SCSS 配置
-
-NutUI 全局变量通过 Vite `additionalData` 函数式注入，避免污染 `packages/styles` 等共享包：
-
-```ts
-css: {
-  preprocessorOptions: {
-    scss: {
-      additionalData: (source: string, filename: string) => {
-        if (filename.includes('/apps/h5-nutui/src/')) {
-          return `@use "@nutui/nutui/dist/styles/variables.scss" as *;\n${source}`;
-        }
-        return source;
-      },
-    },
-  },
-}
-```
-
-## 使用的 NutUI 组件
-
-| 组件                     | 用途              |
-| ------------------------ | ----------------- |
-| `nut-navbar`             | 顶部导航栏        |
-| `nut-tabbar`             | 底部标签栏        |
-| `nut-cell`               | 商品列表 / 列表项 |
-| `nut-swiper`             | 轮播图            |
-| `nut-form` / `nut-input` | 登录表单          |
-| `nut-avatar`             | 用户头像          |
-| `nut-grid`               | 宫格布局          |
-| `nut-button`             | 按钮              |
-| `showToast`              | 消息提示（API）   |
-| `showNotify`             | 通知（API）       |
-| `showDialog`             | 对话框（API）     |
+[后端模式](../guide/essentials/server.md) · [主题](../guide/essentials/styles.md) · [路由行为](../guide/essentials/route.md)

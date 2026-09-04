@@ -26,7 +26,7 @@ Vue H5 Template は、構造化された本番対応の Monorepo テンプレー
 
 Monorepo により、すべてのアプリが同じ設定を共有：
 
-- ESLint、Prettier、Stylelint 設定
+- ESLint、Oxfmt、Stylelint 設定
 - TypeScript 設定
 - コミット規約と CI/CD パイプライン
 - 依存関係のバージョン（pnpm catalog 経由）
@@ -48,7 +48,7 @@ Monorepo により、すべてのアプリが同じ設定を共有：
 プロジェクトは厳格な品質基準を採用：
 
 - **型安全性**：完全な TypeScript カバレッジ
-- **コードスタイル**：ESLint + Prettier + Stylelint、共有設定
+- **コードスタイル**：ESLint + Oxfmt + Stylelint、共有設定
 - **コミット規約**：Commitlint + Conventional Commits
 - **Git Hooks**：Lefthook による pre-commit と commit-msg チェック
 - **スペルチェック**：CSpell によるタイプミス検出

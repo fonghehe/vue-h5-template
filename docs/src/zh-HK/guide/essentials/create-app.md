@@ -1,5 +1,7 @@
 # 建立應用
 
+> CLI 生成基本頁再複製 layout/locales/API/stores，唔係已驗證嘅 v2 完整副本；依賴同 bootstrap 仲要對齊 mobile UI/Query。請參考現有應用，生成後跑型別、build 同 browser tests。
+
 使用 CLI 工具快速建立新的 H5 應用。
 
 ## 使用方式

@@ -1,24 +1,7 @@
-# Styles
+# @vh5/styles
 
-`packages/styles` はグローバルスタイルと各 UI ライブラリのスタイルエントリを提供します。
+## パッケージ参照
 
-## エクスポート
+`packages/styles`: `./global`, `./vant`, `./nutui`, `./varlet`. `--app-primary`, `--app-primary-deep`, `--app-primary-soft`, `--app-surface`, `--app-text`.
 
-```json
-{
-  ".": "src/index.ts",
-  "./nutui": "src/nutui/index.css",
-  "./vant": "src/vant/index.css",
-  "./varlet": "src/varlet/index.css",
-  "./global": "src/global/index.scss"
-}
-```
-
-## 使用方法
-
-```ts
-import '@vh5/styles';
-import '@vh5/styles/nutui';
-import '@vh5/styles/vant';
-import '@vh5/styles/varlet';
-```
+[実装ガイド](../guide/essentials/styles.md)

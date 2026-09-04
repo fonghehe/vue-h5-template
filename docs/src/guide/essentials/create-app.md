@@ -1,5 +1,7 @@
 # Create App
 
+> The CLI currently generates basic pages and copies reference layout/locales/API/stores. It is not a verified clone of the current v2 product apps: generated dependencies/bootstrap still need alignment with shared mobile UI and Query integration. Use an existing H5 app as the reference and run type checks, build and browser tests before using a generated app.
+
 Quickly scaffold a new H5 app using the CLI tool.
 
 ## Usage

@@ -112,23 +112,6 @@ const oxfmtConfig: OxfmtConfig = defineOxfmtConfig({
       },
     },
   ],
-  /**
-
-   * 忽略不需要格式化的文件
-
-   */
-
-  ignorePatterns: [
-    '**/*.d.ts',
-
-    '**/node_modules/**',
-
-    '**/dist/**',
-
-    '**/.output/**',
-
-    '**/.nuxt/**',
-  ],
 });
 
 function defineConfig(config: OxfmtConfig = {}): OxfmtConfig {

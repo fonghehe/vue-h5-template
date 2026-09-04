@@ -11,7 +11,7 @@ Special thanks to the Vue Vben Admin team for their excellent work, which provid
 - **State Management**: Pinia persistence storage solution
 - **Shared Packages**: Modular design of locales, stores, utils packages
 - **Vite Configuration**: Unified Vite build configuration
-- **Code Standards**: Unified ESLint, Prettier, Stylelint, Commitlint configurations
+- **Code Standards**: Unified ESLint, Oxfmt, Stylelint, Commitlint configurations
 
 > **Repository**: [https://github.com/vbenjs/vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
 >

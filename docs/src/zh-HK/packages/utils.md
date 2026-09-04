@@ -45,6 +45,7 @@ unmountGlobalLoading();
 import { formatDate, formatDateTime } from '@vh5/utils';
 
 formatDate(new Date()); // '2024-01-01'
+formatDate(new Date(), 'YYYY-MM-DD HH:mm'); // '2024-01-01 12:00'
 formatDateTime(new Date()); // '2024-01-01 12:00:00'
 ```
 
@@ -60,6 +61,31 @@ import { StorageManager } from '@vh5/utils';
 const storage = new StorageManager({ prefix: 'my-app-' });
 storage.setItem('token', 'xxx', 7 * 24 * 60 * 60 * 1000);
 const token = storage.getItem('token');
+
+// 清除所有過期項目
+storage.clearExpiredItems();
+```
+
+## 檔案下載
+
+```ts
+import {
+  downloadFileFromUrl,
+  downloadFileFromBase64,
+  downloadFileFromBlob,
+} from '@vh5/utils';
+
+// 透過 URL 下載
+await downloadFileFromUrl({
+  source: 'https://example.com/file.pdf',
+  fileName: 'report.pdf',
+});
+
+// 透過 Blob 下載
+downloadFileFromBlob({ source: blob, fileName: 'export.xlsx' });
+
+// 透過 Base64 下載
+downloadFileFromBase64({ source: base64String, fileName: 'image.png' });
 ```
 
 ## 其他工具
@@ -72,3 +98,7 @@ const token = storage.getItem('token');
 | `cn()`            | 合併 CSS 類名（clsx + tailwind） |
 | `openWindow()`    | 安全開啟新視窗                   |
 | `generateTree()`  | 陣列轉樹狀結構                   |
+| `flatTree()`      | 樹狀結構展平                     |
+| `diffObj()`       | 物件差異比較                     |
+| `isUrl()`         | URL 格式校驗                     |
+| `unmountGlobalLoading()` | 移除全域骨架屏             |

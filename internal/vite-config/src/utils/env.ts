@@ -54,6 +54,9 @@ async function loadEnv<T = Record<string, string>>(
       console.error(`Error while parsing ${confFile}`, error);
     }
   }
+
+  // Match Vite's precedence: explicit process variables override env files.
+  envConfig = { ...envConfig, ...process.env };
   const reg = new RegExp(`^(${match})`);
   Object.keys(envConfig).forEach((key) => {
     if (!reg.test(key)) {
@@ -80,10 +83,13 @@ async function loadAndConvertEnv(
     VITE_BASE,
     VITE_COMPRESS,
     VITE_DEVTOOLS,
+    VITE_ERUDA_ENABLED,
     VITE_INJECT_APP_LOADING,
+    VITE_IMAGE_OPTIMIZE,
     VITE_NITRO_MOCK,
     VITE_PORT,
     VITE_PWA,
+    VITE_PWA_ENABLED,
     VITE_VISUALIZER,
   } = envConfig;
 
@@ -98,10 +104,12 @@ async function loadAndConvertEnv(
     compress: compressTypes.length > 0,
     compressTypes,
     devtools: getBoolean(VITE_DEVTOOLS),
+    eruda: getBoolean(VITE_ERUDA_ENABLED),
     injectAppLoading: getBoolean(VITE_INJECT_APP_LOADING),
+    imageOptimize: getBoolean(VITE_IMAGE_OPTIMIZE),
     nitroMock: getBoolean(VITE_NITRO_MOCK),
     port: getNumber(VITE_PORT, 5173),
-    pwa: getBoolean(VITE_PWA),
+    pwa: getBoolean(VITE_PWA_ENABLED ?? VITE_PWA),
     visualizer: getBoolean(VITE_VISUALIZER),
   };
 }

@@ -1,69 +1,59 @@
 <script setup lang="ts">
+import FloatingAiButton from '@vh5/mobile-ui/FloatingAiButton.vue';
+
+import { useNetworkStatus, useVisualViewport } from '@vh5-core/composables';
+
 import { t } from '@/locales';
 
 const router = useRouter();
 const route = useRoute();
+const { isOnline } = useNetworkStatus();
+const { viewportHeight } = useVisualViewport();
+const shellStyle = computed(() => ({
+  height: viewportHeight.value ? `${viewportHeight.value}px` : '100dvh',
+}));
 const tabItem = [
-  { key: 'home', icon: 'home-o' },
-  { key: 'list', icon: 'todo-list-o' },
-  { key: 'mine', icon: 'user-o' },
-  { key: 'example', icon: 'apps-o' },
+  { icon: 'home-o', key: 'home', path: '/home' },
+  { icon: 'todo-list-o', key: 'list', path: '/list' },
+  { icon: 'user-o', key: 'mine', path: '/member' },
+  { icon: 'apps-o', key: 'example', path: '/examples' },
 ];
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
-const showBorder = ref(true);
 watch(
-  () => router,
-  () => {
-    const path = router.currentRoute.value.path.replace('/', '');
-    const judgeRoute = tabItem.some((item) => item.key === path);
-    activeTab.value = tabItem.findIndex((item) => item.key === path);
-    tabbarVisible.value = judgeRoute;
-    showBorder.value = judgeRoute;
+  () => route.path,
+  (path) => {
+    const index = tabItem.findIndex((item) => item.path === path);
+    activeTab.value = Math.max(index, 0);
+    tabbarVisible.value = index !== -1;
   },
-  { deep: true, immediate: true },
+  { immediate: true },
 );
-const tabSwitch = (_item: any, index: number) => {
-  switch (index) {
-    case 0: {
-      router.push('/home');
-      break;
-    }
-    case 1: {
-      router.push('/list');
-      break;
-    }
-    case 2: {
-      router.push('/mine');
-      break;
-    }
-    case 3: {
-      router.push('/example');
-      break;
-    }
-  }
+const tabSwitch = (item: (typeof tabItem)[number], index: number) => {
+  router.push(item.path);
   activeTab.value = index;
 };
 const goBack = () => {
-  router.go(-1);
+  if (globalThis.history.length > 1) router.go(-1);
+  else router.replace('/home');
 };
-const navTitle = computed(
-  () => (router.currentRoute.value.meta?.title as string) || '首页',
+const navTitle = computed(() =>
+  t(typeof route.meta.title === 'string' ? route.meta.title : 'app.home'),
 );
 </script>
 
 <template>
-  <div class="flex flex-col w-100dvw h-100dvh">
+  <div class="app-shell flex flex-col w-100dvw" :style="shellStyle">
     <van-nav-bar
       :title="navTitle"
       :left-arrow="!tabbarVisible"
       safe-area-inset-top
       @click-left="goBack"
     />
-    <div
-      class="flex-1 min-h-0 overflow-hidden overflow-y-auto"
-      :class="{ 'px-15px': showBorder }"
-    >
+    <div v-if="!isOnline" class="offline-banner" role="status">
+      {{ t('mobile.offlineBanner') }}
+    </div>
+    <div class="app-content flex-1 min-h-0 overflow-hidden overflow-y-auto">
       <RouterView v-slot="{ Component }" v-if="route.meta.keepAlive">
         <keep-alive>
           <component :is="Component" :key="route.path" />
@@ -75,18 +65,51 @@ const navTitle = computed(
       <van-tabbar-item
         v-for="(item, index) in tabItem"
         :key="item.key"
+        :data-testid="`tab-${item.key === 'mine' ? 'member' : item.key === 'example' ? 'examples' : item.key}`"
         :icon="item.icon"
         @click="tabSwitch(item, index)"
       >
         {{ t(`app.${item.key}`) }}
       </van-tabbar-item>
     </van-tabbar>
-    <van-back-top right="16" bottom="80" />
+
+    <FloatingAiButton :with-tabs="tabbarVisible" />
   </div>
 </template>
 
 <style scoped>
+.app-shell {
+  position: relative;
+}
+
+.app-content {
+  overscroll-behavior: contain;
+}
+
 .van-nav-bar {
   margin-bottom: 0;
+}
+
+.app-shell,
+.app-content {
+  background: var(--app-surface);
+}
+
+.offline-banner {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #7f451c;
+  text-align: center;
+  background: #fff3df;
+}
+
+.offline-banner a {
+  font-weight: 600;
+  color: inherit;
 }
 </style>

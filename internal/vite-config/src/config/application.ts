@@ -6,6 +6,7 @@ import autoprefixer from 'autoprefixer';
 import viewport from 'postcss-mobile-forever';
 import { defineConfig, loadEnv, mergeConfig } from 'vite';
 
+import { createBackendProxy } from '../backend-proxy';
 import { defaultImportmapOptions, getDefaultPwaOptions } from '../options';
 import { loadApplicationPlugins } from '../plugins';
 import { loadAndConvertEnv } from '../utils/env';
@@ -14,8 +15,11 @@ import { getCommonConfig } from './common';
 function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
   return defineConfig(async (config) => {
     const options = await userConfigPromise?.(config);
-    const { appTitle, base, port, ...envConfig } = await loadAndConvertEnv();
     const { command, mode } = config;
+    const { appTitle, base, port, ...envConfig } = await loadAndConvertEnv(
+      'VITE_',
+      ['.env', '.env.local', `.env.${mode}`, `.env.${mode}.local`],
+    );
     const { application = {}, vite = {} } = options || {};
     const root = process.cwd();
     const isBuild = command === 'build';
@@ -29,6 +33,7 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       env,
       extraAppConfig: true,
       html: true,
+      imageOptimize: false,
       i18n: true,
       importmapOptions: defaultImportmapOptions,
       injectAppLoading: true,
@@ -40,9 +45,9 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       nitroMockOptions: {},
       print: !isBuild,
       pwa: true,
-      pwaOptions: getDefaultPwaOptions(appTitle),
+      pwaOptions: getDefaultPwaOptions(appTitle, application.uiLibrary),
       unocss: true,
-      eruda: !isBuild,
+      eruda: false,
       vxeTableLazyImport: true,
       ...envConfig,
       ...application,
@@ -58,7 +63,7 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
           output: {
             assetFileNames: '[ext]/[name]-[hash].[ext]',
             chunkFileNames: 'js/[name]-[hash].js',
-            entryFileNames: 'jse/index-[name]-[hash].js',
+            entryFileNames: 'js/index-[name]-[hash].js',
             minify: isBuild
               ? {
                   compress: {
@@ -68,28 +73,20 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
               : false,
           },
         },
-        target: 'es2015',
+        target: ['chrome111', 'safari16.4'],
       },
       css: cssOptions,
-      esbuild: {
-        drop: isBuild
-          ? [
-              // 'console',
-              'debugger',
-            ]
-          : [],
-        legalComments: 'none',
-      },
       plugins,
       server: {
         host: true,
         port,
+        proxy: createBackendProxy(env),
         warmup: {
           // 预热文件
           clientFiles: [
             './index.html',
             './src/bootstrap.ts',
-            './src/{views,layouts,router,store,api,adapter}/*',
+            './src/{views,layout,components}/**/*.vue',
           ],
         },
       },
@@ -118,6 +115,9 @@ function createCssOptions(
   const baseViewportOpts = {
     appSelector: '#app',
     viewportWidth: 375,
+    // Shared product pages already use responsive grids. Do not shrink their
+    // typography or 44 CSS-pixel touch targets on narrow mobile screens.
+    exclude: [/[/\\]mobile-ui[/\\]/u],
     unitPrecision: 3,
     maxDisplayWidth: 600,
     propList: ['*'],

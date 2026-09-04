@@ -5,8 +5,8 @@ import { deleteCookie, getCookie, setCookie } from 'h3';
 export function clearRefreshTokenCookie(event: H3Event<EventHandlerRequest>) {
   deleteCookie(event, 'jwt', {
     httpOnly: true,
-    sameSite: 'none',
-    secure: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
   });
 }
 
@@ -16,9 +16,9 @@ export function setRefreshTokenCookie(
 ) {
   setCookie(event, 'jwt', refreshToken, {
     httpOnly: true,
-    maxAge: 24 * 60 * 60, // unit: seconds
-    sameSite: 'none',
-    secure: true,
+    maxAge: 30 * 24 * 60 * 60, // unit: seconds; matches refresh JWT expiry
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
   });
 }
 

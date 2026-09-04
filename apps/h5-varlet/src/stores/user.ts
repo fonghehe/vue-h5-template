@@ -1,18 +1,12 @@
+import type { UserInfo } from '@/api/user';
+
 import { defineStore } from 'pinia';
 
 import { fetchUserInfoApi, loginApi, logoutApi } from '@/api/user';
 
-interface UserInfo {
-  id?: number;
-  realName?: string;
-  avatar?: string;
-  roles?: string[];
-  username?: string;
-}
-
 interface StoreUser {
+  info: Partial<UserInfo>;
   token: string;
-  info: UserInfo;
 }
 
 export const useUserStore = defineStore('user', {
@@ -21,7 +15,7 @@ export const useUserStore = defineStore('user', {
     info: {},
   }),
   getters: {
-    getUserInfo(): UserInfo {
+    getUserInfo(): Partial<UserInfo> {
       return this.info || {};
     },
     isLoggedIn(): boolean {
@@ -29,35 +23,34 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    setInfo(info: UserInfo) {
+    clearSession() {
+      this.token = '';
+      this.info = {};
+    },
+    setInfo(info: Partial<UserInfo>) {
       this.info = info ?? {};
     },
     setToken(token: string) {
       this.token = token;
     },
     async login(username: string, password: string) {
-      const data = await loginApi(username, password);
-      if (data.code === 0) {
-        const { accessToken, ...userInfo } = data.data;
-        this.setToken(accessToken);
-        this.setInfo(userInfo);
-        return userInfo;
-      }
-      throw new Error(data.message || '登录失败');
+      const { accessToken, ...userInfo } = await loginApi({
+        password,
+        username,
+      });
+      this.setToken(accessToken);
+      this.setInfo(userInfo);
+      return userInfo;
     },
     async fetchUserInfo() {
       if (!this.token) return null;
-      const data = await fetchUserInfoApi(this.token);
-      if (data.code === 0) {
-        this.setInfo(data.data);
-        return data.data;
-      }
-      return null;
+      const data = await fetchUserInfoApi();
+      this.setInfo(data);
+      return data;
     },
     async logout() {
       await logoutApi().catch(() => {});
-      this.token = '';
-      this.info = {};
+      this.clearSession();
     },
   },
   persist: {

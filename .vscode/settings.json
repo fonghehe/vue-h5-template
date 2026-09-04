@@ -231,5 +231,8 @@
     "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,.gitattributes,.gitignore,.gitpod.yml,.npmrc,.browserslistrc,.node-version,.git*,.tazerc.json",
     "oxlint.config.ts": ".eslintignore,.stylelintignore,.commitlintrc.*,stylelint.config.*,.lintstagedrc.mjs,cspell.json,lefthook.yml,oxfmt.config.*,eslint.config.*"
   },
-  "cSpell.words": ["unocss", "vant"]
+  "cSpell.words": ["unocss", "vant"],
+  "json.schemaDownload.trustedDomains": {
+    "https://turbo.build/schema.json": true
+  }
 }

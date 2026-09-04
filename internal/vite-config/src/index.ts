@@ -1,3 +1,4 @@
+export * from './backend-proxy';
 export * from './config';
 export * from './options';
 export * from './plugins';

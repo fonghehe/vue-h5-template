@@ -1,59 +1,31 @@
-# プロジェクト構成
+# ディレクトリ構成
 
-詳しくは [システムアーキテクチャ](./architecture.md) をご覧ください。
-
-## 1. トップレベル概要
-
-```
-vue-h5-template/
-├── apps/                # ランタイムアプリ（UI アダプター + Mock バックエンド）
-├── packages/            # 再利用可能なライブラリ（レイヤー別）
-├── internal/            # ビルドツール（設定・Lint・TS・Vite）
-├── scripts/             # CLI ツール
-└── docs/                # VitePress ドキュメント
-```
-
-## 2. `apps/` — UI アダプター層
-
-```
-apps/
-├── h5-nutui/            # NutUI アダプター        （ポート 5777）
-├── h5-vant/             # Vant アダプター         （ポート 5778）
-├── h5-varlet/           # Varlet アダプター       （ポート 5779）
-└── backend-mock/        # Nitro Mock サーバー     （ポート 5320）
-```
-
-アダプターアプリは View・Store・API 呼び出し・ルートを**含みません**。これらは特性パッケージとシェルに置かれます。
-
-## 3. `packages/` — レイヤード・ライブラリ
-
-```
+```text
+apps/h5-{vant,nutui,varlet}/src/
+  bootstrap.ts
+  router/index.ts
+  layout/index.vue
+  views/                    → @vh5/mobile-ui/*.vue
+  locales/index.ts
+  api/                      → @vh5/api-client
 packages/
-├── @core/
-│   ├── base/            # @vh5/core-base    — 純粋なユーティリティ
-│   └── composables/     # @vh5/composables  — Vue Composable
-├── api/                 # @vh5/api          — エンドポイント宣言 + DTO
-├── request/             # @vh5/request      — 型付き fetch クライアント + インターセプター
-├── services/            # @vh5/services     — ドメインモデル & ビジネスルール
-├── stores/              # @vh5/stores       — Pinia 初期化 + 永続化
-├── locales/             # @vh5/locales      — i18n 初期化 + 共有文字列
-├── styles/              # @vh5/styles       — グローバル CSS & デザイントークン
-├── utils/               # @vh5/utils        — ルートヘルパー
-├── app-shell/           # @vh5/app-shell    — ブートストラップ・レイアウト・ルーター・ガード
-└── features/
-    ├── auth/            # @vh5/feature-auth
-    ├── user/            # @vh5/feature-user
-    ├── product/         # @vh5/feature-product
-    └── home/            # @vh5/feature-home
+  mobile-ui/src/             → pages, cart.ts, queries.ts, surface.css
+  api-client/src/modules/    → auth.ts, user.ts, product.ts
+  api-client/src/generated/  → schema.d.ts
+  ai-chat/src/               → fetch-provider.ts, sse.ts, use-streaming-chat.ts
+  locales/src/langs/         → en-US, zh-CN, ja-JP, legacy zh-TW
+  stores/ styles/ utils/ @core/
+internal/                   → vite-config, tsconfig, lint-configs, node-utils
+apps/backend-mock/api/
+openapi/schema.yaml
+e2e/
+docs/src/                   → English; zh/, ja/, zh-TW/, zh-HK/
 ```
 
-## 4. クイックリファレンス
+共有画面は `packages/mobile-ui/src`、アプリは遅延ルートラッパーです。固有ログインと UI 例はアプリに置きます。セッション store は Vant/Varlet の `stores/user.ts`、NutUI の `store/modules/user.ts`。
 
-| 追加したいもの | 置く場所 |
-| --- | --- |
-| 新しいページ | `packages/features/<feature>/src/views/` |
-| 新しい API エンドポイント | `packages/api/src/<domain>.ts` + `services/<domain>.service.ts` |
-| 新しい Pinia Store | `packages/features/<feature>/src/store.ts` |
-| 新しい共有 Composable | `packages/@core/composables/src/` |
-| 新しいロケール文字列 | `packages/features/<feature>/src/locales/<lang>.json` |
-| 新しいグローバルスタイル | `packages/styles/src/global/` |
+API 関数・生成型は `api-client`、プロトコル・会話ライフサイクルは `ai-chat`、ブラウザのライフサイクルは `packages/@core/composables` に配置します。巨大な画面 composable に集めません。
+
+workspace が `.vue`/`.ts` を直接公開します。パッケージ追加後は install、exports 変更後は開発サーバー再起動。ビルド設定はコンパイル済みのため `pnpm -F @vh5/vite-config stub` で更新します。
+
+境界変更前に[ルート](../essentials/route.md)、[設計](./architecture.md)、ルート `AGENTS.md` を確認してください。

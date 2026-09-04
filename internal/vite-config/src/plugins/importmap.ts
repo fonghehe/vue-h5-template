@@ -127,8 +127,9 @@ async function viteImportMapPlugin(
           await Promise.allSettled(
             (installDeps || []).map((dep) => generator.install(dep)),
           );
-        } catch (error: any) {
-          installError = error;
+        } catch (error: unknown) {
+          installError =
+            error instanceof Error ? error : new Error(String(error));
           installed = false;
         }
         return null;

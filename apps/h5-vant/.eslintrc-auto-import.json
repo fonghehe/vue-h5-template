@@ -71,6 +71,7 @@
     "shallowReactive": true,
     "shallowReadonly": true,
     "shallowRef": true,
+    "showToast": true,
     "storeToRefs": true,
     "toRaw": true,
     "toRef": true,

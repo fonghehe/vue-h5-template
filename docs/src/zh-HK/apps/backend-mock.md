@@ -1,27 +1,20 @@
-# Mock 後端
+# Nitro Mock 後端
 
-基於 [Nitro](https://nitro.build/) 的 Mock 後端服務。
+`pnpm dev:<ui>` 喺 5320 啟動或重用 Nitro。單獨執行 `pnpm -F @vh5/backend-mock exec nitro dev --port 5320`。唔好當正式業務後端。
 
-## 功能
+| Method | Path | Result |
+| --- | --- | --- |
+| POST | `/api/auth/login` | public user + accessToken |
+| POST | `/api/auth/logout` | refresh cookie cleared |
+| POST | `/api/auth/refresh` | access token string (legacy endpoint) |
+| GET | `/api/user/info` | user; Bearer token required |
+| GET | `/api/product/list?page=1&pageSize=4` | paginated products |
+| GET | `/api/product/detail?id=1` | product |
+| POST | `/api/product/favorite` | `{ productId, favorite }` |
+| POST | `/api/ai/chat` | SSE: start / delta / finish / [DONE] |
 
-- 使用者認證（登入 / 重新整理 Token / 登出）
-- 商品列表和詳情
-- 檔案上傳
-- JWT Token 管理
+帳號係 `user / 123456`、`admin / 123456`。登入只回傳公開資料同 token，冇密碼。access token 7 日，refresh cookie 30 日。舊 refresh 回傳 token 字串，瀏覽器未接入自動更新。
 
-## 測試帳號
+商品按 `Accept-Language` 支援英文預設、中日文；收藏只驗證同回傳，唔持久化；AI 回傳真 SSE。**冇 `/api/upload` handler 或完整上傳頁**。
 
-| 使用者名稱 | 密碼   | 角色       |
-| ---------- | ------ | ---------- |
-| user       | 123456 | 一般使用者 |
-| admin      | 123456 | 管理員     |
-
-## API 介面
-
-| 方法 | 路徑                  | 說明           |
-| ---- | --------------------- | -------------- |
-| POST | `/api/auth/login`     | 登入           |
-| POST | `/api/auth/refresh`   | 重新整理 Token |
-| GET  | `/api/user/info`      | 使用者資訊     |
-| GET  | `/api/product/list`   | 商品列表       |
-| GET  | `/api/product/detail` | 商品詳情       |
+兩個配套服務見[後端模式](../guide/essentials/server.md)，帳號、儲存同驗證獨立。

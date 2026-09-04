@@ -1,0 +1,310 @@
+openapi: 3.1.0
+info:
+  title: vue-h5-template mock API
+  version: 2.0.0
+servers:
+  - url: /api
+paths:
+  /auth/login:
+    post:
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginApiResponse'
+  /auth/logout:
+    post:
+      operationId: logout
+      responses:
+        '200':
+          description: Logout result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyApiResponse'
+  /user/info:
+    get:
+      operationId: getUserInfo
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserApiResponse'
+        '401':
+          description: Unauthorized
+  /product/list:
+    get:
+      operationId: getProductList
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paginated product list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPageApiResponse'
+  /product/detail:
+    get:
+      operationId: getProductDetail
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductApiResponse'
+  /product/favorite:
+    post:
+      operationId: toggleProductFavorite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FavoriteRequest'
+      responses:
+        '200':
+          description: Favorite state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FavoriteApiResponse'
+  /ai/chat:
+    post:
+      operationId: streamChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Server-sent event stream
+          content:
+            text/event-stream:
+              schema:
+                type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Page:
+      in: query
+      name: page
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      in: query
+      name: pageSize
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 10
+  schemas:
+    ApiErrorPayload:
+      type: object
+      additionalProperties: true
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    User:
+      type: object
+      required: [id, username, realName, avatar, roles]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        realName:
+          type: string
+        avatar:
+          type: string
+          format: uri
+        roles:
+          type: array
+          items:
+            type: string
+    LoginResult:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          required: [accessToken]
+          properties:
+            accessToken:
+              type: string
+    Product:
+      type: object
+      required:
+        - id
+        - title
+        - imgUrl
+        - price
+        - vipPrice
+        - shopDesc
+        - delivery
+        - shopName
+        - description
+
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        imgUrl:
+          type: string
+        price:
+          type: string
+        vipPrice:
+          type: string
+        shopDesc:
+          type: string
+        delivery:
+          type: string
+        shopName:
+          type: string
+        description:
+          type: string
+    ProductPage:
+      type: object
+      required: [items, total, page, pageSize, hasMore]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        hasMore:
+          type: boolean
+    FavoriteRequest:
+      type: object
+      required: [productId, favorite]
+      properties:
+        productId:
+          type: integer
+        favorite:
+          type: boolean
+    FavoriteResult:
+      type: object
+      required: [productId, favorite]
+      properties:
+        productId:
+          type: integer
+        favorite:
+          type: boolean
+    ChatMessage:
+      type: object
+      required: [id, role, content]
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          enum: [user, assistant, system]
+        content:
+          type: string
+    ChatRequest:
+      type: object
+      required: [messages]
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+    BaseApiResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        error:
+          oneOf:
+            - $ref: '#/components/schemas/ApiErrorPayload'
+            - type: string
+            - type: 'null'
+    EmptyApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - type: object
+          properties:
+            data:
+              type: 'null'
+    LoginApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: '#/components/schemas/LoginResult'
+    UserApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: '#/components/schemas/User'
+    ProductApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: '#/components/schemas/Product'
+    ProductPageApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: '#/components/schemas/ProductPage'
+    FavoriteApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - type: object
+          required: [data]
+          properties:
+            data:
+              $ref: '#/components/schemas/FavoriteResult'

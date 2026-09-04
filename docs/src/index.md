@@ -18,44 +18,28 @@ hero:
       link: https://github.com/fonghehe/vue-h5-template
 
 features:
-  - icon: 🏗️
-    title: Monorepo Architecture
-    details: Managed with Turborepo + pnpm workspace for multiple H5 apps and shared packages, with build caching to accelerate development.
-    link: /guide/project/dir
-    linkText: Directory Structure
-  - icon: 📱
-    title: Three UI Frameworks
-    details: Provides NutUI, Vant, and Varlet versions for flexible mobile UI component library choices.
-    link: /apps/nutui
-    linkText: View Apps
-  - icon: 🔧
-    title: Unified Configuration
-    details: Shared ESLint, Prettier, Stylelint, TypeScript configs to reduce duplication and maintain team consistency.
-    link: /guide/project/standard
-    linkText: Code Standards
-  - icon: 🗄️
-    title: Nitro Mock Server
-    details: Built-in Nitro mock backend with login authentication, product listing and other complete API simulations.
-    link: /apps/backend-mock
-    linkText: Mock Docs
-  - icon: 📦
-    title: State Management
-    details: Pinia with persistence plugin, AES encrypted storage in production, multi-tab state synchronization.
-    link: /packages/stores
-    linkText: Stores Docs
-  - icon: ⚡
-    title: Vite Build
-    details: Shared Vite config with auto-import, mobile viewport adaptation, PWA and more out of the box.
-    link: /guide/project/vite
-    linkText: Vite Config
-  - icon: 🌐
-    title: Internationalization
-    details: Built-in vue-i18n with Chinese, Traditional Chinese, English, Japanese support, shared locales package across apps.
+  - title: "Shared mobile product"
+    details: "The same Home, List, Member and Examples in Vant, NutUI and Varlet, with independent themes."
+    link: /guide/v2/ui-framework
+  - title: "Streaming AI Chat"
+    details: "Floating entry, incremental SSE responses, stop, retry, regeneration and sanitized Markdown."
+    link: /guide/v2/ai-chat
+  - title: "Server and client state"
+    details: "TanStack Query owns server caching and mutations; Pinia owns session and local cart state."
+    link: /guide/essentials/state
+  - title: "Typed REST API"
+    details: "Shared Axios errors, request headers and OpenAPI-generated contracts."
+    link: /guide/essentials/api
+  - title: "Mock or companion services"
+    details: "Start with Nitro fixtures, or connect the separate AI and business backends through service mode."
+    link: /guide/essentials/server
+  - title: "English-first localization"
+    details: "English, Chinese and Japanese page switching with persisted preference and native UI adapters."
     link: /guide/essentials/locale
-    linkText: I18n Docs
-  - icon: 🔒
-    title: TypeScript
-    details: Full TypeScript coverage with strict type checking and complete type declarations for better maintainability.
-    link: /guide/introduction/about
-    linkText: Learn More
+  - title: "Mobile build and themes"
+    details: "Vite 8/Rolldown, safe areas, responsive shared CSS, optional PWA and build-only image optimization."
+    link: /guide/essentials/styles
+  - title: "Verified engineering"
+    details: "Independent package type checks, Vitest and three-app Playwright suites; AGENTS.md documents boundaries."
+    link: /guide/v2/testing
 ---
