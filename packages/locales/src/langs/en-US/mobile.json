@@ -139,5 +139,8 @@
   "enabled": "Enabled",
   "disabled": "Disabled",
   "install": "Install app",
-  "installUnavailable": "Install prompt unavailable"
+  "installUnavailable": "Install prompt unavailable",
+  "unfavorite": "Remove from favorites",
+  "favoriteLogin": "Sign in to save products",
+  "favoriteFailed": "Could not update favorites. Please try again."
 }

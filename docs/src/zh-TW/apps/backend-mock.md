@@ -10,11 +10,19 @@
 | GET | `/api/user/info` | user; Bearer token required |
 | GET | `/api/product/list?page=1&pageSize=4` | paginated products |
 | GET | `/api/product/detail?id=1` | product |
-| POST | `/api/product/favorite` | `{ productId, favorite }` |
+| GET | `/api/product/favorite?id=1` | Bearer; `{ productId, favorite }` |
+| POST | `/api/product/favorite` | Bearer; `{ productId, favorite }` |
+| GET | `/api/ai/suggestions?locale=en-US` | `string[]` |
 | POST | `/api/ai/chat` | SSE: start / delta / finish / [DONE] |
 
 帳號為 `user / 123456`、`admin / 123456`。登入只回傳公開資料與 token，不含密碼。access token 7 天，refresh cookie 30 天。舊 refresh 回傳 token 字串，瀏覽器未接入自動更新。
 
-商品依 `Accept-Language` 支援英文預設、中日文；收藏只驗證並回傳，不持久化；AI 回傳真正 SSE。**沒有 `/api/upload` handler 或完整上傳頁**。
+商品依 `Accept-Language` 支援英文預設、中日文；AI 回傳真正 SSE。**沒有 `/api/upload` handler 或完整上傳頁**。
 
 兩個配套服務見[後端模式](../guide/essentials/server.md)，帳號、儲存與驗證獨立。
+
+## Mock 收藏儲存與驗證
+
+Nitro 的收藏讀寫均驗證登入，依使用者 ID 儲存在處理程序內 Map：重新整理瀏覽器後仍在，重啟 Nitro 後清空。這是開發用資料，不代表 PostgreSQL 持久化。無效 ID 回傳 400、未知商品回傳 404、未登入回傳 401；實際服務的驗證錯誤可能不同。
+
+建議 Mock 直接回傳本地化陣列，不呼叫 Provider。嚴格語言驗證、Request ID 與 `/api/v1` 別名應以實際 FastAPI 驗證；Mock／瀏覽器成功不代表實際資料庫或模型整合成功。

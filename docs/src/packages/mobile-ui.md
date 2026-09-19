@@ -34,3 +34,21 @@ The catalog provides the primary cart entry; Details returns to the catalog inst
 ## Bottom spacing
 
 Shared pages use a 20px bottom content gap. In-flow tabs explicitly handle the bottom safe area, so tab pages do not reserve it a second time. Pages without tabs keep their safe-area inset. Cart and Payment render `CommerceDock` only while checkout controls are present: its ResizeObserver measures the fixed bar (including safe area and wrapped labels), and a matching in-flow spacer prevents content overlap. The page adds only the 20px gap, not another safe-area inset. Empty carts and payment success remove the bar and spacer together; Catalog never reserves a checkout bar.
+
+## Favorites and chat suggestions
+
+### Favorite interaction
+
+`FavoriteButton` receives a numeric `productId` and the current `session` token. Signed-out users see a login link; no private-state request is sent. A valid signed-in product loads its saved state before enabling the action. Failed reads offer retry. Failed writes preserve the last confirmed state and display an error. Fetching or saving disables duplicate submissions.
+
+Favorite state belongs to TanStack Query. Cache keys include the control instance, session generation and product ID; they do not contain the token. A mutation captures its original cache key, so a late response cannot overwrite another account or product. Each new mount/session reads the server again. The action sets an explicit boolean rather than asking the server to invert unknown state.
+
+### Localized starter prompts
+
+The chat empty state loads `GET /api/ai/suggestions` as a JSON request. The query is separated by language, remains fresh for five minutes, and disables automatic retries. While loading, on an empty result, or after failure, translated local prompts remain usable. Selecting a prompt follows the existing send/stop flow; this request does not change the SSE protocol or persist a conversation.
+
+The client maps `zh-*` to `zh-CN`, `ja-*` to `ja-JP`, and other languages to `en-US`. FastAPI itself only accepts those three exact values; omission defaults to `en-US`, and unsupported values return HTTP 422. The explicit `locale` query parameter selects the prompts; do not rely on `Accept-Language` alone.
+
+The monorepo derives the suggestion base URL from `ChatPage.endpoint` by removing its trailing `/chat`. Both that URL and locale are in the query key. Configure `VITE_AI_CHAT_ENDPOINT` consistently with the AI proxy. The request belongs in `@vh5/api-client`, while SSE remains in `@vh5/ai-chat`.
+
+[API](./api-client.md) · [Mock](../apps/backend-mock.md) · [Tests](../guide/v2/testing.md)

@@ -1,8 +1,16 @@
 import { defineEventHandler, readBody, setResponseStatus } from 'h3';
+import { setFavorite } from '~/utils/favorites';
+import { verifyAccessToken } from '~/utils/jwt-utils';
 import { MOCK_PRODUCTS } from '~/utils/mock-data';
-import { useResponseError, useResponseSuccess } from '~/utils/response';
+import {
+  unAuthorizedResponse,
+  useResponseError,
+  useResponseSuccess,
+} from '~/utils/response';
 
 export default defineEventHandler(async (event) => {
+  const user = verifyAccessToken(event);
+  if (!user) return unAuthorizedResponse(event);
   const body = await readBody<{ favorite?: boolean; productId?: number }>(
     event,
   );
@@ -11,8 +19,5 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 400);
     return useResponseError('Invalid favorite request');
   }
-  return useResponseSuccess({
-    favorite: body.favorite,
-    productId: product.id,
-  });
+  return useResponseSuccess(setFavorite(user.id, product.id, body.favorite));
 });

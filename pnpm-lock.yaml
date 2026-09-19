@@ -840,6 +840,15 @@ importers:
 
   docs:
     devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.1.2
+      '@vh5/tsconfig':
+        specifier: workspace:*
+        version: link:../internal/tsconfig
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
       vitepress:
         specifier: 'catalog:'
         version: 1.6.4(@algolia/client-search@5.56.0)(@types/node@26.1.2)(axios@1.20.0)(change-case@5.4.4)(lightningcss@1.33.0)(nprogress@0.2.0)(postcss@8.5.23)(sass@1.102.0)(search-insights@2.17.3)(sortablejs@1.15.7)(terser@5.49.0)(typescript@6.0.3)

@@ -1,5 +1,8 @@
 # 測試
 
+
+`pnpm typecheck` 也會透過 `@vh5/docs` 檢查 VitePress 設定。個別驗證可執行 `pnpm -F @vh5/docs type-check`；文件建置成功不代表型別檢查通過。
+
 ## 型別檢查與開發啟動
 
 `pnpm typecheck` 獨立檢查三個應用、共享執行套件（utils、stores、locales、core、UI/API/AI）、Mock 後端、Vite 設定和 workspace CLI。每個應用皆檢查原始碼及 `tsconfig.node.json`；`tsconfig.tools.json` 檢查根目錄 Vitest/Playwright 設定與 E2E。套件內測試也參與型別檢查。新增含原始碼的套件必須提供 `type-check` 腳本，才能被遞迴命令檢查。可用 `pnpm -F @vh5/utils type-check` 或 `pnpm -F @vh5/mobile-ui type-check` 局部驗證。
@@ -20,3 +23,15 @@ Vitest + happy-dom 測試 utils/request/stores/composables，Vue Test Utils 測�
 `MarkdownContent` 使用檔案級 `jsdom` 環境及真實 DOMPurify，不模擬淨化，也不用 happy-dom 驗證淨化正確性；其他 DOM 元件測試仍用 happy-dom。jsdom 維持相容的 29.x，因為 30.x 的 Node 最低要求高於本專案。
 
 `vitest.config.ts` 明確納入核心 API/AI、工具與 composables、部分行動元件/store 和後端工具，包含未被測試匯入的檔案。分支、函式、行、敘述的 60% 門檻只針對此範圍，不代表整站覆蓋率。執行 `pnpm test:coverage` 取得報告；`pnpm test packages/ai-chat/src/__tests__` 可單獨執行串流測試。CI 品質任務也執行覆蓋率檢查。
+
+## 新增功能回歸檢查
+
+API 測試涵蓋 ID、本文、取消訊號、語言轉換、AI base URL 與錯誤傳遞；元件測試涵蓋未登入、收藏與取消、讀取重試、寫入失敗與切換帳號後的舊回應。聊天測試涵蓋遠端建議、本機回退及卸載時中止串流。每個測試建立並清理獨立 QueryClient。
+
+```bash
+pnpm test packages/api-client/src/__tests__/features.test.ts packages/mobile-ui/src/__tests__/favorite-button.test.ts packages/mobile-ui/src/__tests__/chat-page.test.ts
+pnpm test:coverage
+pnpm test:e2e
+```
+
+Playwright 驗證重新整理後保留收藏、取消、遠端建議及失敗後的本機回退。Query 收藏測試先登入；串流測試輸入固定問題，不依賴建議文案。這些是開發 Mock 檢查，PostgreSQL／Redis 整合需另外設定環境。

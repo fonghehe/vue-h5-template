@@ -1,6 +1,6 @@
-import type { DefaultTheme, LocaleSpecificConfig } from 'vitepress';
+import type { DefaultTheme, LocaleConfig } from 'vitepress';
 
-export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
+export const zh = {
   label: '简体中文',
   lang: 'zh-CN',
   link: '/zh/',
@@ -117,4 +117,4 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
       ],
     },
   },
-};
+} satisfies LocaleConfig<DefaultTheme.Config>[string];

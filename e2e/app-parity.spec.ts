@@ -229,6 +229,9 @@ test('catalog stays readable at 320px with long titles', async ({
 test('query pagination, mutation and infinite loading work', async ({
   page,
 }) => {
+  await page.goto('/login');
+  await page.getByRole('button', { name: 'Login', exact: true }).click();
+  await expect(page).toHaveURL(/\/member$/u);
   await page.goto('/examples/query');
   await expect(page.locator('article.row-link')).toHaveCount(4);
   const favorite = page.getByRole('button', { name: 'Favorite' }).first();
@@ -241,4 +244,38 @@ test('query pagination, mutation and infinite loading work', async ({
   await expect(page.locator('article.row-link')).toHaveCount(4);
   await page.getByRole('button', { name: 'Load more', exact: true }).click();
   await expect(page.locator('article.row-link')).toHaveCount(5);
+});
+
+test('favorite state survives reload and can be removed', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByRole('button', { name: 'Login', exact: true }).click();
+  await expect(page).toHaveURL(/\/member$/u);
+  await page.goto('/details?id=3');
+  const button = page.locator('.favorite-control button');
+  await expect(button).toBeEnabled();
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed', 'true');
+  await page.reload();
+  await expect(button).toHaveAttribute('aria-pressed', 'true');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('chat uses remote starter prompts and keeps a fallback offline', async ({
+  page,
+}) => {
+  await page.goto('/ai/chat');
+  await expect(
+    page.getByRole('button', {
+      name: 'What should I check before placing an order?',
+    }),
+  ).toBeVisible();
+  await page.route('**/api/ai/suggestions**', (route) => route.abort());
+  await page.reload();
+  await expect(page.locator('.empty-state button')).toHaveCount(3);
+  await expect(
+    page.getByRole('button', {
+      name: 'What should I check before placing an order?',
+    }),
+  ).toHaveCount(0);
 });

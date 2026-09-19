@@ -165,7 +165,8 @@ test('login and protected request handle 401 redirect', async ({ page }) => {
 
 test('AI chat streams chunks and can be stopped', async ({ page }) => {
   await page.goto('/ai/chat');
-  await page.getByRole('button', { name: /What is Vue/u }).click();
+  await page.getByRole('textbox').fill('What is Vue?');
+  await page.getByRole('textbox').press('Enter');
   await expect(
     page.getByText('Vue is a progressive JavaScript framework', {
       exact: false,

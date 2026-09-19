@@ -8,14 +8,16 @@ import { useI18n } from '@vh5/locales';
 import { useQuery } from '@tanstack/vue-query';
 
 import { useCartStore } from './cart';
+import FavoriteButton from './FavoriteButton.vue';
 
 import './surface.css';
+defineProps<{ session?: string }>();
 const route = useRoute();
 const { t, locale } = useI18n();
 const id = computed(() => String(route.query.id ?? ''));
 const product = useQuery({
   queryKey: ['products', 'detail', id, locale],
-  queryFn: () => getProductDetail(id.value),
+  queryFn: ({ signal }) => getProductDetail(id.value, signal),
 });
 const cart = useCartStore();
 const added = ref(false);
@@ -46,6 +48,7 @@ const added = ref(false);
         {{ product.data.value.description }}
       </p>
       <h2>¥{{ product.data.value.price }}</h2>
+      <FavoriteButton :product-id="Number(id)" :session="session ?? ''" />
       <div class="actions">
         <button
           class="action"

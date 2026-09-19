@@ -34,3 +34,21 @@ pnpm -F @vh5/mobile-ui type-check
 ## 底部间距
 
 共享页面底部保留 20px 内容间距。正常布局中的 Tab 显式处理底部安全区，因此 Tab 页面不重复预留；无 Tab 页面保留自身安全区。购物车与支付页只在需要结算控件时渲染 `CommerceDock`：ResizeObserver 测量固定栏实际高度（包含安全区与文案换行），由等高的正常布局占位避免遮挡内容。页面只额外保留 20px，不再重复安全区。空购物车和支付成功时同步移除操作栏与占位，商品列表始终不预留结算栏高度。
+
+## 商品收藏与聊天建议
+
+### 收藏交互与会话隔离
+
+`FavoriteButton` 接收数值 `productId` 和当前 `session` Token。未登录时显示登录链接，不请求私有状态；登录后先读取已保存的状态，再启用操作。读取失败可重试，写入失败保留最后确认的状态并提示错误。读取和保存期间禁用重复提交。
+
+收藏状态由 TanStack Query 管理。缓存键包含控件实例、会话代数和商品 ID，不包含 Token。Mutation 捕获提交时的缓存键，旧响应只更新原来的缓存，不能覆盖另一个账号或商品。重新挂载、切换会话后重新读取服务端。操作提交明确的布尔值，不让服务端反转一个未知状态。
+
+### 按语言加载聊天建议
+
+聊天空状态通过 JSON 请求加载 `GET /api/ai/suggestions`。Query 按语言区分，五分钟内视为新鲜数据，不自动重试。加载中、结果为空或请求失败时继续显示本地翻译建议。点击建议仍走原有发送与停止流程，不改变 SSE 协议，也不保存会话历史。
+
+客户端把 `zh-*` 映射为 `zh-CN`、`ja-*` 映射为 `ja-JP`，其他语言映射为 `en-US`。FastAPI 本身只接受这三个精确值，省略时默认 `en-US`，非法值返回 HTTP 422。语言由显式 `locale` 查询参数决定，不能只依赖 `Accept-Language`。
+
+Monorepo 从 `ChatPage.endpoint` 移除末尾 `/chat` 得到建议接口 base URL，并把该地址与语言都加入缓存键。`VITE_AI_CHAT_ENDPOINT` 应与 AI 代理配置一致。JSON 请求位于 `@vh5/api-client`，SSE 协议继续放在 `@vh5/ai-chat`。
+
+[API](./api-client.md) · [Mock](../apps/backend-mock.md) · [测试](../guide/v2/testing.md)

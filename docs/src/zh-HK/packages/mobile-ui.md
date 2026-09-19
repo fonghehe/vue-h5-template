@@ -34,3 +34,21 @@ pnpm -F @vh5/mobile-ui type-check
 ## 底部間距
 
 共用頁面底部保留 20px 內容間距。正常布局嘅 Tab 會處理底部安全區，所以 Tab 頁面唔會重複預留；冇 Tab 嘅頁面保留自身安全區。購物車同付款頁只喺需要結帳操作時顯示 `CommerceDock`：ResizeObserver 量度固定欄實際高度（包括安全區同文字換行），用等高嘅正常布局占位避免遮住內容。頁面只額外保留 20px，唔重複加安全區。空購物車同付款成功時一齊移除操作欄同占位，商品列表唔預留結帳欄高度。
+
+## 商品收藏與聊天建議
+
+### 收藏操作與登入狀態隔離
+
+`FavoriteButton` 接收數值 `productId` 及目前的 `session` Token。未登入時顯示登入連結，不讀取私人狀態；登入後先取得已儲存狀態，再開放操作。讀取失敗可重試，寫入失敗則保留最後確認的狀態並顯示錯誤。讀取及儲存期間會阻止重複提交。
+
+收藏由 TanStack Query 管理。快取鍵包含元件實例、登入階段的代數及商品 ID，不包含 Token。Mutation 保留提交當時的鍵，舊回應不會覆寫另一帳戶或商品。重新掛載或切換登入狀態後會重新讀取。操作傳入明確布林值，不要求伺服器反轉未知狀態。
+
+### 依語言載入聊天建議
+
+聊天空白狀態透過 JSON 取得 `GET /api/ai/suggestions`，依語言快取五分鐘，不自動重試。載入中、回傳空陣列或失敗時保留本機翻譯建議。選取後沿用原有傳送與停止流程，不改變 SSE 協定，也不儲存對話。
+
+用戶端將 `zh-*` 對應至 `zh-CN`、`ja-*` 對應至 `ja-JP`，其他語言使用 `en-US`。FastAPI 僅接受這三個精確值；省略時為 `en-US`，不支援的值回傳 HTTP 422。語言由 `locale` 查詢參數決定，不依賴 `Accept-Language`。
+
+Monorepo 將 `ChatPage.endpoint` 尾端 `/chat` 移除，作為建議 API 的 base URL，並將網址與語言納入快取鍵。`VITE_AI_CHAT_ENDPOINT` 應與 AI 代理一致。JSON 放在 `@vh5/api-client`，SSE 保留在 `@vh5/ai-chat`。
+
+[API](./api-client.md) · [Mock](../apps/backend-mock.md) · [測試](../guide/v2/testing.md)

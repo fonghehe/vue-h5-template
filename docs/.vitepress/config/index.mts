@@ -10,14 +10,10 @@ import { zh } from './zh.mts';
 export default defineConfig({
   ...shared,
   locales: {
-    root: {
-      label: 'English',
-      lang: 'en-US',
-      ...en,
-    },
-    zh: { ...zh },
-    ja: { ...ja },
-    'zh-TW': { ...zhTW },
-    'zh-HK': { ...zhHK },
+    root: en,
+    zh,
+    ja,
+    'zh-TW': zhTW,
+    'zh-HK': zhHK,
   },
 });

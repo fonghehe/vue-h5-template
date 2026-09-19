@@ -1,5 +1,8 @@
 # 测试
 
+
+`pnpm typecheck` 也通过 `@vh5/docs` 检查 VitePress 配置。单独验证可运行 `pnpm -F @vh5/docs type-check`；文档构建成功不能替代类型检查。
+
 ## 类型检查与开发启动
 
 `pnpm typecheck` 独立检查三个应用、共享运行时包（utils、stores、locales、core、UI/API/AI）、Mock 后端、Vite 配置和 workspace CLI。每个应用都检查源码及 `tsconfig.node.json`；`tsconfig.tools.json` 检查根目录 Vitest/Playwright 配置和 E2E 代码。包内测试也参与类型检查。新增含源码的包必须提供 `type-check` 脚本，否则递归命令不会检查它。局部验证可用 `pnpm -F @vh5/utils type-check` 或 `pnpm -F @vh5/mobile-ui type-check`。
@@ -30,3 +33,15 @@ pnpm check
 `MarkdownContent` 通过文件级 `jsdom` 环境调用真实 DOMPurify，不 Mock 净化过程，也不使用 happy-dom 判断净化是否正确；其他 DOM 组件测试仍使用 happy-dom。jsdom 保持兼容的 29.x，因为 30.x 的 Node 最低要求高于本项目声明。
 
 `vitest.config.ts` 明确纳入核心 API/AI、工具与 composables、部分移动组件/store 和后端工具，包括尚未被测试导入的文件。分支、函数、行、语句的 60% 门槛仅针对这个范围，不代表整站覆盖率。运行 `pnpm test:coverage` 获取当前报告；`pnpm test packages/ai-chat/src/__tests__` 可单独运行流式测试。CI 在质量任务中执行覆盖率检查。
+
+## 新增功能回归检查
+
+API 测试覆盖 ID、请求体、取消信号、语言归一化、AI base URL 和失败传递。收藏组件测试覆盖未登录、保存与取消、读取重试、写入失败及切换账号后的旧写入；聊天测试覆盖远程建议、本地回退和卸载时中止流。每个测试独立创建并清理 QueryClient。
+
+```bash
+pnpm test packages/api-client/src/__tests__/features.test.ts packages/mobile-ui/src/__tests__/favorite-button.test.ts packages/mobile-ui/src/__tests__/chat-page.test.ts
+pnpm test:coverage
+pnpm test:e2e
+```
+
+Playwright 验证收藏刷新保持、取消收藏、远程建议以及请求失败后的本地回退。Query 示例的收藏 Mutation 测试先登录；流式测试通过输入框提交固定问题，不依赖建议文案。以上属于开发 Mock 验证；PostgreSQL/Redis 集成需要单独配置环境。

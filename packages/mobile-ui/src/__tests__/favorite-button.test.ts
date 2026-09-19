@@ -1,0 +1,108 @@
+import { enableAutoUnmount, mount } from '@vue/test-utils';
+
+import { getProductFavorite, setProductFavorite } from '@vh5/api-client';
+
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import FavoriteButton from '../FavoriteButton.vue';
+vi.mock('@vh5/api-client', () => ({
+  getProductFavorite: vi.fn(),
+  setProductFavorite: vi.fn(),
+}));
+vi.mock('@vh5/locales', () => ({
+  useI18n: () => ({ t: (key: string) => key }),
+}));
+const clients: QueryClient[] = [];
+enableAutoUnmount(afterEach);
+beforeEach(() => {
+  vi.mocked(getProductFavorite)
+    .mockReset()
+    .mockResolvedValue({ productId: 1, favorite: false });
+  vi.mocked(setProductFavorite).mockReset();
+});
+afterEach(() => {
+  clients.splice(0).forEach((client) => client.clear());
+});
+function render(session = 'session-a') {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+  clients.push(client);
+  return mount(FavoriteButton, {
+    props: { productId: 1, session },
+    global: {
+      plugins: [[VueQueryPlugin, { queryClient: client }]],
+      stubs: { RouterLink: { template: '<a><slot /></a>' } },
+    },
+  });
+}
+describe('favorite interaction', () => {
+  it('does not request private state before login', () => {
+    const wrapper = render('');
+    expect(wrapper.find('a').exists()).toBe(true);
+    expect(getProductFavorite).not.toHaveBeenCalled();
+  });
+  it('loads state, saves and removes a bookmark', async () => {
+    const wrapper = render();
+    await vi.waitFor(() =>
+      expect(wrapper.get('button').attributes('disabled')).toBeUndefined(),
+    );
+    expect(getProductFavorite).toHaveBeenCalledWith(1, expect.any(AbortSignal));
+    vi.mocked(setProductFavorite).mockResolvedValueOnce({
+      productId: 1,
+      favorite: true,
+    });
+    await wrapper.get('button').trigger('click');
+    await vi.waitFor(() =>
+      expect(wrapper.get('button').attributes('aria-pressed')).toBe('true'),
+    );
+    vi.mocked(setProductFavorite).mockResolvedValueOnce({
+      productId: 1,
+      favorite: false,
+    });
+    await wrapper.get('button').trigger('click');
+    await vi.waitFor(() =>
+      expect(wrapper.get('button').attributes('aria-pressed')).toBe('false'),
+    );
+    expect(setProductFavorite).toHaveBeenLastCalledWith(1, false);
+  });
+  it('recovers from a failed read and a failed write without changing the saved state', async () => {
+    vi.mocked(getProductFavorite).mockRejectedValueOnce(new Error('offline'));
+    const wrapper = render();
+    await vi.waitFor(() =>
+      expect(wrapper.find('[role="alert"]').exists()).toBe(true),
+    );
+    await wrapper.get('button').trigger('click');
+    await vi.waitFor(() =>
+      expect(wrapper.find('[role="alert"]').exists()).toBe(false),
+    );
+    vi.mocked(setProductFavorite).mockRejectedValueOnce(new Error('offline'));
+    await wrapper.get('button').trigger('click');
+    await vi.waitFor(() =>
+      expect(wrapper.find('[role="alert"]').exists()).toBe(true),
+    );
+    expect(wrapper.get('button').attributes('aria-pressed')).toBe('false');
+  });
+  it('does not overwrite another session when an old write completes', async () => {
+    let finish!: (value: { favorite: boolean; productId: number }) => void;
+    vi.mocked(setProductFavorite).mockReturnValueOnce(
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+    );
+    const wrapper = render();
+    await vi.waitFor(() =>
+      expect(wrapper.get('button').attributes('disabled')).toBeUndefined(),
+    );
+    await wrapper.get('button').trigger('click');
+    expect(wrapper.get('button').attributes('disabled')).toBeDefined();
+    await wrapper.setProps({ session: 'session-b' });
+    await vi.waitFor(() => expect(getProductFavorite).toHaveBeenCalledTimes(2));
+    finish({ productId: 1, favorite: true });
+    await vi.waitFor(() =>
+      expect(wrapper.get('button').attributes('disabled')).toBeUndefined(),
+    );
+    expect(wrapper.get('button').attributes('aria-pressed')).toBe('false');
+  });
+});

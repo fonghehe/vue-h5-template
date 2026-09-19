@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
-    "preview": "vitepress preview"
+    "preview": "vitepress preview",
+    "type-check": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
+    "@vh5/tsconfig": "workspace:*",
+    "typescript": "catalog:",
     "vitepress": "catalog:"
   }
 }

@@ -2,7 +2,10 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
 import { FetchChatProvider, useStreamingChat } from '@vh5/ai-chat';
+import { getChatSuggestions } from '@vh5/api-client';
 import { useI18n } from '@vh5/locales';
+
+import { useQuery } from '@tanstack/vue-query';
 
 import AiChatInput from './AiChatInput.vue';
 import MarkdownContent from './MarkdownContent.vue';
@@ -36,8 +39,20 @@ onBeforeUnmount(abort);
 const draft = ref('');
 const messageScroller = ref<HTMLElement>();
 const showScrollButton = ref(false);
+const suggestionsBase = computed(() =>
+  (props.endpoint || '/api/ai/chat').replace(/\/chat\/?$/u, ''),
+);
+const suggestionsQuery = useQuery({
+  queryKey: ['ai-suggestions', locale, suggestionsBase],
+  queryFn: ({ signal }) =>
+    getChatSuggestions(locale.value, signal, suggestionsBase.value),
+  retry: false,
+  staleTime: 300_000,
+});
 const suggestions = computed(() =>
-  [0, 1, 2].map((index) => t(`mobile.prompt${index}`)),
+  suggestionsQuery.data.value?.length
+    ? suggestionsQuery.data.value
+    : [0, 1, 2].map((index) => t(`mobile.prompt${index}`)),
 );
 
 function scrollToBottom(behavior: ScrollBehavior = 'smooth') {

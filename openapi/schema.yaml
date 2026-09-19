@@ -1,172 +1,1168 @@
-openapi: 3.1.0
-info:
-  title: vue-h5-template mock API
-  version: 2.0.0
-servers:
-  - url: /api
-paths:
-  /auth/login:
-    post:
-      operationId: login
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: Login result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginApiResponse'
-  /auth/logout:
-    post:
-      operationId: logout
-      responses:
-        '200':
-          description: Logout result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmptyApiResponse'
-  /user/info:
-    get:
-      operationId: getUserInfo
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Current user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserApiResponse'
-        '401':
-          description: Unauthorized
-  /product/list:
-    get:
-      operationId: getProductList
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-      responses:
-        '200':
-          description: Paginated product list
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductPageApiResponse'
-  /product/detail:
-    get:
-      operationId: getProductDetail
-      parameters:
-        - in: query
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Product detail
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductApiResponse'
-  /product/favorite:
-    post:
-      operationId: toggleProductFavorite
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FavoriteRequest'
-      responses:
-        '200':
-          description: Favorite state
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FavoriteApiResponse'
-  /ai/chat:
-    post:
-      operationId: streamChat
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChatRequest'
-      responses:
-        '200':
-          description: Server-sent event stream
-          content:
-            text/event-stream:
-              schema:
-                type: string
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
   parameters:
     Page:
       in: query
       name: page
       schema:
-        type: integer
-        minimum: 1
         default: 1
+        minimum: 1
+        type: integer
     PageSize:
       in: query
       name: pageSize
       schema:
-        type: integer
-        minimum: 1
-        maximum: 50
         default: 10
+        maximum: 50
+        minimum: 1
+        type: integer
+  responses:
+    BusinessError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BusinessEnvelope'
+      description: 业务错误：400 请求错误、401 未登录、403 无权限、404 不存在、409 状态冲突、422 校验失败、429 限流、500 内部错误、503 不可用、504 超时；以信封 code 为准。
+    Error:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Envelope'
+      description: 业务错误：400 请求错误、401 未登录、403 无权限、404 不存在、409 状态冲突、422 校验失败、429 限流、500 内部错误、503 不可用；以信封 code 为准。
   schemas:
     ApiErrorPayload:
-      type: object
       additionalProperties: true
-    LoginRequest:
       type: object
-      required: [username, password]
+    BaseApiResponse:
       properties:
-        username:
+        code:
+          type: integer
+        error:
+          oneOf:
+            - $ref: '#/components/schemas/ApiErrorPayload'
+            - type: string
+            - type: 'null'
+        message:
           type: string
-        password:
-          type: string
-    User:
+      required:
+        - code
+        - message
       type: object
-      required: [id, username, realName, avatar, roles]
+    BusinessCartItem:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        quantity:
+          format: int64
+          minimum: 0
+          type: integer
+        sku:
+          $ref: '#/components/schemas/BusinessProductSKU'
+        skuId:
+          format: int64
+          minimum: 0
+          type: integer
+        updatedAt:
+          format: date-time
+          type: string
+        userId:
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+        - id
+        - userId
+        - skuId
+        - quantity
+        - createdAt
+        - updatedAt
+        - sku
+      type: object
+    BusinessCartItemRequest:
+      properties:
+        quantity:
+          example: 1
+          format: int64
+          maximum: 99
+          minimum: 1
+          type: integer
+        skuId:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - skuId
+        - quantity
+      type: object
+    BusinessCartQuantityRequest:
+      properties:
+        quantity:
+          example: 2
+          format: int64
+          maximum: 99
+          minimum: 1
+          type: integer
+      required:
+        - quantity
+      type: object
+    BusinessCreateOrderRequest:
+      properties:
+        couponCode:
+          description: 可选优惠券代码；不使用时发送 {}。
+          maxLength: 64
+          type: string
+      type: object
+    BusinessDeleteResult:
+      properties:
+        deleted:
+          type: boolean
+        id:
+          format: int64
+          type: integer
+      required:
+        - deleted
+        - id
+      type: object
+    BusinessEnvelope:
+      properties:
+        code:
+          format: int64
+          type: integer
+        data:
+          nullable: true
+        error:
+          description: 内部错误详情不会对外暴露。
+          nullable: true
+        message:
+          type: string
+        requestId:
+          type: string
+      required:
+        - code
+        - message
+        - data
+        - error
+        - requestId
+      type: object
+    BusinessFavoriteRequest:
+      properties:
+        favorite:
+          example: true
+          type: boolean
+        productId:
+          example: 1
+          format: int64
+          minimum: 1
+          type: integer
+      required:
+        - productId
+      type: object
+    BusinessFavoriteResult:
+      properties:
+        favorite:
+          type: boolean
+        productId:
+          format: int64
+          type: integer
+      required:
+        - productId
+        - favorite
+      type: object
+    BusinessHealth:
+      properties:
+        env:
+          type: string
+        service:
+          example: business
+          type: string
+        status:
+          example: ok
+          type: string
+        time:
+          format: date-time
+          type: string
+      type: object
+    BusinessInventory:
+      properties:
+        available:
+          format: int64
+          minimum: 0
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        reserved:
+          format: int64
+          minimum: 0
+          type: integer
+        skuId:
+          format: int64
+          minimum: 0
+          type: integer
+        updatedAt:
+          format: date-time
+          type: string
+        version:
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+        - skuId
+        - available
+        - reserved
+        - version
+        - createdAt
+        - updatedAt
+      type: object
+    BusinessLoginRequest:
+      properties:
+        password:
+          example: '123456'
+          format: password
+          maxLength: 128
+          type: string
+        username:
+          example: user
+          maxLength: 64
+          type: string
+      required:
+        - username
+        - password
+      type: object
+    BusinessLoginResult:
+      allOf:
+        - $ref: '#/components/schemas/BusinessUser'
+        - properties:
+            accessToken:
+              type: string
+            expiresIn:
+              description: 访问令牌有效期，秒。
+              format: int64
+              type: integer
+          required:
+            - accessToken
+            - expiresIn
+          type: object
+    BusinessOrder:
+      properties:
+        cancelledAt:
+          format: date-time
+          nullable: true
+          type: string
+        couponId:
+          format: int64
+          minimum: 0
+          nullable: true
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        discountAmount:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        expiresAt:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/BusinessOrderItem'
+          nullable: true
+          type: array
+        orderNo:
+          type: string
+        originalAmount:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        paidAt:
+          format: date-time
+          nullable: true
+          type: string
+        payableAmount:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        status:
+          enum:
+            - PENDING_PAYMENT
+            - PAID
+            - PROCESSING
+            - COMPLETED
+            - CANCELLED
+            - EXPIRED
+          type: string
+        statusHistory:
+          items:
+            $ref: '#/components/schemas/BusinessOrderStatusHistory'
+          nullable: true
+          type: array
+        updatedAt:
+          format: date-time
+          type: string
+        userId:
+          format: int64
+          minimum: 0
+          type: integer
+        version:
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+        - id
+        - orderNo
+        - userId
+        - status
+        - originalAmount
+        - discountAmount
+        - payableAmount
+        - createdAt
+        - updatedAt
+        - expiresAt
+        - version
+      type: object
+    BusinessOrderItem:
       properties:
         id:
+          format: int64
+          minimum: 0
           type: integer
-        username:
+        orderId:
+          format: int64
+          minimum: 0
+          type: integer
+        productId:
+          format: int64
+          minimum: 0
+          type: integer
+        productName:
           type: string
-        realName:
+        quantity:
+          format: int64
+          minimum: 0
+          type: integer
+        skuId:
+          format: int64
+          minimum: 0
+          type: integer
+        skuName:
           type: string
+        unitPrice:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+        - id
+        - orderId
+        - productId
+        - skuId
+        - productName
+        - skuName
+        - unitPrice
+        - quantity
+      type: object
+    BusinessOrderPage:
+      properties:
+        hasMore:
+          type: boolean
+        items:
+          items:
+            $ref: '#/components/schemas/BusinessOrder'
+          type: array
+        page:
+          format: int64
+          minimum: 1
+          type: integer
+        pageSize:
+          format: int64
+          maximum: 50
+          minimum: 1
+          type: integer
+        total:
+          format: int64
+          type: integer
+      required:
+        - items
+        - total
+        - page
+        - pageSize
+        - hasMore
+      type: object
+    BusinessOrderStatusHistory:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        fromStatus:
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        orderId:
+          format: int64
+          minimum: 0
+          type: integer
+        reason:
+          type: string
+        toStatus:
+          type: string
+      required:
+        - id
+        - orderId
+        - fromStatus
+        - toStatus
+        - reason
+        - createdAt
+      type: object
+    BusinessOrderStatusRequest:
+      properties:
+        status:
+          enum:
+            - PROCESSING
+            - COMPLETED
+          type: string
+      required:
+        - status
+      type: object
+    BusinessPayment:
+      properties:
+        amount:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        failureReason:
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        orderId:
+          format: int64
+          minimum: 0
+          type: integer
+        paidAt:
+          format: date-time
+          nullable: true
+          type: string
+        provider:
+          type: string
+        reference:
+          type: string
+        status:
+          enum:
+            - PENDING
+            - SUCCEEDED
+            - FAILED
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - orderId
+        - provider
+        - reference
+        - amount
+        - status
+        - createdAt
+        - updatedAt
+      type: object
+    BusinessPaymentCallback:
+      properties:
+        amount:
+          description: 人民币分。
+          format: int64
+          minimum: 0
+          type: integer
+        eventId:
+          type: string
+        orderNo:
+          type: string
+        reference:
+          type: string
+        status:
+          enum:
+            - SUCCESS
+            - FAILURE
+          type: string
+      required:
+        - eventId
+        - orderNo
+        - reference
+        - amount
+        - status
+      type: object
+    BusinessProduct:
+      properties:
+        brand:
+          type: string
+        categoryId:
+          type: string
+        cover:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        delivery:
+          type: string
+        description:
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        imgUrl:
+          type: string
+        name:
+          type: string
+        price:
+          type: string
+        shopDesc:
+          type: string
+        shopName:
+          type: string
+        skus:
+          items:
+            $ref: '#/components/schemas/BusinessProductSKU'
+          nullable: true
+          type: array
+        title:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        vipPrice:
+          type: string
+      required:
+        - id
+        - name
+        - categoryId
+        - brand
+        - cover
+        - title
+        - imgUrl
+        - price
+        - vipPrice
+        - shopDesc
+        - delivery
+        - shopName
+        - description
+        - createdAt
+        - updatedAt
+      type: object
+    BusinessProductInput:
+      properties:
+        brand:
+          maxLength: 120
+          type: string
+        categoryId:
+          maxLength: 64
+          type: string
+        cover:
+          maxLength: 500
+          type: string
+        delivery:
+          maxLength: 60
+          type: string
+        description:
+          maxLength: 5000
+          type: string
+        featured:
+          type: boolean
+        imgUrl:
+          maxLength: 500
+          type: string
+        name:
+          maxLength: 255
+          type: string
+        price:
+          maxLength: 32
+          type: string
+        shopDesc:
+          maxLength: 120
+          type: string
+        shopName:
+          maxLength: 120
+          type: string
+        status:
+          enum:
+            - draft
+            - on_sale
+            - sold_out
+          type: string
+        stock:
+          format: int64
+          minimum: 0
+          type: integer
+        title:
+          maxLength: 255
+          type: string
+        vipPrice:
+          maxLength: 32
+          type: string
+      required:
+        - title
+        - imgUrl
+        - price
+        - vipPrice
+        - shopName
+      type: object
+    BusinessProductPage:
+      properties:
+        hasMore:
+          type: boolean
+        items:
+          items:
+            $ref: '#/components/schemas/BusinessProduct'
+          type: array
+        page:
+          format: int64
+          minimum: 1
+          type: integer
+        pageSize:
+          format: int64
+          maximum: 50
+          minimum: 1
+          type: integer
+        total:
+          format: int64
+          type: integer
+      required:
+        - items
+        - total
+        - page
+        - pageSize
+        - hasMore
+      type: object
+    BusinessProductPatch:
+      properties:
+        brand:
+          maxLength: 120
+          type: string
+        categoryId:
+          maxLength: 64
+          type: string
+        cover:
+          maxLength: 500
+          type: string
+        delivery:
+          maxLength: 60
+          type: string
+        description:
+          maxLength: 5000
+          type: string
+        featured:
+          type: boolean
+        imgUrl:
+          maxLength: 500
+          type: string
+        name:
+          maxLength: 255
+          type: string
+        price:
+          maxLength: 32
+          type: string
+        shopDesc:
+          maxLength: 120
+          type: string
+        shopName:
+          maxLength: 120
+          type: string
+        status:
+          enum:
+            - draft
+            - on_sale
+            - sold_out
+          type: string
+        stock:
+          format: int64
+          minimum: 0
+          type: integer
+        title:
+          maxLength: 255
+          type: string
+        vipPrice:
+          maxLength: 32
+          type: string
+      type: object
+    BusinessProductSKU:
+      properties:
+        attributes:
+          additionalProperties:
+            type: string
+          type: object
+        createdAt:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        inventory:
+          allOf:
+            - $ref: '#/components/schemas/BusinessInventory'
+          nullable: true
+        name:
+          type: string
+        originalPrice:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        price:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        productId:
+          format: int64
+          minimum: 0
+          type: integer
+        skuCode:
+          type: string
+        status:
+          enum:
+            - active
+            - inactive
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - productId
+        - skuCode
+        - name
+        - attributes
+        - price
+        - originalPrice
+        - status
+        - createdAt
+        - updatedAt
+      type: object
+    BusinessReady:
+      properties:
+        database:
+          example: up
+          type: string
+        service:
+          example: business
+          type: string
+        status:
+          example: ready
+          type: string
+      type: object
+    BusinessRefreshRequest:
+      properties:
+        refreshToken:
+          description: 可选；浏览器默认使用 HttpOnly 刷新 cookie。
+          type: string
+      type: object
+    BusinessSKUInput:
+      properties:
+        attributes:
+          additionalProperties:
+            type: string
+          example:
+            颜色: 黑色
+          type: object
+        available:
+          description: 仅创建时用于初始化库存；更新 SKU 不修改库存。
+          example: 100
+          format: int64
+          minimum: 0
+          type: integer
+        name:
+          example: 标准款
+          maxLength: 255
+          type: string
+        originalPrice:
+          example: 12900
+          format: int64
+          minimum: 0
+          type: integer
+        price:
+          description: 人民币分。
+          example: 9900
+          format: int64
+          minimum: 0
+          type: integer
+        skuCode:
+          example: SKU-NEW-001
+          maxLength: 80
+          type: string
+        status:
+          enum:
+            - active
+            - inactive
+          example: active
+          type: string
+      required:
+        - skuCode
+        - name
+        - attributes
+        - status
+      type: object
+    BusinessUser:
+      properties:
         avatar:
           type: string
-          format: uri
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        realName:
+          type: string
         roles:
-          type: array
           items:
+            enum:
+              - user
+              - admin
             type: string
+          type: array
+        username:
+          type: string
+      required:
+        - id
+        - username
+        - realName
+        - avatar
+        - roles
+      type: object
+    ChatMessage:
+      properties:
+        content:
+          type: string
+        id:
+          type: string
+        role:
+          enum:
+            - user
+            - assistant
+            - system
+          type: string
+      required:
+        - id
+        - role
+        - content
+      type: object
+    ChatRequest:
+      properties:
+        messages:
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+          type: array
+      required:
+        - messages
+      type: object
+    CreateOrderRequest:
+      properties:
+        couponCode:
+          description: 可选优惠券代码；不使用时发送 {}。
+          maxLength: 64
+          type: string
+      type: object
+    EmptyApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - properties:
+            data:
+              type: 'null'
+          type: object
+    Envelope:
+      properties:
+        code:
+          format: int64
+          type: integer
+        data:
+          nullable: true
+        error:
+          description: 内部错误详情不会对外暴露。
+          nullable: true
+        message:
+          type: string
+        requestId:
+          type: string
+      required:
+        - code
+        - message
+        - data
+        - error
+        - requestId
+      type: object
+    FavoriteApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - properties:
+            data:
+              $ref: '#/components/schemas/FavoriteResult'
+          required:
+            - data
+          type: object
+    FavoriteRequest:
+      properties:
+        favorite:
+          type: boolean
+        productId:
+          type: integer
+      required:
+        - productId
+        - favorite
+      type: object
+    FavoriteResult:
+      properties:
+        favorite:
+          type: boolean
+        productId:
+          type: integer
+      required:
+        - productId
+        - favorite
+      type: object
+    LoginApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - properties:
+            data:
+              $ref: '#/components/schemas/LoginResult'
+          required:
+            - data
+          type: object
+    LoginRequest:
+      properties:
+        password:
+          type: string
+        username:
+          type: string
+      required:
+        - username
+        - password
+      type: object
     LoginResult:
       allOf:
         - $ref: '#/components/schemas/User'
-        - type: object
-          required: [accessToken]
-          properties:
+        - properties:
             accessToken:
               type: string
-    Product:
+          required:
+            - accessToken
+          type: object
+    Order:
+      properties:
+        cancelledAt:
+          format: date-time
+          nullable: true
+          type: string
+        couponId:
+          format: int64
+          minimum: 0
+          nullable: true
+          type: integer
+        createdAt:
+          format: date-time
+          type: string
+        discountAmount:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        expiresAt:
+          format: date-time
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          nullable: true
+          type: array
+        orderNo:
+          type: string
+        originalAmount:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        paidAt:
+          format: date-time
+          nullable: true
+          type: string
+        payableAmount:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+        status:
+          enum:
+            - PENDING_PAYMENT
+            - PAID
+            - PROCESSING
+            - COMPLETED
+            - CANCELLED
+            - EXPIRED
+          type: string
+        statusHistory:
+          items:
+            $ref: '#/components/schemas/OrderStatusHistory'
+          nullable: true
+          type: array
+        updatedAt:
+          format: date-time
+          type: string
+        userId:
+          format: int64
+          minimum: 0
+          type: integer
+        version:
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+        - id
+        - orderNo
+        - userId
+        - status
+        - originalAmount
+        - discountAmount
+        - payableAmount
+        - createdAt
+        - updatedAt
+        - expiresAt
+        - version
       type: object
+    OrderItem:
+      properties:
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        orderId:
+          format: int64
+          minimum: 0
+          type: integer
+        productId:
+          format: int64
+          minimum: 0
+          type: integer
+        productName:
+          type: string
+        quantity:
+          format: int64
+          minimum: 0
+          type: integer
+        skuId:
+          format: int64
+          minimum: 0
+          type: integer
+        skuName:
+          type: string
+        unitPrice:
+          description: 人民币分，整数最小货币单位。
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+        - id
+        - orderId
+        - productId
+        - skuId
+        - productName
+        - skuName
+        - unitPrice
+        - quantity
+      type: object
+    OrderStatusHistory:
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        fromStatus:
+          type: string
+        id:
+          format: int64
+          minimum: 0
+          type: integer
+        orderId:
+          format: int64
+          minimum: 0
+          type: integer
+        reason:
+          type: string
+        toStatus:
+          type: string
+      required:
+        - id
+        - orderId
+        - fromStatus
+        - toStatus
+        - reason
+        - createdAt
+      type: object
+    PaymentCallback:
+      properties:
+        amount:
+          description: 人民币分。
+          format: int64
+          minimum: 0
+          type: integer
+        eventId:
+          type: string
+        orderNo:
+          type: string
+        reference:
+          type: string
+        status:
+          enum:
+            - SUCCESS
+            - FAILURE
+          type: string
+      required:
+        - eventId
+        - orderNo
+        - reference
+        - amount
+        - status
+      type: object
+    Product:
+      properties:
+        delivery:
+          type: string
+        description:
+          type: string
+        id:
+          type: integer
+        imgUrl:
+          type: string
+        price:
+          type: string
+        shopDesc:
+          type: string
+        shopName:
+          type: string
+        title:
+          type: string
+        vipPrice:
+          type: string
       required:
         - id
         - title
@@ -177,134 +1173,1702 @@ components:
         - delivery
         - shopName
         - description
-
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        imgUrl:
-          type: string
-        price:
-          type: string
-        vipPrice:
-          type: string
-        shopDesc:
-          type: string
-        delivery:
-          type: string
-        shopName:
-          type: string
-        description:
-          type: string
-    ProductPage:
       type: object
-      required: [items, total, page, pageSize, hasMore]
+    ProductApiResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseApiResponse'
+        - properties:
+            data:
+              $ref: '#/components/schemas/Product'
+          required:
+            - data
+          type: object
+    ProductPage:
       properties:
+        hasMore:
+          type: boolean
         items:
-          type: array
           items:
             $ref: '#/components/schemas/Product'
-        total:
-          type: integer
+          type: array
         page:
           type: integer
         pageSize:
           type: integer
-        hasMore:
-          type: boolean
-    FavoriteRequest:
-      type: object
-      required: [productId, favorite]
-      properties:
-        productId:
+        total:
           type: integer
-        favorite:
-          type: boolean
-    FavoriteResult:
+      required:
+        - items
+        - total
+        - page
+        - pageSize
+        - hasMore
       type: object
-      required: [productId, favorite]
-      properties:
-        productId:
-          type: integer
-        favorite:
-          type: boolean
-    ChatMessage:
-      type: object
-      required: [id, role, content]
-      properties:
-        id:
-          type: string
-        role:
-          type: string
-          enum: [user, assistant, system]
-        content:
-          type: string
-    ChatRequest:
-      type: object
-      required: [messages]
-      properties:
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChatMessage'
-    BaseApiResponse:
-      type: object
-      required: [code, message]
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-        error:
-          oneOf:
-            - $ref: '#/components/schemas/ApiErrorPayload'
-            - type: string
-            - type: 'null'
-    EmptyApiResponse:
-      allOf:
-        - $ref: '#/components/schemas/BaseApiResponse'
-        - type: object
-          properties:
-            data:
-              type: 'null'
-    LoginApiResponse:
-      allOf:
-        - $ref: '#/components/schemas/BaseApiResponse'
-        - type: object
-          required: [data]
-          properties:
-            data:
-              $ref: '#/components/schemas/LoginResult'
-    UserApiResponse:
-      allOf:
-        - $ref: '#/components/schemas/BaseApiResponse'
-        - type: object
-          required: [data]
-          properties:
-            data:
-              $ref: '#/components/schemas/User'
-    ProductApiResponse:
-      allOf:
-        - $ref: '#/components/schemas/BaseApiResponse'
-        - type: object
-          required: [data]
-          properties:
-            data:
-              $ref: '#/components/schemas/Product'
     ProductPageApiResponse:
       allOf:
         - $ref: '#/components/schemas/BaseApiResponse'
-        - type: object
-          required: [data]
-          properties:
+        - properties:
             data:
               $ref: '#/components/schemas/ProductPage'
-    FavoriteApiResponse:
+          required:
+            - data
+          type: object
+    Ready:
+      properties:
+        database:
+          example: up
+          type: string
+        service:
+          example: business
+          type: string
+        status:
+          example: ready
+          type: string
+      type: object
+    User:
+      properties:
+        avatar:
+          format: uri
+          type: string
+        id:
+          type: integer
+        realName:
+          type: string
+        roles:
+          items:
+            type: string
+          type: array
+        username:
+          type: string
+      required:
+        - id
+        - username
+        - realName
+        - avatar
+        - roles
+      type: object
+    UserApiResponse:
       allOf:
         - $ref: '#/components/schemas/BaseApiResponse'
-        - type: object
-          required: [data]
-          properties:
+        - properties:
             data:
-              $ref: '#/components/schemas/FavoriteResult'
+              $ref: '#/components/schemas/User'
+          required:
+            - data
+          type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+    businessBearerAuth:
+      bearerFormat: JWT
+      description: 登录后复制 data.accessToken，仅输入 token，无需手动添加 Bearer 前缀。
+      scheme: bearer
+      type: http
+info:
+  title: vue-h5-template mock API
+  version: 2.0.0
+openapi: 3.1.0
+paths:
+  /ai/suggestions:
+    get:
+      operationId: getChatSuggestions
+      parameters:
+        - in: query
+          name: locale
+          schema:
+            type: string
+            enum: [en-US, zh-CN, ja-JP]
+            default: en-US
+      responses:
+        '200':
+          description: Localized starter prompts without a model call
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [code, message, data]
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: string
+  /admin/orders/{id}/status:
+    put:
+      description: 要求 admin 角色；PAID → PROCESSING → COMPLETED。
+      operationId: put_api_admin_orders_id_status
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessOrderStatusRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessOrder'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 推进订单履约状态
+      tags:
+        - 管理
+  /admin/products:
+    get:
+      description: 要求 admin 角色。
+      operationId: get_api_admin_products
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          schema:
+            default: 10
+            format: int64
+            maximum: 50
+            minimum: 1
+            type: integer
+        - in: query
+          name: keyword
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sort
+          required: false
+          schema:
+            enum:
+              - newest
+              - sales
+              - price_asc
+              - price_desc
+            type: string
+        - in: query
+          name: status
+          required: false
+          schema:
+            enum:
+              - draft
+              - on_sale
+              - sold_out
+            type: string
+        - in: query
+          name: featured
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProductPage'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 管理商品列表（包含隐藏商品）
+      tags:
+        - 管理
+    post:
+      description: 要求 admin 角色；保留旧版展示价格字符串，结算使用 SKU 整数分。
+      operationId: post_api_admin_products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessProductInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProduct'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 创建商品
+      tags:
+        - 管理
+  /admin/products/{id}:
+    delete:
+      description: 要求 admin 角色。
+      operationId: delete_api_admin_products_id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessDeleteResult'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 软删除商品
+      tags:
+        - 管理
+    get:
+      description: 要求 admin 角色。
+      operationId: get_api_admin_products_id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProduct'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 管理商品详情
+      tags:
+        - 管理
+    patch:
+      description: 要求 admin 角色；未传字段保持原值。
+      operationId: patch_api_admin_products_id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessProductPatch'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProduct'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 部分更新商品
+      tags:
+        - 管理
+  /admin/products/{id}/skus:
+    post:
+      description: 要求 admin 角色；同事务写入初始库存。
+      operationId: post_api_admin_products_id_skus
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessSKUInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProductSKU'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 创建 SKU 及库存
+      tags:
+        - 管理
+  /admin/skus/{id}:
+    put:
+      description: 要求 admin 角色；不会直接修改库存可用量。
+      operationId: put_api_admin_skus_id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessSKUInput'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProductSKU'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 更新 SKU
+      tags:
+        - 管理
+  /ai/chat:
+    post:
+      operationId: streamChat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            text/event-stream:
+              schema:
+                type: string
+          description: Server-sent event stream
+    servers:
+      - url: /api
+  /auth/login:
+    post:
+      description: 开发种子账号 user / 123456；管理员 admin / 123456。登录后复制 data.accessToken，点击 Authorize 输入 token。响应同时设置 HttpOnly 刷新 cookie。
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessLoginRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessLoginResult'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 登录
+      tags:
+        - 认证
+  /auth/logout:
+    post:
+      description: 撤销当前刷新会话并清除 HttpOnly cookie。Access JWT 仍有效至过期；客户端必须丢弃。可选 JSON refreshToken 支持非浏览器客户端。
+      operationId: logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessRefreshRequest'
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    nullable: true
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 退出登录
+      tags:
+        - 认证
+  /auth/refresh:
+    post:
+      description: 刷新令牌在 PostgreSQL 中单次使用；轮换后旧令牌返回 401。升级前的刷新令牌需重新登录。
+      operationId: post_api_auth_refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessRefreshRequest'
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessLoginResult'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 刷新访问令牌
+      tags:
+        - 认证
+  /cart:
+    delete:
+      operationId: delete_api_cart
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    properties:
+                      cleared:
+                        type: boolean
+                    required:
+                      - cleared
+                    type: object
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 清空购物车
+      tags:
+        - 购物车
+    get:
+      operationId: get_api_cart
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    properties:
+                      items:
+                        items:
+                          $ref: '#/components/schemas/BusinessCartItem'
+                        type: array
+                    required:
+                      - items
+                    type: object
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 当前用户购物车
+      tags:
+        - 购物车
+  /cart/items:
+    post:
+      description: 数量为绝对值，范围 1–99；不接受客户端价格。
+      operationId: post_api_cart_items
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessCartItemRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessCartItem'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 设置 SKU 的购物车数量
+      tags:
+        - 购物车
+  /cart/items/{id}:
+    delete:
+      operationId: delete_api_cart_items_id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessDeleteResult'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 删除购物车项
+      tags:
+        - 购物车
+    put:
+      operationId: put_api_cart_items_id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessCartQuantityRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessCartItem'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 修改购物车项数量
+      tags:
+        - 购物车
+  /health:
+    get:
+      operationId: get_health
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessHealth'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 服务存活
+      tags:
+        - 系统
+  /metrics:
+    get:
+      operationId: get_metrics
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Prometheus exposition text
+      security: []
+      summary: Prometheus 指标
+      tags:
+        - 系统
+    servers:
+      - url: /
+  /openapi.yaml:
+    get:
+      operationId: get_docs_29
+      responses:
+        '200':
+          content:
+            application/yaml:
+              schema:
+                type: string
+          description: OpenAPI 契约（非生产环境）
+      security: []
+      summary: OpenAPI 契约（非生产环境）
+      tags:
+        - 文档
+    servers:
+      - url: /
+  /orders:
+    get:
+      operationId: get_api_orders
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          schema:
+            default: 10
+            format: int64
+            maximum: 50
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessOrderPage'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 当前用户订单
+      tags:
+        - 订单
+    post:
+      description: 与购物车写入共享用户行锁，拿锁后重新检查幂等 key，再读取 SKU 价格并预留库存与优惠券、清空购物车。同 key 同请求重试返回原订单 200；同 key 改变优惠券返回 409。不同 key 不能重复结算同一购物车，空车返回 422；结算后等待执行的新增商品保留。金额均为整数分。
+      operationId: post_api_orders
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            example: swagger-order-001
+            maxLength: 128
+            minLength: 1
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessCreateOrderRequest'
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessOrder'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 幂等重试，返回原订单
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessOrder'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 创建订单
+      tags:
+        - 订单
+  /orders/{id}:
+    get:
+      operationId: get_api_orders_id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessOrder'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 订单详情
+      tags:
+        - 订单
+  /orders/{id}/cancel:
+    post:
+      operationId: post_api_orders_id_cancel
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessOrder'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 取消待支付订单
+      tags:
+        - 订单
+  /orders/{id}/payment:
+    post:
+      description: 仅支持未过期待支付订单；这是模拟支付，不会真实扣款。
+      operationId: post_api_orders_id_payment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessPayment'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 创建或获取模拟支付
+      tags:
+        - 支付
+  /payments/mock/webhook:
+    post:
+      description: 签名规范见 internal/service/payment.go 的 MockPaymentProvider.Sign。字符串采用 UTF-8 字节长度前缀；相同事件重复回调不重复支付；支付已成功时，新事件 ID 的有效成功通知也保持 PAID、PROCESSING 或 COMPLETED，不重复修改库存。订单有效期在拿到订单与支付锁后校验。
+      operationId: post_api_payments_mock_webhook
+      parameters:
+        - description: HMAC-SHA256 十六进制签名。
+          in: header
+          name: X-Mock-Signature
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessPaymentCallback'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    properties:
+                      duplicate:
+                        type: boolean
+                      order:
+                        $ref: '#/components/schemas/BusinessOrder'
+                    required:
+                      - order
+                      - duplicate
+                    type: object
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 模拟支付提供方回调
+      tags:
+        - 支付
+  /product/detail:
+    get:
+      operationId: getProductDetail
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            example: 1
+            format: int64
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProduct'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 商品详情与 SKU 实时库存
+      tags:
+        - 商品
+  /product/favorite:
+    get:
+      operationId: getFavoriteStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Current user's favorite state
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [code, message, data]
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/FavoriteResult'
+    post:
+      operationId: toggleProductFavorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessFavoriteRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessFavoriteResult'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 收藏或取消收藏
+      tags:
+        - 商品
+  /product/list:
+    get:
+      operationId: getProductList
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          schema:
+            default: 10
+            format: int64
+            maximum: 50
+            minimum: 1
+            type: integer
+        - in: query
+          name: keyword
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: category
+          required: false
+          schema:
+            type: string
+        - description: SKU 价格下限，人民币分。
+          in: query
+          name: priceMin
+          required: false
+          schema:
+            format: int64
+            minimum: 0
+            type: integer
+        - description: SKU 价格上限，人民币分。
+          in: query
+          name: priceMax
+          required: false
+          schema:
+            format: int64
+            minimum: 0
+            type: integer
+        - in: query
+          name: sort
+          required: false
+          schema:
+            enum:
+              - newest
+              - sales
+              - price_asc
+              - price_desc
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProductPage'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 商品列表
+      tags:
+        - 商品
+  /ready:
+    get:
+      description: 数据库就绪探针；继承请求取消并设置三秒超时，覆盖连接池等待。
+      operationId: get_ready
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessReady'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security: []
+      summary: 数据库就绪
+      tags:
+        - 系统
+    servers:
+      - url: /
+  /swagger/index.html:
+    get:
+      operationId: get_docs_28
+      responses:
+        '200':
+          content:
+            text/html:
+              schema:
+                type: string
+          description: Swagger UI（非生产环境）
+      security: []
+      summary: Swagger UI（非生产环境）
+      tags:
+        - 文档
+    servers:
+      - url: /
+  /user/favorites:
+    get:
+      description: 在数据库中分页并批量加载商品关联；items 和 total 均排除已软删除的商品。
+      operationId: get_api_user_favorites
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            default: 1
+            format: int64
+            minimum: 1
+            type: integer
+        - in: query
+          name: pageSize
+          required: false
+          schema:
+            default: 10
+            format: int64
+            maximum: 50
+            minimum: 1
+            type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessProductPage'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 收藏列表
+      tags:
+        - 用户
+  /user/info:
+    get:
+      operationId: getUserInfo
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    format: int64
+                    type: integer
+                  data:
+                    $ref: '#/components/schemas/BusinessUser'
+                  error:
+                    description: 内部错误详情不会对外暴露。
+                    nullable: true
+                  message:
+                    type: string
+                  requestId:
+                    type: string
+                required:
+                  - code
+                  - message
+                  - data
+                  - error
+                  - requestId
+                type: object
+          description: 成功
+        '504':
+          $ref: '#/components/responses/BusinessError'
+        default:
+          $ref: '#/components/responses/BusinessError'
+      security:
+        - businessBearerAuth: []
+      summary: 当前用户
+      tags:
+        - 用户
+servers:
+  - url: /api
+  - description: Versioned business API; AI streaming remains on /api
+    url: /api/v1

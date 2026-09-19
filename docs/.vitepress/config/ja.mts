@@ -1,6 +1,6 @@
-import type { DefaultTheme, LocaleSpecificConfig } from 'vitepress';
+import type { DefaultTheme, LocaleConfig } from 'vitepress';
 
-export const ja: LocaleSpecificConfig<DefaultTheme.Config> = {
+export const ja = {
   label: '日本語',
   lang: 'ja',
   link: '/ja/',
@@ -129,4 +129,4 @@ export const ja: LocaleSpecificConfig<DefaultTheme.Config> = {
       ],
     },
   },
-};
+} satisfies LocaleConfig<DefaultTheme.Config>[string];

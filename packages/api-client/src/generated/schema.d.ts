@@ -4,46 +4,14 @@
  */
 
 export interface paths {
-  '/auth/login': {
+  '/ai/suggestions': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations['login'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/logout': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations['logout'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/user/info': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations['getUserInfo'];
+    get: operations['getChatSuggestions'];
     put?: never;
     post?: never;
     delete?: never;
@@ -52,15 +20,19 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/product/list': {
+  '/admin/orders/{id}/status': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['getProductList'];
-    put?: never;
+    get?: never;
+    /**
+     * 推进订单履约状态
+     * @description 要求 admin 角色；PAID → PROCESSING → COMPLETED。
+     */
+    put: operations['put_api_admin_orders_id_status'];
     post?: never;
     delete?: never;
     options?: never;
@@ -68,23 +40,59 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/product/detail': {
+  '/admin/products': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations['getProductDetail'];
+    /**
+     * 管理商品列表（包含隐藏商品）
+     * @description 要求 admin 角色。
+     */
+    get: operations['get_api_admin_products'];
     put?: never;
-    post?: never;
+    /**
+     * 创建商品
+     * @description 要求 admin 角色；保留旧版展示价格字符串，结算使用 SKU 整数分。
+     */
+    post: operations['post_api_admin_products'];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/product/favorite': {
+  '/admin/products/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 管理商品详情
+     * @description 要求 admin 角色。
+     */
+    get: operations['get_api_admin_products_id'];
+    put?: never;
+    post?: never;
+    /**
+     * 软删除商品
+     * @description 要求 admin 角色。
+     */
+    delete: operations['delete_api_admin_products_id'];
+    options?: never;
+    head?: never;
+    /**
+     * 部分更新商品
+     * @description 要求 admin 角色；未传字段保持原值。
+     */
+    patch: operations['patch_api_admin_products_id'];
+    trace?: never;
+  };
+  '/admin/products/{id}/skus': {
     parameters: {
       query?: never;
       header?: never;
@@ -93,7 +101,31 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations['toggleProductFavorite'];
+    /**
+     * 创建 SKU 及库存
+     * @description 要求 admin 角色；同事务写入初始库存。
+     */
+    post: operations['post_api_admin_products_id_skus'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/admin/skus/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * 更新 SKU
+     * @description 要求 admin 角色；不会直接修改库存可用量。
+     */
+    put: operations['put_api_admin_skus_id'];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -116,6 +148,393 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/auth/login': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 登录
+     * @description 开发种子账号 user / 123456；管理员 admin / 123456。登录后复制 data.accessToken，点击 Authorize 输入 token。响应同时设置 HttpOnly 刷新 cookie。
+     */
+    post: operations['login'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/logout': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 退出登录
+     * @description 撤销当前刷新会话并清除 HttpOnly cookie。Access JWT 仍有效至过期；客户端必须丢弃。可选 JSON refreshToken 支持非浏览器客户端。
+     */
+    post: operations['logout'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/auth/refresh': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 刷新访问令牌
+     * @description 刷新令牌在 PostgreSQL 中单次使用；轮换后旧令牌返回 401。升级前的刷新令牌需重新登录。
+     */
+    post: operations['post_api_auth_refresh'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/cart': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 当前用户购物车 */
+    get: operations['get_api_cart'];
+    put?: never;
+    post?: never;
+    /** 清空购物车 */
+    delete: operations['delete_api_cart'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/cart/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 设置 SKU 的购物车数量
+     * @description 数量为绝对值，范围 1–99；不接受客户端价格。
+     */
+    post: operations['post_api_cart_items'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/cart/items/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** 修改购物车项数量 */
+    put: operations['put_api_cart_items_id'];
+    post?: never;
+    /** 删除购物车项 */
+    delete: operations['delete_api_cart_items_id'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/health': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 服务存活 */
+    get: operations['get_health'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/metrics': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Prometheus 指标 */
+    get: operations['get_metrics'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/openapi.yaml': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** OpenAPI 契约（非生产环境） */
+    get: operations['get_docs_29'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/orders': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 当前用户订单 */
+    get: operations['get_api_orders'];
+    put?: never;
+    /**
+     * 创建订单
+     * @description 与购物车写入共享用户行锁，拿锁后重新检查幂等 key，再读取 SKU 价格并预留库存与优惠券、清空购物车。同 key 同请求重试返回原订单 200；同 key 改变优惠券返回 409。不同 key 不能重复结算同一购物车，空车返回 422；结算后等待执行的新增商品保留。金额均为整数分。
+     */
+    post: operations['post_api_orders'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/orders/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 订单详情 */
+    get: operations['get_api_orders_id'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/orders/{id}/cancel': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** 取消待支付订单 */
+    post: operations['post_api_orders_id_cancel'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/orders/{id}/payment': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 创建或获取模拟支付
+     * @description 仅支持未过期待支付订单；这是模拟支付，不会真实扣款。
+     */
+    post: operations['post_api_orders_id_payment'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/payments/mock/webhook': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * 模拟支付提供方回调
+     * @description 签名规范见 internal/service/payment.go 的 MockPaymentProvider.Sign。字符串采用 UTF-8 字节长度前缀；相同事件重复回调不重复支付；支付已成功时，新事件 ID 的有效成功通知也保持 PAID、PROCESSING 或 COMPLETED，不重复修改库存。订单有效期在拿到订单与支付锁后校验。
+     */
+    post: operations['post_api_payments_mock_webhook'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/product/detail': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 商品详情与 SKU 实时库存 */
+    get: operations['getProductDetail'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/product/favorite': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations['getFavoriteStatus'];
+    put?: never;
+    /** 收藏或取消收藏 */
+    post: operations['toggleProductFavorite'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/product/list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 商品列表 */
+    get: operations['getProductList'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/ready': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 数据库就绪
+     * @description 数据库就绪探针；继承请求取消并设置三秒超时，覆盖连接池等待。
+     */
+    get: operations['get_ready'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/swagger/index.html': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Swagger UI（非生产环境） */
+    get: operations['get_docs_28'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/user/favorites': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * 收藏列表
+     * @description 在数据库中分页并批量加载商品关联；items 和 total 均排除已软删除的商品。
+     */
+    get: operations['get_api_user_favorites'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/user/info': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 当前用户 */
+    get: operations['getUserInfo'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -123,81 +542,594 @@ export interface components {
     ApiErrorPayload: {
       [key: string]: unknown;
     };
-    LoginRequest: {
-      username: string;
+    BaseApiResponse: {
+      code: number;
+      error?: components['schemas']['ApiErrorPayload'] | string | null;
+      message: string;
+    };
+    BusinessCartItem: {
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      quantity: number;
+      sku: components['schemas']['BusinessProductSKU'];
+      /** Format: int64 */
+      skuId: number;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: int64 */
+      userId: number;
+    };
+    BusinessCartItemRequest: {
+      /**
+       * Format: int64
+       * @example 1
+       */
+      quantity: number;
+      /**
+       * Format: int64
+       * @example 1
+       */
+      skuId: number;
+    };
+    BusinessCartQuantityRequest: {
+      /**
+       * Format: int64
+       * @example 2
+       */
+      quantity: number;
+    };
+    BusinessCreateOrderRequest: {
+      /** @description 可选优惠券代码；不使用时发送 {}。 */
+      couponCode?: string;
+    };
+    BusinessDeleteResult: {
+      deleted: boolean;
+      /** Format: int64 */
+      id: number;
+    };
+    BusinessEnvelope: {
+      /** Format: int64 */
+      code: number;
+      data: unknown;
+      /** @description 内部错误详情不会对外暴露。 */
+      error: unknown;
+      message: string;
+      requestId: string;
+    };
+    BusinessFavoriteRequest: {
+      /** @example true */
+      favorite?: boolean;
+      /**
+       * Format: int64
+       * @example 1
+       */
+      productId: number;
+    };
+    BusinessFavoriteResult: {
+      favorite: boolean;
+      /** Format: int64 */
+      productId: number;
+    };
+    BusinessHealth: {
+      env?: string;
+      /** @example business */
+      service?: string;
+      /** @example ok */
+      status?: string;
+      /** Format: date-time */
+      time?: string;
+    };
+    BusinessInventory: {
+      /** Format: int64 */
+      available: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: int64 */
+      reserved: number;
+      /** Format: int64 */
+      skuId: number;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: int64 */
+      version: number;
+    };
+    BusinessLoginRequest: {
+      /**
+       * Format: password
+       * @example 123456
+       */
       password: string;
-    };
-    User: {
-      id: number;
+      /** @example user */
       username: string;
-      realName: string;
-      /** Format: uri */
-      avatar: string;
-      roles: string[];
     };
-    LoginResult: components['schemas']['User'] & {
+    BusinessLoginResult: components['schemas']['BusinessUser'] & {
       accessToken: string;
+      /**
+       * Format: int64
+       * @description 访问令牌有效期，秒。
+       */
+      expiresIn: number;
     };
-    Product: {
+    BusinessOrder: {
+      /** Format: date-time */
+      cancelledAt?: string | null;
+      /** Format: int64 */
+      couponId?: number | null;
+      /** Format: date-time */
+      createdAt: string;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      discountAmount: number;
+      /** Format: date-time */
+      expiresAt: string;
+      /** Format: int64 */
       id: number;
-      title: string;
-      imgUrl: string;
-      price: string;
-      vipPrice: string;
-      shopDesc: string;
-      delivery: string;
-      shopName: string;
-      description: string;
+      items?: components['schemas']['BusinessOrderItem'][] | null;
+      orderNo: string;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      originalAmount: number;
+      /** Format: date-time */
+      paidAt?: string | null;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      payableAmount: number;
+      /** @enum {string} */
+      status:
+        | 'PENDING_PAYMENT'
+        | 'PAID'
+        | 'PROCESSING'
+        | 'COMPLETED'
+        | 'CANCELLED'
+        | 'EXPIRED';
+      statusHistory?:
+        | components['schemas']['BusinessOrderStatusHistory'][]
+        | null;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: int64 */
+      userId: number;
+      /** Format: int64 */
+      version: number;
     };
-    ProductPage: {
-      items: components['schemas']['Product'][];
-      total: number;
-      page: number;
-      pageSize: number;
+    BusinessOrderItem: {
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      orderId: number;
+      /** Format: int64 */
+      productId: number;
+      productName: string;
+      /** Format: int64 */
+      quantity: number;
+      /** Format: int64 */
+      skuId: number;
+      skuName: string;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      unitPrice: number;
+    };
+    BusinessOrderPage: {
       hasMore: boolean;
+      items: components['schemas']['BusinessOrder'][];
+      /** Format: int64 */
+      page: number;
+      /** Format: int64 */
+      pageSize: number;
+      /** Format: int64 */
+      total: number;
     };
-    FavoriteRequest: {
-      productId: number;
-      favorite: boolean;
+    BusinessOrderStatusHistory: {
+      /** Format: date-time */
+      createdAt: string;
+      fromStatus: string;
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      orderId: number;
+      reason: string;
+      toStatus: string;
     };
-    FavoriteResult: {
+    BusinessOrderStatusRequest: {
+      /** @enum {string} */
+      status: 'PROCESSING' | 'COMPLETED';
+    };
+    BusinessPayment: {
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      amount: number;
+      /** Format: date-time */
+      createdAt: string;
+      failureReason?: string;
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      orderId: number;
+      /** Format: date-time */
+      paidAt?: string | null;
+      provider: string;
+      reference: string;
+      /** @enum {string} */
+      status: 'PENDING' | 'SUCCEEDED' | 'FAILED';
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    BusinessPaymentCallback: {
+      /**
+       * Format: int64
+       * @description 人民币分。
+       */
+      amount: number;
+      eventId: string;
+      orderNo: string;
+      reference: string;
+      /** @enum {string} */
+      status: 'SUCCESS' | 'FAILURE';
+    };
+    BusinessProduct: {
+      brand: string;
+      categoryId: string;
+      cover: string;
+      /** Format: date-time */
+      createdAt: string;
+      delivery: string;
+      description: string;
+      /** Format: int64 */
+      id: number;
+      imgUrl: string;
+      name: string;
+      price: string;
+      shopDesc: string;
+      shopName: string;
+      skus?: components['schemas']['BusinessProductSKU'][] | null;
+      title: string;
+      /** Format: date-time */
+      updatedAt: string;
+      vipPrice: string;
+    };
+    BusinessProductInput: {
+      brand?: string;
+      categoryId?: string;
+      cover?: string;
+      delivery?: string;
+      description?: string;
+      featured?: boolean;
+      imgUrl: string;
+      name?: string;
+      price: string;
+      shopDesc?: string;
+      shopName: string;
+      /** @enum {string} */
+      status?: 'draft' | 'on_sale' | 'sold_out';
+      /** Format: int64 */
+      stock?: number;
+      title: string;
+      vipPrice: string;
+    };
+    BusinessProductPage: {
+      hasMore: boolean;
+      items: components['schemas']['BusinessProduct'][];
+      /** Format: int64 */
+      page: number;
+      /** Format: int64 */
+      pageSize: number;
+      /** Format: int64 */
+      total: number;
+    };
+    BusinessProductPatch: {
+      brand?: string;
+      categoryId?: string;
+      cover?: string;
+      delivery?: string;
+      description?: string;
+      featured?: boolean;
+      imgUrl?: string;
+      name?: string;
+      price?: string;
+      shopDesc?: string;
+      shopName?: string;
+      /** @enum {string} */
+      status?: 'draft' | 'on_sale' | 'sold_out';
+      /** Format: int64 */
+      stock?: number;
+      title?: string;
+      vipPrice?: string;
+    };
+    BusinessProductSKU: {
+      attributes: {
+        [key: string]: string;
+      };
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: int64 */
+      id: number;
+      inventory?: components['schemas']['BusinessInventory'] | null;
+      name: string;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      originalPrice: number;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      price: number;
+      /** Format: int64 */
       productId: number;
-      favorite: boolean;
+      skuCode: string;
+      /** @enum {string} */
+      status: 'active' | 'inactive';
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    BusinessReady: {
+      /** @example up */
+      database?: string;
+      /** @example business */
+      service?: string;
+      /** @example ready */
+      status?: string;
+    };
+    BusinessRefreshRequest: {
+      /** @description 可选；浏览器默认使用 HttpOnly 刷新 cookie。 */
+      refreshToken?: string;
+    };
+    BusinessSKUInput: {
+      /**
+       * @example {
+       *       "颜色": "黑色"
+       *     }
+       */
+      attributes: {
+        [key: string]: string;
+      };
+      /**
+       * Format: int64
+       * @description 仅创建时用于初始化库存；更新 SKU 不修改库存。
+       * @example 100
+       */
+      available?: number;
+      /** @example 标准款 */
+      name: string;
+      /**
+       * Format: int64
+       * @example 12900
+       */
+      originalPrice?: number;
+      /**
+       * Format: int64
+       * @description 人民币分。
+       * @example 9900
+       */
+      price?: number;
+      /** @example SKU-NEW-001 */
+      skuCode: string;
+      /**
+       * @example active
+       * @enum {string}
+       */
+      status: 'active' | 'inactive';
+    };
+    BusinessUser: {
+      avatar: string;
+      /** Format: int64 */
+      id: number;
+      realName: string;
+      roles: ('user' | 'admin')[];
+      username: string;
     };
     ChatMessage: {
+      content: string;
       id: string;
       /** @enum {string} */
       role: 'user' | 'assistant' | 'system';
-      content: string;
     };
     ChatRequest: {
       messages: components['schemas']['ChatMessage'][];
     };
-    BaseApiResponse: {
-      code: number;
-      message: string;
-      error?: components['schemas']['ApiErrorPayload'] | string | null;
+    CreateOrderRequest: {
+      /** @description 可选优惠券代码；不使用时发送 {}。 */
+      couponCode?: string;
     };
     EmptyApiResponse: components['schemas']['BaseApiResponse'] & {
       data?: null;
     };
-    LoginApiResponse: components['schemas']['BaseApiResponse'] & {
-      data: components['schemas']['LoginResult'];
-    };
-    UserApiResponse: components['schemas']['BaseApiResponse'] & {
-      data: components['schemas']['User'];
-    };
-    ProductApiResponse: components['schemas']['BaseApiResponse'] & {
-      data: components['schemas']['Product'];
-    };
-    ProductPageApiResponse: components['schemas']['BaseApiResponse'] & {
-      data: components['schemas']['ProductPage'];
+    Envelope: {
+      /** Format: int64 */
+      code: number;
+      data: unknown;
+      /** @description 内部错误详情不会对外暴露。 */
+      error: unknown;
+      message: string;
+      requestId: string;
     };
     FavoriteApiResponse: components['schemas']['BaseApiResponse'] & {
       data: components['schemas']['FavoriteResult'];
     };
+    FavoriteRequest: {
+      favorite: boolean;
+      productId: number;
+    };
+    FavoriteResult: {
+      favorite: boolean;
+      productId: number;
+    };
+    LoginApiResponse: components['schemas']['BaseApiResponse'] & {
+      data: components['schemas']['LoginResult'];
+    };
+    LoginRequest: {
+      password: string;
+      username: string;
+    };
+    LoginResult: components['schemas']['User'] & {
+      accessToken: string;
+    };
+    Order: {
+      /** Format: date-time */
+      cancelledAt?: string | null;
+      /** Format: int64 */
+      couponId?: number | null;
+      /** Format: date-time */
+      createdAt: string;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      discountAmount: number;
+      /** Format: date-time */
+      expiresAt: string;
+      /** Format: int64 */
+      id: number;
+      items?: components['schemas']['OrderItem'][] | null;
+      orderNo: string;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      originalAmount: number;
+      /** Format: date-time */
+      paidAt?: string | null;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      payableAmount: number;
+      /** @enum {string} */
+      status:
+        | 'PENDING_PAYMENT'
+        | 'PAID'
+        | 'PROCESSING'
+        | 'COMPLETED'
+        | 'CANCELLED'
+        | 'EXPIRED';
+      statusHistory?: components['schemas']['OrderStatusHistory'][] | null;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: int64 */
+      userId: number;
+      /** Format: int64 */
+      version: number;
+    };
+    OrderItem: {
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      orderId: number;
+      /** Format: int64 */
+      productId: number;
+      productName: string;
+      /** Format: int64 */
+      quantity: number;
+      /** Format: int64 */
+      skuId: number;
+      skuName: string;
+      /**
+       * Format: int64
+       * @description 人民币分，整数最小货币单位。
+       */
+      unitPrice: number;
+    };
+    OrderStatusHistory: {
+      /** Format: date-time */
+      createdAt: string;
+      fromStatus: string;
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      orderId: number;
+      reason: string;
+      toStatus: string;
+    };
+    PaymentCallback: {
+      /**
+       * Format: int64
+       * @description 人民币分。
+       */
+      amount: number;
+      eventId: string;
+      orderNo: string;
+      reference: string;
+      /** @enum {string} */
+      status: 'SUCCESS' | 'FAILURE';
+    };
+    Product: {
+      delivery: string;
+      description: string;
+      id: number;
+      imgUrl: string;
+      price: string;
+      shopDesc: string;
+      shopName: string;
+      title: string;
+      vipPrice: string;
+    };
+    ProductApiResponse: components['schemas']['BaseApiResponse'] & {
+      data: components['schemas']['Product'];
+    };
+    ProductPage: {
+      hasMore: boolean;
+      items: components['schemas']['Product'][];
+      page: number;
+      pageSize: number;
+      total: number;
+    };
+    ProductPageApiResponse: components['schemas']['BaseApiResponse'] & {
+      data: components['schemas']['ProductPage'];
+    };
+    Ready: {
+      /** @example up */
+      database?: string;
+      /** @example business */
+      service?: string;
+      /** @example ready */
+      status?: string;
+    };
+    User: {
+      /** Format: uri */
+      avatar: string;
+      id: number;
+      realName: string;
+      roles: string[];
+      username: string;
+    };
+    UserApiResponse: components['schemas']['BaseApiResponse'] & {
+      data: components['schemas']['User'];
+    };
   };
-  responses: never;
+  responses: {
+    /** @description 业务错误：400 请求错误、401 未登录、403 无权限、404 不存在、409 状态冲突、422 校验失败、429 限流、500 内部错误、503 不可用、504 超时；以信封 code 为准。 */
+    BusinessError: {
+      headers: {
+        [name: string]: unknown;
+      };
+      content: {
+        'application/json': components['schemas']['BusinessEnvelope'];
+      };
+    };
+    /** @description 业务错误：400 请求错误、401 未登录、403 无权限、404 不存在、409 状态冲突、422 校验失败、429 限流、500 内部错误、503 不可用；以信封 code 为准。 */
+    Error: {
+      headers: {
+        [name: string]: unknown;
+      };
+      content: {
+        'application/json': components['schemas']['Envelope'];
+      };
+    };
+  };
   parameters: {
     Page: number;
     PageSize: number;
@@ -208,82 +1140,10 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  login: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LoginRequest'];
-      };
-    };
-    responses: {
-      /** @description Login result */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LoginApiResponse'];
-        };
-      };
-    };
-  };
-  logout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Logout result */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EmptyApiResponse'];
-        };
-      };
-    };
-  };
-  getUserInfo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Current user */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UserApiResponse'];
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  getProductList: {
+  getChatSuggestions: {
     parameters: {
       query?: {
-        page?: components['parameters']['Page'];
-        pageSize?: components['parameters']['PageSize'];
+        locale?: 'en-US' | 'zh-CN' | 'ja-JP';
       };
       header?: never;
       path?: never;
@@ -291,40 +1151,95 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Paginated product list */
+      /** @description Localized starter prompts without a model call */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['ProductPageApiResponse'];
+          'application/json': {
+            code: number;
+            message: string;
+            data: string[];
+          };
         };
       };
     };
   };
-  getProductDetail: {
+  put_api_admin_orders_id_status: {
     parameters: {
-      query: {
+      query?: never;
+      header?: never;
+      path: {
         id: number;
       };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessOrderStatusRequest'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessOrder'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_api_admin_products: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+        keyword?: string;
+        sort?: 'newest' | 'sales' | 'price_asc' | 'price_desc';
+        status?: 'draft' | 'on_sale' | 'sold_out';
+        featured?: boolean;
+      };
       header?: never;
       path?: never;
       cookie?: never;
     };
     requestBody?: never;
     responses: {
-      /** @description Product detail */
+      /** @description 成功 */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['ProductApiResponse'];
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProductPage'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
         };
       };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
     };
   };
-  toggleProductFavorite: {
+  post_api_admin_products: {
     parameters: {
       query?: never;
       header?: never;
@@ -333,19 +1248,201 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['FavoriteRequest'];
+        'application/json': components['schemas']['BusinessProductInput'];
       };
     };
     responses: {
-      /** @description Favorite state */
+      /** @description 成功 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProduct'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_api_admin_products_id: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['FavoriteApiResponse'];
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProduct'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
         };
       };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  delete_api_admin_products_id: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessDeleteResult'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  patch_api_admin_products_id: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessProductPatch'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProduct'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  post_api_admin_products_id_skus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessSKUInput'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProductSKU'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  put_api_admin_skus_id: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessSKUInput'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProductSKU'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
     };
   };
   streamChat: {
@@ -370,6 +1467,810 @@ export interface operations {
           'text/event-stream': string;
         };
       };
+    };
+  };
+  login: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessLoginRequest'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessLoginResult'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['BusinessRefreshRequest'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: unknown;
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  post_api_auth_refresh: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['BusinessRefreshRequest'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessLoginResult'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_api_cart: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: {
+              items: components['schemas']['BusinessCartItem'][];
+            };
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  delete_api_cart: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: {
+              cleared: boolean;
+            };
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  post_api_cart_items: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessCartItemRequest'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessCartItem'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  put_api_cart_items_id: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessCartQuantityRequest'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessCartItem'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  delete_api_cart_items_id: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessDeleteResult'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_health: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessHealth'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_metrics: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Prometheus exposition text */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'text/plain': string;
+        };
+      };
+    };
+  };
+  get_docs_29: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OpenAPI 契约（非生产环境） */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/yaml': string;
+        };
+      };
+    };
+  };
+  get_api_orders: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessOrderPage'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  post_api_orders: {
+    parameters: {
+      query?: never;
+      header: {
+        'Idempotency-Key': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['BusinessCreateOrderRequest'];
+      };
+    };
+    responses: {
+      /** @description 幂等重试，返回原订单 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessOrder'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      /** @description 成功 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessOrder'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_api_orders_id: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessOrder'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  post_api_orders_id_cancel: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessOrder'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  post_api_orders_id_payment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessPayment'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  post_api_payments_mock_webhook: {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description HMAC-SHA256 十六进制签名。 */
+        'X-Mock-Signature': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessPaymentCallback'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: {
+              duplicate: boolean;
+              order: components['schemas']['BusinessOrder'];
+            };
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  getProductDetail: {
+    parameters: {
+      query: {
+        id: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProduct'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  getFavoriteStatus: {
+    parameters: {
+      query: {
+        id: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Current user's favorite state */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            code: number;
+            message: string;
+            data: components['schemas']['FavoriteResult'];
+          };
+        };
+      };
+    };
+  };
+  toggleProductFavorite: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BusinessFavoriteRequest'];
+      };
+    };
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessFavoriteResult'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  getProductList: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+        keyword?: string;
+        category?: string;
+        /** @description SKU 价格下限，人民币分。 */
+        priceMin?: number;
+        /** @description SKU 价格上限，人民币分。 */
+        priceMax?: number;
+        sort?: 'newest' | 'sales' | 'price_asc' | 'price_desc';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProductPage'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_ready: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessReady'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      default: components['responses']['BusinessError'];
+    };
+  };
+  get_docs_28: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Swagger UI（非生产环境） */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'text/html': string;
+        };
+      };
+    };
+  };
+  get_api_user_favorites: {
+    parameters: {
+      query?: {
+        page?: number;
+        pageSize?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessProductPage'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
+    };
+  };
+  getUserInfo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 成功 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** Format: int64 */
+            code: number;
+            data: components['schemas']['BusinessUser'];
+            /** @description 内部错误详情不会对外暴露。 */
+            error: unknown;
+            message: string;
+            requestId: string;
+          };
+        };
+      };
+      504: components['responses']['BusinessError'];
+      default: components['responses']['BusinessError'];
     };
   };
 }
