@@ -142,5 +142,6 @@
   "installUnavailable": "Install prompt unavailable",
   "unfavorite": "Remove from favorites",
   "favoriteLogin": "Sign in to save products",
-  "favoriteFailed": "Could not update favorites. Please try again."
+  "favoriteFailed": "Could not update favorites. Please try again.",
+  "invalidProduct": "This product link is invalid. Please return to the catalog."
 }

@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import {
+  computed,
+  nextTick,
+  onScopeDispose,
+  ref,
+  shallowRef,
+  useTemplateRef,
+  watch,
+} from 'vue';
 
 import { FetchChatProvider, useStreamingChat } from '@vh5/ai-chat';
 import { getChatSuggestions } from '@vh5/api-client';
@@ -12,7 +20,15 @@ import MarkdownContent from './MarkdownContent.vue';
 
 const props = defineProps<{ endpoint?: string; token?: string }>();
 const { t, locale } = useI18n();
-const notice = ref('');
+const notice = shallowRef('');
+let copyVersion = 0;
+let copyTimer: ReturnType<typeof setTimeout> | undefined;
+function resetCopy() {
+  copyVersion += 1;
+  clearTimeout(copyTimer);
+  notice.value = '';
+}
+onScopeDispose(resetCopy);
 const provider = new FetchChatProvider({
   endpoint: props.endpoint || '/api/ai/chat',
   headers: () => {
@@ -34,10 +50,8 @@ const {
   streaming,
 } = useStreamingChat(provider);
 
-onBeforeUnmount(abort);
-
 const draft = ref('');
-const messageScroller = ref<HTMLElement>();
+const messageScroller = useTemplateRef<HTMLElement>('messageScroller');
 const showScrollButton = ref(false);
 const suggestionsBase = computed(() =>
   (props.endpoint || '/api/ai/chat').replace(/\/chat\/?$/u, ''),
@@ -70,12 +84,17 @@ async function submit(content: string) {
 }
 
 async function copy(content: string) {
+  resetCopy();
+  const version = copyVersion;
   try {
     await navigator.clipboard.writeText(content);
+    if (version !== copyVersion) return;
     notice.value = t('mobile.copied');
   } catch {
+    if (version !== copyVersion) return;
     notice.value = t('mobile.copyFailed');
   }
+  copyTimer = setTimeout(resetCopy, 1200);
 }
 
 function updateScrollState() {
@@ -86,10 +105,11 @@ function updateScrollState() {
 }
 
 watch(
-  () => messages.value.map((message) => message.content).join(''),
+  [() => messages.value.length, () => messages.value.at(-1)?.content, status],
   () => {
     if (!showScrollButton.value) scrollToBottom('auto');
   },
+  { flush: 'post' },
 );
 </script>
 

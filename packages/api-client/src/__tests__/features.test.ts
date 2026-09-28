@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { getChatSuggestions } from '../modules/ai';
-import { getProductFavorite, setProductFavorite } from '../modules/product';
+import {
+  getProductFavorite,
+  getProductList,
+  setProductFavorite,
+} from '../modules/product';
 const transport = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn() }));
 vi.mock('../singleton', () => ({ httpClient: transport }));
 beforeEach(() => {
@@ -9,6 +13,14 @@ beforeEach(() => {
   transport.post.mockReset();
 });
 describe('feature API contracts', () => {
+  it('forwards product pagination cancellation to the transport', async () => {
+    const signal = new AbortController().signal;
+    await getProductList({ page: 2, pageSize: 4 }, signal);
+    expect(transport.get).toHaveBeenCalledWith('/product/list', {
+      params: { page: 2, pageSize: 4 },
+      signal,
+    });
+  });
   it('forwards bookmark IDs, explicit state and abort signals', async () => {
     const signal = new AbortController().signal;
     transport.get.mockResolvedValue({ productId: 3, favorite: true });

@@ -5,7 +5,14 @@ import type {
   StreamingChatOptions,
 } from './types';
 
-import { computed, reactive, readonly, ref } from 'vue';
+import {
+  computed,
+  getCurrentScope,
+  onScopeDispose,
+  reactive,
+  readonly,
+  ref,
+} from 'vue';
 
 const defaultCreateId = () =>
   globalThis.crypto?.randomUUID?.() ??
@@ -23,6 +30,7 @@ export function useStreamingChat(
   const status = ref<ChatStatus>('idle');
   const error = ref<Error>();
   let controller: AbortController | undefined;
+  let disposed = false;
 
   const streaming = computed(
     () => status.value === 'streaming' || status.value === 'submitting',
@@ -59,6 +67,7 @@ export function useStreamingChat(
           assistant.content += chunk.delta;
         }
         if (chunk.type === 'error') throw new Error(chunk.message);
+        if (chunk.type === 'finish') break;
       }
       if (controller === currentController) status.value = 'idle';
     } catch (caughtError) {
@@ -77,7 +86,7 @@ export function useStreamingChat(
 
   async function sendMessage(content: string) {
     const normalized = content.trim();
-    if (!normalized || streaming.value) return;
+    if (!normalized || streaming.value || disposed) return;
     messages.value.push({
       content: normalized,
       createdAt: now(),
@@ -88,7 +97,7 @@ export function useStreamingChat(
   }
 
   async function regenerate() {
-    if (streaming.value) return;
+    if (streaming.value || disposed) return;
     const lastAssistantIndex = messages.value.findLastIndex(
       (message) => message.role === 'assistant',
     );
@@ -98,7 +107,7 @@ export function useStreamingChat(
   }
 
   async function retry() {
-    if (status.value !== 'error') return;
+    if (status.value !== 'error' || disposed) return;
     const lastMessage = messages.value.at(-1);
     if (lastMessage?.role === 'assistant') messages.value.pop();
     await generate();
@@ -117,6 +126,13 @@ export function useStreamingChat(
     messages.value = [];
     error.value = undefined;
     status.value = 'idle';
+  }
+
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      disposed = true;
+      abort();
+    });
   }
 
   return {

@@ -15,3 +15,7 @@ pnpm -F @vh5/ai-chat type-check
 ```
 
 [参考: AI Chat](../guide/v2/ai-chat.md) · [参考: backend](../guide/essentials/server.md)
+
+## 结束事件与 Scope 清理
+
+`finish` 是结束事件：composable 会立即关闭 Provider 迭代器，忽略后续分片。停止操作先释放发送状态，再取消传输；即使旧 Provider 尚未结束，也可以发起新请求。被取消请求的迟到内容或错误不能覆盖当前会话。

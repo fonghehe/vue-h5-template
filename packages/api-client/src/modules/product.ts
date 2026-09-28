@@ -8,8 +8,14 @@ import type {
 
 import { httpClient } from '../singleton';
 
-export const getProductList = (params: PaginationParams = {}) =>
-  httpClient.get<PaginationResponse<ProductItem>>('/product/list', { params });
+export const getProductList = (
+  params: PaginationParams = {},
+  signal?: AbortSignal,
+) =>
+  httpClient.get<PaginationResponse<ProductItem>>('/product/list', {
+    params,
+    signal,
+  });
 
 export const getProductDetail = (id: number | string, signal?: AbortSignal) =>
   httpClient.get<ProductItem>('/product/detail', { params: { id }, signal });

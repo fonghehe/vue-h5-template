@@ -142,5 +142,6 @@
   "installUnavailable": "当前无法安装",
   "unfavorite": "取消收藏",
   "favoriteLogin": "登录后收藏商品",
-  "favoriteFailed": "收藏更新失败，请重试。"
+  "favoriteFailed": "收藏更新失败，请重试。",
+  "invalidProduct": "商品链接无效，请返回商品列表。"
 }

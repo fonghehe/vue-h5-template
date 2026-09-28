@@ -18,3 +18,9 @@ Mock も実際に chunk を順次送ります。Markdown は DOMPurify でサニ
 `vue-h5-template-ai-service` を既定の `AI_PROVIDER=mock` でポート `8001` に起動し、`pnpm dev:services:vant` を実行します。Vite は `/api/ai/chat` を SSE のまま転送し、ログイン済みの場合は `FetchChatProvider` が Business Service の Bearer Token を付与します。両サービスの JWT 設定を同一にすれば `AI_AUTH_REQUIRED=true` も利用できます。
 
 実モデルを使う場合、`AI_PROVIDER=openai-compatible`、`AI_BASE_URL`、`AI_API_KEY`、`AI_MODEL` は **AI service** 側だけに設定します。アプリの `VITE_*` に秘密情報を入れず、ブラウザー契約は変更しません。
+
+## 終了イベントと Scope の破棄
+
+`finish` を受け取ると composable は Provider のイテレーターを直ちに閉じ、後続のチャンクを無視します。停止操作は送信中の状態を解除してから通信をキャンセルするため、古い Provider の完了を待たずに次のリクエストを開始できます。キャンセル済みの処理が遅れて返す内容やエラーは、現在の会話に反映されません。
+
+コンポーネントの setup または Vue effect scope 内で作成した場合、scope の破棄時に自動中止し、その後の生成も受け付けません。scope 外では呼び出し側で `abort()` を実行してください。コピーの通知は 1.2 秒で消え、古い処理の結果が新しい結果を上書きすることはありません。スクロールは DOM 更新後にメッセージ数、最後の本文、状態のみを監視し、トークンごとの全履歴走査を避けます。

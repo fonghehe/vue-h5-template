@@ -14,4 +14,8 @@ interface ChatProvider {
 pnpm -F @vh5/ai-chat type-check
 ```
 
+## Stream completion and scope disposal
+
+`finish` is terminal: the composable closes the provider iterator immediately and ignores trailing chunks. Stopping releases the busy state before aborting the transport, so a new request can start even if an old provider has not settled. Late output or failure from cancelled work cannot overwrite the current conversation.
+
 [Reference: AI Chat](../guide/v2/ai-chat.md) · [Reference: backend](../guide/essentials/server.md)

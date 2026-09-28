@@ -16,3 +16,9 @@ Do not copy query results into Pinia. It creates two caches with different inval
 The cart store keeps only user-owned cart lines, quantity and selection. It may persist locally; product list fetching, loading and retry state must not move into that store.
 
 Language preference is managed by Vue I18n and localStorage, not Pinia.
+
+## Product routes and cancellation
+
+Detail links accept a single positive decimal integer ID within JavaScript's safe integer range. Missing, repeated, malformed or oversized IDs show recovery guidance without issuing a detail request. Reusing the page for another product clears the previous “Added to cart” feedback.
+
+Catalog, paginated and infinite product queries forward TanStack Query's `AbortSignal` through `getProductList(params, signal)` to the HTTP client. Changing locale or page, or unmounting the last observer, cancels obsolete work. A late result cannot populate the wrong locale's active view; query keys still own cache isolation.

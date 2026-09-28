@@ -18,7 +18,7 @@ const { t, locale } = useI18n();
 const cart = useCartStore();
 const products = useQuery({
   queryKey: ['products', 'catalog', locale],
-  queryFn: () => getProductList(),
+  queryFn: ({ signal }) => getProductList({}, signal),
 });
 const items = computed(() => products.data.value?.items ?? []);
 const notice = ref(false);

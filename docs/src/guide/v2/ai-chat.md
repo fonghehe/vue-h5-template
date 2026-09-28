@@ -33,3 +33,9 @@ For clone commands and setup, see [Backend Modes](../essentials/server.md).
 Start `vue-h5-template-ai-service` on port `8001` with its default `AI_PROVIDER=mock`, then run `pnpm dev:services:vant`. The Vite proxy forwards `/api/ai/chat` without buffering the response, and `FetchChatProvider` adds the current business-service bearer token when the user is signed in. This also supports the AI service's optional `AI_AUTH_REQUIRED=true` mode when both backend services share the same JWT settings.
 
 To use a real model, configure `AI_PROVIDER=openai-compatible`, `AI_BASE_URL`, `AI_API_KEY` and `AI_MODEL` in the **AI service**, never in an app `VITE_*` variable. The browser contract remains unchanged.
+
+## Stream completion and scope disposal
+
+`finish` is terminal: the composable closes the provider iterator immediately and ignores trailing chunks. Stopping releases the busy state before aborting the transport, so a new request can start even if an old provider has not settled. Late output or failure from cancelled work cannot overwrite the current conversation.
+
+When created inside component setup or a Vue effect scope, the composable aborts on scope disposal and refuses further generation. Outside a scope, the caller owns `abort()`. Clipboard feedback expires after 1.2 seconds and ignores older copy attempts. Scrolling watches only message count, the last message's content and status after DOM updates, avoiding a full-history scan for each token.

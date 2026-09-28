@@ -142,5 +142,6 @@
   "installUnavailable": "現在インストールできません",
   "unfavorite": "お気に入りから削除",
   "favoriteLogin": "ログインして商品を保存",
-  "favoriteFailed": "お気に入りを更新できませんでした。もう一度お試しください。"
+  "favoriteFailed": "お気に入りを更新できませんでした。もう一度お試しください。",
+  "invalidProduct": "商品リンクが無効です。商品一覧に戻ってください。"
 }

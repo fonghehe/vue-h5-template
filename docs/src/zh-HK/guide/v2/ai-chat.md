@@ -18,3 +18,9 @@ Clone 命令同設定步驟見[後端模式](../essentials/server.md)。
 先用預設 `AI_PROVIDER=mock` 喺 `8001` 啟動 `vue-h5-template-ai-service`，再執行 `pnpm dev:services:vant`。Vite 會以串流方式轉發 `/api/ai/chat`；用戶已登入時，`FetchChatProvider` 亦會加上 Business Service 簽發嘅 Bearer Token。兩個服務使用相同 JWT 設定後，可以啟用 `AI_AUTH_REQUIRED=true`。
 
 使用真實模型時，只喺 **AI Service** 設定 `AI_PROVIDER=openai-compatible`、`AI_BASE_URL`、`AI_API_KEY` 同 `AI_MODEL`。唔好將秘密放入應用嘅 `VITE_*` 變數，瀏覽器契約唔需要改。
+
+## 結束事件與 Scope 清理
+
+收到 `finish` 後，composable 會即時關閉 Provider 迭代器，忽略之後嘅片段。停止時會先解除傳送中狀態，再取消傳輸；就算舊 Provider 未結束，都可以開始新請求。已取消請求遲返嘅內容或錯誤唔會覆蓋目前對話。
+
+喺元件 setup 或 Vue effect scope 入面建立時，銷毀 scope 會自動中止請求，亦唔會再接受生成。喺 scope 外使用就由呼叫端執行 `abort()`。複製提示會喺 1.2 秒後清除，舊複製結果唔會蓋過新結果。捲動只會喺 DOM 更新後監察訊息數、最後一則內容同狀態，避免每個 token 都掃描全部歷史。

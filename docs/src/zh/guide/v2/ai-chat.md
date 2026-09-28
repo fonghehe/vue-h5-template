@@ -20,3 +20,9 @@ AI 内容始终不可信：Marked 只负责解析，进入 `v-html` 前必须经
 先以默认 `AI_PROVIDER=mock` 在 `8001` 端口启动 `vue-h5-template-ai-service`，再执行 `pnpm dev:services:vant`。Vite 会把 `/api/ai/chat` 转发到 AI Service，并保持 SSE 流不被前端缓冲；用户已登录时，`FetchChatProvider` 还会附加 Business Service 签发的 Bearer Token。两个服务使用相同 JWT 配置后，也可以启用 `AI_AUTH_REQUIRED=true`。
 
 接入真实模型时，只在 **AI Service** 中配置 `AI_PROVIDER=openai-compatible`、`AI_BASE_URL`、`AI_API_KEY` 和 `AI_MODEL`，不要写进应用的 `VITE_*` 变量。浏览器端协议和页面都不需要改变。
+
+## 结束事件与 Scope 清理
+
+`finish` 是结束事件：composable 会立即关闭 Provider 迭代器，忽略后续分片。停止操作先释放发送状态，再取消传输；即使旧 Provider 尚未结束，也可以发起新请求。被取消请求的迟到内容或错误不能覆盖当前会话。
+
+在组件 setup 或 Vue effect scope 内创建时，销毁 scope 会自动中止请求，并禁止后续生成。在 scope 外使用时，由调用方执行 `abort()`。复制提示在 1.2 秒后清除，较旧的复制结果不会覆盖新结果。滚动只在 DOM 更新后监听消息数、最后一条内容和状态，避免每个 token 遍历完整历史。

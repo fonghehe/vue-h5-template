@@ -282,3 +282,71 @@ test('commerce controls remain accessible at 320px and follow the selected local
   ).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('payment-ja-320.png') });
 });
+
+test('invalid product links recover without requesting a detail record', async ({
+  page,
+}) => {
+  const requests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/api/product/detail')
+      requests.push(request.url());
+  });
+  for (const query of [
+    '',
+    '?id=abc',
+    '?id=0',
+    '?id=1&id=2',
+    '?id=9007199254740992',
+  ]) {
+    await page.goto(`/details${query}`);
+    await expect(page.getByRole('alert')).toContainText(
+      'product link is invalid',
+    );
+    await expect(
+      page.getByRole('link', { name: 'Back to products' }),
+    ).toHaveAttribute('href', '/list');
+  }
+  expect(requests).toEqual([]);
+  await page.getByRole('link', { name: 'Back to products' }).click();
+  await expect(page).toHaveURL(/\/list$/u);
+});
+
+test('terminal stream event ignores trailing data and clipboard denial is visible', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: async () => {
+          throw new DOMException('Denied', 'NotAllowedError');
+        },
+      },
+    });
+  });
+  await page.route('**/api/ai/chat', (route) =>
+    route.fulfill({
+      contentType: 'text/event-stream',
+      body:
+        'data: {"type":"start","id":"browser-test"}\r\n\r\n' +
+        'data: {"type":"delta","delta":"Finished answer"}\r\n\r\n' +
+        'data: {"type":"finish","reason":"stop"}\r\n\r\n' +
+        'data: {"type":"delta","delta":"STALE TRAILER"}\r\n\r\n',
+    }),
+  );
+  await page.goto('/ai/chat');
+  await page.getByRole('textbox').fill('Hello');
+  await page.getByRole('textbox').press('Enter');
+  await expect(
+    page.getByText('Finished answer', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Regenerate', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText('STALE TRAILER', { exact: false })).toHaveCount(
+    0,
+  );
+  await page.getByRole('button', { name: 'Copy', exact: true }).click();
+  await expect(page.locator('.copy-notice')).toContainText('Copy');
+  await expect(page.locator('.copy-notice')).toContainText('unavailable');
+});

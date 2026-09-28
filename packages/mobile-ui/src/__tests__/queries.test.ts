@@ -1,6 +1,6 @@
 import type { PaginationResponse, ProductItem } from '@vh5/api-client';
 
-import { enableAutoUnmount, mount } from '@vue/test-utils';
+import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 
 import { getProductList } from '@vh5/api-client';
@@ -30,7 +30,7 @@ function harness<T>(setup: () => T) {
   });
   clients.push(client);
   let query!: T;
-  mount(
+  const wrapper = mount(
     defineComponent({
       setup() {
         query = setup();
@@ -41,7 +41,7 @@ function harness<T>(setup: () => T) {
       global: { plugins: [[VueQueryPlugin, { queryClient: client }]] },
     },
   );
-  return { client, query };
+  return { client, query, wrapper };
 }
 
 function result(
@@ -59,7 +59,10 @@ describe('product query state', () => {
     const page = ref(1);
     const { client, query } = harness(() => useProductPage(page));
     await vi.waitFor(() => expect(query.isSuccess.value).toBe(true));
-    expect(getProductList).toHaveBeenLastCalledWith({ page: 1, pageSize: 4 });
+    expect(getProductList).toHaveBeenLastCalledWith(
+      { page: 1, pageSize: 4 },
+      expect.any(AbortSignal),
+    );
     page.value = 2;
     await vi.waitFor(() => expect(query.data.value?.page).toBe(2));
     page.value = 1;
@@ -120,5 +123,49 @@ describe('product query state', () => {
     await query.refetch();
     expect(query.isSuccess.value).toBe(true);
     expect(query.error.value).toBeNull();
+  });
+
+  it.each(['page', 'infinite'] as const)(
+    'cancels an inactive %s query and rejects stale locale results',
+    async (kind) => {
+      const old = Promise.withResolvers<PaginationResponse<ProductItem>>();
+      let signal: AbortSignal | undefined;
+      vi.mocked(getProductList)
+        .mockImplementationOnce((_params, requestSignal) => {
+          signal = requestSignal;
+          return old.promise;
+        })
+        .mockResolvedValue(result(1));
+      const { query, client, wrapper } = harness(() =>
+        kind === 'page' ? useProductPage(ref(1)) : useInfiniteProducts(),
+      );
+      await vi.waitFor(() => expect(getProductList).toHaveBeenCalledOnce());
+      expect(signal?.aborted).toBe(false);
+      locale.value = 'ja-JP';
+      await vi.waitFor(() => expect(signal?.aborted).toBe(true));
+      await vi.waitFor(() => expect(query.isSuccess.value).toBe(true));
+      old.resolve(result(9));
+      await flushPromises();
+      const oldKey =
+        kind === 'page'
+          ? ['products', 'page', 1, 4, 'en-US']
+          : ['products', 'infinite', 4, 'en-US'];
+      expect(client.getQueryData(oldKey)).toBeUndefined();
+      wrapper.unmount();
+    },
+  );
+
+  it('aborts a product request when the page is unmounted', async () => {
+    const gate = Promise.withResolvers<PaginationResponse<ProductItem>>();
+    let signal: AbortSignal | undefined;
+    vi.mocked(getProductList).mockImplementation((_params, requestSignal) => {
+      signal = requestSignal;
+      return gate.promise;
+    });
+    const { wrapper } = harness(() => useProductPage(ref(1)));
+    await vi.waitFor(() => expect(getProductList).toHaveBeenCalledOnce());
+    wrapper.unmount();
+    expect(signal?.aborted).toBe(true);
+    gate.resolve(result(1));
   });
 });

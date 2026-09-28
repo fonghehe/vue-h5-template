@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, shallowRef, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 
 import { getErrorMessage, getProductDetail } from '@vh5/api-client';
@@ -9,22 +9,31 @@ import { useQuery } from '@tanstack/vue-query';
 
 import { useCartStore } from './cart';
 import FavoriteButton from './FavoriteButton.vue';
+import { parseProductId } from './product-route';
 
 import './surface.css';
 defineProps<{ session?: string }>();
 const route = useRoute();
 const { t, locale } = useI18n();
-const id = computed(() => String(route.query.id ?? ''));
+const id = computed(() => parseProductId(route.query.id));
 const product = useQuery({
   queryKey: ['products', 'detail', id, locale],
-  queryFn: ({ signal }) => getProductDetail(id.value, signal),
+  queryFn: ({ signal }) => {
+    if (id.value === undefined) throw new Error('Invalid product ID');
+    return getProductDetail(id.value, signal);
+  },
+  enabled: computed(() => id.value !== undefined),
 });
 const cart = useCartStore();
-const added = ref(false);
+const added = shallowRef(false);
+watch(id, () => {
+  added.value = false;
+});
 </script>
 <template>
   <section class="product-page">
-    <p v-if="product.isPending.value" role="status">
+    <p v-if="id === undefined" role="alert">{{ t('mobile.invalidProduct') }}</p>
+    <p v-else-if="product.isPending.value" role="status">
       {{ t('mobile.loading') }}
     </p>
     <div v-else-if="product.isError.value" role="alert">
@@ -33,7 +42,7 @@ const added = ref(false);
         {{ t('mobile.retry') }}
       </button>
     </div>
-    <article v-else-if="product.data.value" class="panel">
+    <article v-else-if="product.data.value && id !== undefined" class="panel">
       <img
         class="detail-image"
         :src="product.data.value.imgUrl"
@@ -48,7 +57,7 @@ const added = ref(false);
         {{ product.data.value.description }}
       </p>
       <h2>¥{{ product.data.value.price }}</h2>
-      <FavoriteButton :product-id="Number(id)" :session="session ?? ''" />
+      <FavoriteButton :product-id="id" :session="session ?? ''" />
       <div class="actions">
         <button
           class="action"

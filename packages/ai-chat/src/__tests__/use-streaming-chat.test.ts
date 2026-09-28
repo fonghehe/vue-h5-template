@@ -1,6 +1,6 @@
 import type { ChatProvider } from '../types';
 
-import { watch } from 'vue';
+import { effectScope, watch } from 'vue';
 
 import { describe, expect, it, vi } from 'vitest';
 
@@ -143,5 +143,50 @@ describe('useStreamingChat', () => {
     await chat.regenerate();
     expect(callCount).toBe(2);
     expect(chat.messages.value.at(-1)?.content).toBe('Vue 3');
+  });
+
+  it('closes the iterator at finish and ignores any trailing chunks', async () => {
+    const closed = vi.fn();
+    const chat = useStreamingChat({
+      async *chat() {
+        try {
+          yield { type: 'delta', delta: 'Complete' };
+          yield { type: 'finish', reason: 'stop' };
+          yield { type: 'delta', delta: ' should not appear' };
+        } finally {
+          closed();
+        }
+      },
+    });
+    await chat.sendMessage('Hello');
+    expect(chat.messages.value.at(-1)?.content).toBe('Complete');
+    expect(chat.status.value).toBe('idle');
+    expect(closed).toHaveBeenCalledOnce();
+  });
+
+  it('aborts when its owning scope is disposed and cannot restart', async () => {
+    const gate = Promise.withResolvers<undefined>();
+    let signal: AbortSignal | undefined;
+    const scope = effectScope();
+    const chat = scope.run(() =>
+      useStreamingChat({
+        async *chat(_messages, options) {
+          signal = options?.signal;
+          await gate.promise;
+          yield { type: 'delta', delta: 'late' };
+        },
+      }),
+    );
+    if (!chat) throw new Error('Unable to create chat scope');
+    const pending = chat.sendMessage('Hello');
+    scope.stop();
+    expect(signal?.aborted).toBe(true);
+    gate.resolve(undefined);
+    await pending;
+    await chat.sendMessage('After leaving');
+    await chat.regenerate();
+    expect(chat.messages.value).toHaveLength(2);
+    expect(chat.messages.value.at(-1)?.content).toBe('');
+    expect(chat.status.value).toBe('idle');
   });
 });
