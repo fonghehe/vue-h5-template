@@ -35,3 +35,25 @@ pnpm test:e2e
 ```
 
 Playwright 驗證重新整理後保留收藏、取消、遠端建議及失敗後的本機回退。Query 收藏測試先登入；串流測試輸入固定問題，不依賴建議文案。這些是開發 Mock 檢查，PostgreSQL／Redis 整合需另外設定環境。
+
+## 瀏覽器復原與正式環境預覽
+
+先執行 `pnpm build` 建置三套應用。設定 `E2E_PREVIEW=1` 後，僅在 Vite preview 執行瀏覽器行為測試，正式版本仍關閉 Nitro Mock。涵蓋延遲載入失敗及復原、320×640、844×390、1280×800 版面、鍵盤操作和聊天視口縮小復原。所需回應由瀏覽器測試攔截提供，另直接請求預覽伺服器，確認沒有開發商品 API。
+
+```bash
+E2E_APP=vant E2E_PREVIEW=1 pnpm exec playwright test
+E2E_APP=nutui E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
+E2E_APP=varlet E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
+```
+
+`E2E_BROWSER=webkit` 選擇 WebKit，預設 Chromium；`E2E_CHANNEL=chrome` 可選擇已安裝 Chrome。透過 `E2E_APP=vant`、`nutui`、`varlet` 分別執行。這些是瀏覽器模擬：調整視口不能證明實際 iOS/Android 鍵盤、裝置安全區或內嵌 WebView 行為。
+
+`RouteLoadError` 單獨處理 Router 導航載入異常，透過事件停止應用層進度列，保留目前頁面並提供失敗目標的整頁重新載入。導航成功後提示消失，元件卸載時移除兩個 Router 鉤子。
+
+共用 Vite 設定從宿主應用統一解析 `vue-router`。pnpm 的不同 peer 變體可能打包出不同的 Router 注入鍵，導致開發正常而正式版本共用元件無法取得 Router。正式預覽測試涵蓋此整合，不需要匯入規則例外或相依套件升級。懸浮 AI 入口在輸入框聚焦時隱藏，避免攔截輸入框邊緣的觸控。
+
+應用導航適配保留框架元件，並支援 Enter/Space 啟用和可見焦點。NutUI 在視覺導航項外使用原生按鈕，避免焦點屬性同時傳遞給內部徽章。使用既有 `keep-px` 選擇器機制，僅保留返回按鈕與底部導航的 44px 最小觸控尺寸，其餘應用版面繼續使用既有 vw 轉換。WebKit 鍵盤檢查使用 Option+Tab，以在 Safari 預設鍵盤模式下包含按鈕。
+
+本次測試的 WebKit 存在已重現限制：延遲載入模組收到測試注入的 HTTP 503 後，原頁面即使整頁導航仍保留失敗模組，且不再發出該模組請求。重新載入回歸保持啟用並在該瀏覽器失敗，沒有略過或標為預期失敗。獨立建立的頁面可載入，但使用者點擊開啟的彈出頁面也重現失敗，因此未提供未經驗證的彈窗復原方案。Chromium 已驗證一般重新載入路徑；該觀察不能證明實際裝置 Safari 的行為。
+
+`postcss-mobile-forever` 5 對字串選擇器排除項使用全等比對，因此將既有 `keep-px` 排除項改為符合類名邊界的正則，以相容 Vue 作用域選擇器；一般 px 到 vw 的轉換繼續啟用。

@@ -143,5 +143,7 @@
   "unfavorite": "Remove from favorites",
   "favoriteLogin": "Sign in to save products",
   "favoriteFailed": "Could not update favorites. Please try again.",
-  "invalidProduct": "This product link is invalid. Please return to the catalog."
+  "invalidProduct": "This product link is invalid. Please return to the catalog.",
+  "routeLoadFailed": "This page could not load. Check your connection, then reload to try again.",
+  "reloadPage": "Reload page"
 }

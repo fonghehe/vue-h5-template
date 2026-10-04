@@ -45,3 +45,25 @@ pnpm test:e2e
 ```
 
 Playwright 验证收藏刷新保持、取消收藏、远程建议以及请求失败后的本地回退。Query 示例的收藏 Mutation 测试先登录；流式测试通过输入框提交固定问题，不依赖建议文案。以上属于开发 Mock 验证；PostgreSQL/Redis 集成需要单独配置环境。
+
+## 浏览器恢复与生产预览
+
+先运行 `pnpm build` 构建三套应用。设置 `E2E_PREVIEW=1` 后，仅在 Vite preview 上执行浏览器行为测试，生产包仍关闭 Nitro Mock。覆盖懒加载失败及整页恢复、320×640、844×390、1280×800 布局、键盘导航和聊天视口缩小恢复。所需响应由浏览器测试拦截提供，另直接请求预览服务器，确认没有开发商品 API。
+
+```bash
+E2E_APP=vant E2E_PREVIEW=1 pnpm exec playwright test
+E2E_APP=nutui E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
+E2E_APP=varlet E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
+```
+
+`E2E_BROWSER=webkit` 选择 WebKit，默认 Chromium；`E2E_CHANNEL=chrome` 可选择已安装 Chrome。通过 `E2E_APP=vant`、`nutui`、`varlet` 分别运行。这些是浏览器模拟：调整视口不能证明真实 iOS/Android 键盘、设备安全区或内嵌 WebView 行为。
+
+`RouteLoadError` 单独处理 Router 导航加载异常，通过事件停止应用层进度条，保留当前页面并提供失败目标的整页重新加载。导航成功后提示消失，组件卸载时移除两个 Router 钩子。
+
+共享 Vite 配置从宿主应用统一解析 `vue-router`。pnpm 的不同 peer 变体可能打包出不同的 Router 注入键，导致开发正常而生产共享组件拿不到 Router。生产预览测试覆盖该集成，不需要导入规则例外或依赖升级。悬浮 AI 入口在输入框聚焦时隐藏，避免拦截输入框边缘的触控。
+
+应用导航适配保留框架组件，并支持 Enter/Space 激活和可见焦点。NutUI 在视觉导航项外使用原生按钮，避免焦点属性同时传递给内部徽标。使用现有 `keep-px` 选择器机制，仅保留返回按钮与底部导航的 44px 最小触控尺寸，其余应用布局继续使用现有 vw 转换。WebKit 键盘检查使用 Option+Tab，以在 Safari 默认键盘模式下包含按钮。
+
+本次测试的 WebKit 存在已复现限制：懒加载模块收到测试注入的 HTTP 503 后，原页面即使整页导航仍保留失败模块，且不再发出该模块请求。重载回归保持启用并在该浏览器失败，没有跳过或标为预期失败。独立创建的页面可加载，但用户点击打开的弹出页面也复现失败，因此未提供未经验证的弹窗恢复方案。Chromium 已验证普通重载路径；该观察不能证明真机 Safari 的行为。
+
+`postcss-mobile-forever` 5 对字符串选择器排除项使用全等匹配，因此将已有 `keep-px` 排除项改为匹配类名边界的正则，以兼容 Vue 作用域选择器；常规 px 到 vw 的转换继续启用。

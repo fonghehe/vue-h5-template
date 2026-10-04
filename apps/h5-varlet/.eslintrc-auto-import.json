@@ -16,7 +16,6 @@
     "ShallowRef": true,
     "Slot": true,
     "Slots": true,
-    "Snackbar": true,
     "VNode": true,
     "WritableComputedRef": true,
     "acceptHMRUpdate": true,

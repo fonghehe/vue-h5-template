@@ -25,6 +25,63 @@ afterEach(() => {
 });
 
 describe('mobile composables', () => {
+  it('cancels an interrupted gesture so a later touchend cannot refresh', async () => {
+    const onRefresh = vi.fn();
+    const refresh = usePullToRefresh({ onRefresh });
+    const element = document.createElement('section');
+    const eventAt = (clientY: number) =>
+      ({
+        currentTarget: element,
+        touches: [{ clientY }],
+      }) as unknown as TouchEvent;
+    refresh.onTouchStart(eventAt(0));
+    refresh.onTouchMove(eventAt(200));
+    refresh.onTouchCancel();
+    await refresh.onTouchEnd();
+    expect(onRefresh).not.toHaveBeenCalled();
+    expect(refresh.ready.value).toBe(false);
+    expect(refresh.distance.value).toBe(0);
+  });
+  it('starts only one refresh for repeated touch endings', async () => {
+    const pending = Promise.withResolvers<undefined>();
+    const onRefresh = vi.fn(() => pending.promise);
+    const refresh = usePullToRefresh({ onRefresh });
+    const eventAt = (clientY: number) =>
+      ({
+        currentTarget: document.createElement('section'),
+        touches: [{ clientY }],
+      }) as unknown as TouchEvent;
+    refresh.onTouchStart(eventAt(0));
+    refresh.onTouchMove(eventAt(200));
+    const first = refresh.onTouchEnd();
+    const second = refresh.onTouchEnd();
+    pending.resolve(undefined);
+    await Promise.all([first, second]);
+    expect(onRefresh).toHaveBeenCalledOnce();
+  });
+
+  it('does not refresh after the gesture leaves the top of its scroll container', async () => {
+    const onRefresh = vi.fn();
+    const refresh = usePullToRefresh({ onRefresh });
+    const element = document.createElement('section');
+    Object.defineProperties(element, {
+      scrollHeight: { value: 1000 },
+      clientHeight: { value: 500 },
+    });
+    const eventAt = (clientY: number) =>
+      ({
+        currentTarget: element,
+        touches: [{ clientY }],
+      }) as unknown as TouchEvent;
+    refresh.onTouchStart(eventAt(0));
+    refresh.onTouchMove(eventAt(200));
+    element.scrollTop = 20;
+    refresh.onTouchMove(eventAt(210));
+    await refresh.onTouchEnd();
+    expect(onRefresh).not.toHaveBeenCalled();
+    expect(refresh.distance.value).toBe(0);
+  });
+
   it('resets a short pull without requesting data', async () => {
     const onRefresh = vi.fn();
     const refresh = usePullToRefresh({ onRefresh });

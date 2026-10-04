@@ -143,5 +143,7 @@
   "unfavorite": "取消收藏",
   "favoriteLogin": "登录后收藏商品",
   "favoriteFailed": "收藏更新失败，请重试。",
-  "invalidProduct": "商品链接无效，请返回商品列表。"
+  "invalidProduct": "商品链接无效，请返回商品列表。",
+  "routeLoadFailed": "页面加载失败，请检查网络后重新加载。",
+  "reloadPage": "重新加载页面"
 }

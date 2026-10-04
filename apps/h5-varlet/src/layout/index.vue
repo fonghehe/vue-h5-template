@@ -67,8 +67,14 @@ const navTitle = computed(() =>
       title-position="center"
     >
       <template v-if="!tabbarVisible" #left>
-        <var-button text round @click="goBack">
-          <var-icon name="chevron-left" :size="24" />
+        <var-button
+          text
+          round
+          class="header-back keep-px"
+          :aria-label="t('common.back')"
+          @click="goBack"
+        >
+          <var-icon name="chevron-left" :size="24" aria-hidden="true" />
         </var-button>
       </template>
     </var-app-bar>
@@ -93,6 +99,7 @@ const navTitle = computed(() =>
         @update:active="(v) => (activeTab = Number(v))"
       >
         <var-bottom-navigation-item
+          class="tab-control keep-px"
           v-for="(item, index) in tabItem"
           :key="item.key"
           :data-testid="`tab-${item.key === 'mine' ? 'member' : item.key === 'example' ? 'examples' : item.key}`"
@@ -107,6 +114,23 @@ const navTitle = computed(() =>
 </template>
 
 <style scoped>
+/* Preserve the touch-target floor with the existing px-to-vw opt-out. */
+.header-back.keep-px,
+.tab-control.keep-px {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.tab-control:focus-visible {
+  outline: 2px solid var(--app-primary);
+  outline-offset: -3px;
+}
+
+.header-back:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: -4px;
+}
+
 .app-content {
   overscroll-behavior: contain;
 }

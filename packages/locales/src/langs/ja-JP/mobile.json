@@ -143,5 +143,7 @@
   "unfavorite": "お気に入りから削除",
   "favoriteLogin": "ログインして商品を保存",
   "favoriteFailed": "お気に入りを更新できませんでした。もう一度お試しください。",
-  "invalidProduct": "商品リンクが無効です。商品一覧に戻ってください。"
+  "invalidProduct": "商品リンクが無効です。商品一覧に戻ってください。",
+  "routeLoadFailed": "ページを読み込めませんでした。接続を確認してから再読み込みしてください。",
+  "reloadPage": "ページを再読み込み"
 }

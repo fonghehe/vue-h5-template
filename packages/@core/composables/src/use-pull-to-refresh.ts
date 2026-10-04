@@ -32,7 +32,9 @@ export function usePullToRefresh({
   }
 
   function onTouchStart(event: TouchEvent) {
+    if (!refreshing.value) reset();
     if (refreshing.value || nearestScrollTop(event.currentTarget) > 0) return;
+    if (event.touches.length !== 1) return;
     startY.value = event.touches[0]?.clientY;
   }
 
@@ -40,8 +42,10 @@ export function usePullToRefresh({
     if (
       startY.value === undefined ||
       refreshing.value ||
-      nearestScrollTop(event.currentTarget) > 0
+      nearestScrollTop(event.currentTarget) > 0 ||
+      event.touches.length !== 1
     ) {
+      if (!refreshing.value) reset();
       return;
     }
     const currentY = event.touches[0]?.clientY ?? startY.value;
@@ -52,7 +56,7 @@ export function usePullToRefresh({
   }
 
   async function onTouchEnd() {
-    if (startY.value === undefined) return;
+    if (refreshing.value || startY.value === undefined) return;
     if (!ready.value) {
       reset();
       return;
@@ -67,8 +71,13 @@ export function usePullToRefresh({
     }
   }
 
+  function onTouchCancel() {
+    if (!refreshing.value) reset();
+  }
+
   return {
     distance: readonly(distance),
+    onTouchCancel,
     onTouchEnd,
     onTouchMove,
     onTouchStart,

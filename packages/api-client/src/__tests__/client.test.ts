@@ -4,7 +4,7 @@ import type {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-import { AxiosError, AxiosHeaders } from 'axios';
+import { AxiosError, AxiosHeaders, CanceledError } from 'axios';
 import { describe, expect, it, vi } from 'vitest';
 
 import { createApiClient } from '../client';
@@ -25,6 +25,51 @@ function response(
 }
 
 describe('createApiClient', () => {
+  it('distinguishes cancelled requests from network failures', async () => {
+    const onUnauthorized = vi.fn();
+    const client = createApiClient({
+      adapter: async (config) => {
+        throw new CanceledError('cancelled', config);
+      },
+      onUnauthorized,
+    });
+    await expect(client.get('/resource')).rejects.toMatchObject({
+      name: 'ApiError',
+      kind: 'aborted',
+      code: AxiosError.ERR_CANCELED,
+    });
+    expect(onUnauthorized).not.toHaveBeenCalled();
+  });
+
+  it('does not clear a newer session after an old request returns 401', async () => {
+    let token = 'old';
+    const pending = Promise.withResolvers<undefined>();
+    const started = Promise.withResolvers<undefined>();
+    const onUnauthorized = vi.fn();
+    const client = createApiClient({
+      getAccessToken: () => token,
+      onUnauthorized,
+      adapter: async (config) => {
+        started.resolve(undefined);
+        await pending.promise;
+        throw new AxiosError(
+          'Expired',
+          AxiosError.ERR_BAD_REQUEST,
+          config,
+          undefined,
+          response(config, { code: 401, data: null, message: 'Expired' }, 401),
+        );
+      },
+    });
+    const request = client.get('/private');
+    const rejected = request.catch((error: unknown) => error);
+    await started.promise;
+    token = 'new';
+    pending.resolve(undefined);
+    expect(await rejected).toMatchObject({ kind: 'unauthorized' });
+    expect(onUnauthorized).not.toHaveBeenCalled();
+  });
+
   it.each([AxiosError.ETIMEDOUT, AxiosError.ECONNABORTED])(
     'normalizes timeout %s and retains the request ID',
     async (code) => {

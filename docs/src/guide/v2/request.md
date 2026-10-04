@@ -67,3 +67,7 @@ Service mode reads `apps/<app>/.env.services`. `/api/ai/**` is proxied to `vue-h
 | `/api/product/**` | Business service `:8002` | Catalogue and product detail |
 
 The browser still calls relative same-origin URLs. This preserves refresh cookies, forwards bearer tokens, avoids development CORS differences and lets production use the same paths behind a gateway. Change `VITE_API_TARGET` and `VITE_AI_API_TARGET` if the services run elsewhere; these values are development proxy destinations, never provider secrets.
+
+## Session and request lifetimes
+
+Cancelled requests reject with `ApiError.kind === 'aborted'`. Pass an `AbortSignal` to `fetchUserInfoApi(signal)` or `getProductList(params, signal)`; the request example cancels pending work on navigation. The unauthorized callback runs only when the failed request used the current session credentials.

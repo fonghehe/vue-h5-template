@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onScopeDispose, ref } from 'vue';
 
 import {
   fetchUserInfoApi,
@@ -11,6 +11,11 @@ import { useI18n } from '@vh5/locales';
 import './surface.css';
 const { t } = useI18n();
 const loading = ref(false);
+let controller: AbortController | undefined;
+onScopeDispose(() => {
+  controller?.abort();
+  controller = undefined;
+});
 const result = ref<{
   count?: number;
   error?: string;
@@ -18,19 +23,32 @@ const result = ref<{
   total?: number;
 }>();
 async function request(profile: boolean) {
+  if (loading.value) return;
+  const active = new AbortController();
+  controller = active;
   loading.value = true;
   try {
     if (profile) {
-      const user = await fetchUserInfoApi();
+      const user = await fetchUserInfoApi(active.signal);
+      if (controller !== active) return;
       result.value = { name: user.realName };
     } else {
-      const page = await getProductList({ page: 1, pageSize: 3 });
+      const page = await getProductList(
+        { page: 1, pageSize: 3 },
+        active.signal,
+      );
+      if (controller !== active) return;
       result.value = { count: page.items.length, total: page.total };
     }
   } catch (error) {
-    result.value = { error: getErrorMessage(error) };
+    if (controller === active && !active.signal.aborted) {
+      result.value = { error: getErrorMessage(error) };
+    }
   } finally {
-    loading.value = false;
+    if (controller === active) {
+      controller = undefined;
+      loading.value = false;
+    }
   }
 }
 </script>

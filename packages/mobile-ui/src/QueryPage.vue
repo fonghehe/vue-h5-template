@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { getErrorMessage, toggleProductFavorite } from '@vh5/api-client';
+import { getErrorMessage } from '@vh5/api-client';
 import { useI18n } from '@vh5/locales';
 
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
-
+import FavoriteButton from './FavoriteButton.vue';
 import { useInfiniteProducts, useProductPage } from './queries';
 
 import './surface.css';
+defineProps<{ session?: string }>();
 const { t } = useI18n();
 const page = ref(1);
 const mode = ref<'infinite' | 'page'>('page');
-const queryClient = useQueryClient();
 const paged = useProductPage(page);
 const infinite = useInfiniteProducts();
 const items = computed(() =>
@@ -21,21 +20,6 @@ const items = computed(() =>
     : (infinite.data.value?.pages.flatMap((result) => result.items) ?? []),
 );
 const activeQuery = computed(() => (mode.value === 'page' ? paged : infinite));
-// Favorite results are server state too; keep them in Query, not a Pinia mirror.
-const favoriteVersion = ref(0);
-const isFavorite = (id: number) => {
-  void favoriteVersion.value;
-  return queryClient.getQueryData<boolean>(['favorite', id]) ?? false;
-};
-const favorite = useMutation({
-  mutationFn: (id: number) =>
-    toggleProductFavorite({ productId: id, favorite: !isFavorite(id) }),
-  onSuccess: async (result) => {
-    queryClient.setQueryData(['favorite', result.productId], result.favorite);
-    favoriteVersion.value++;
-    await queryClient.invalidateQueries({ queryKey: ['products'] });
-  },
-});
 </script>
 <template>
   <section class="product-page">
@@ -72,23 +56,13 @@ const favorite = useMutation({
         {{ t('mobile.retry') }}
       </button>
     </div>
-    <p v-if="favorite.isError.value" role="alert">
-      {{ getErrorMessage(favorite.error.value) }}
-    </p>
     <div class="panel">
       <article v-for="item in items" :key="item.id" class="row-link">
         <span
           ><strong>{{ item.title }}</strong
           ><small>{{ item.shopName }} · ¥{{ item.price }}</small></span
-        ><button
-          class="favorite action secondary"
-          :disabled="favorite.isPending.value"
-          :aria-label="t('mobile.favorite')"
-          :aria-pressed="isFavorite(item.id)"
-          @click="favorite.mutate(item.id)"
         >
-          {{ isFavorite(item.id) ? '♥' : '♡' }}
-        </button>
+        <FavoriteButton :product-id="item.id" :session="session ?? ''" />
       </article>
     </div>
     <div v-if="mode === 'page'" class="actions">
@@ -134,10 +108,7 @@ const favorite = useMutation({
   margin: 20px 0;
 }
 
-.favorite {
-  flex: 0 0 44px;
-  width: 44px;
-  padding: 0;
-  font-size: 24px;
+.row-link {
+  flex-wrap: wrap;
 }
 </style>

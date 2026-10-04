@@ -1,5 +1,66 @@
 import { expect, test } from '@playwright/test';
 
+test('leaving the request example cancels pending work without showing an error', async ({
+  page,
+}) => {
+  const started = Promise.withResolvers<undefined>();
+  const release = Promise.withResolvers<undefined>();
+  const cancelled: string[] = [];
+  page.on('requestfailed', (request) => {
+    if (request.url().includes('/api/product/list'))
+      cancelled.push(request.url());
+  });
+  await page.goto('/examples');
+  await page.locator('a[href="/examples/request"]').click();
+  await page.route('**/api/product/list?**', async (route) => {
+    started.resolve(undefined);
+    await release.promise;
+    await route.fulfill({
+      json: { code: 0, data: { items: [], total: 0 }, message: 'ok' },
+    });
+  });
+  try {
+    await page.getByRole('button', { name: 'Public query' }).click();
+    await started.promise;
+    await expect(
+      page.getByRole('button', { name: 'Public query' }),
+    ).toBeDisabled();
+    await page.goBack();
+    await expect(page).toHaveURL(/\/examples$/u);
+    release.resolve(undefined);
+    await expect.poll(() => cancelled.length).toBe(1);
+    await page.locator('a[href="/examples/request"]').click();
+    await expect(page.locator('output')).toContainText('No request');
+  } finally {
+    release.resolve(undefined);
+  }
+});
+
+test('chat composer shows focus and preserves IME confirmation before sending', async ({
+  page,
+}) => {
+  await page.goto('/ai/chat');
+  const input = page.getByRole('textbox', { name: 'Message' });
+  await input.fill('你好');
+  await input.focus();
+  await expect(page.locator('.composer')).toHaveCSS('outline-style', 'solid');
+  await input.evaluate((element) =>
+    element.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'Enter',
+        keyCode: 229,
+        bubbles: true,
+        cancelable: true,
+      }),
+    ),
+  );
+  await expect(input).toHaveValue('你好');
+  await expect(page.locator('.message-user')).toHaveCount(0);
+  await input.press('Enter');
+  await expect(page.locator('.message-user')).toContainText('你好');
+  await expect(input).toHaveValue('');
+});
+
 test('bottom spacing stays compact and checkout reserves only its actual height', async ({
   page,
 }) => {

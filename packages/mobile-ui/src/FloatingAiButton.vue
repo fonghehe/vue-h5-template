@@ -57,6 +57,14 @@ const visible = computed(
   box-shadow: 0 6px 20px rgb(var(--app-primary-rgb) / 28%);
 }
 
+/* Keep the input's full hit area clear while typing, without adding page padding. */
+:global(
+  .app-shell:has(input:focus, textarea:focus, [contenteditable='true']:focus)
+    .ai-entry
+) {
+  display: none;
+}
+
 .with-tabs {
   bottom: calc(74px + env(safe-area-inset-bottom));
 }

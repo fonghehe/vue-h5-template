@@ -22,12 +22,19 @@ const products = useQuery({
 });
 const items = computed(() => products.data.value?.items ?? []);
 const notice = ref(false);
-const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
-  usePullToRefresh({
-    onRefresh: async () => {
-      await products.refetch();
-    },
-  });
+const {
+  distance,
+  onTouchCancel,
+  onTouchEnd,
+  onTouchMove,
+  onTouchStart,
+  ready,
+  refreshing,
+} = usePullToRefresh({
+  onRefresh: async () => {
+    await products.refetch();
+  },
+});
 </script>
 <template>
   <section
@@ -35,6 +42,7 @@ const { distance, onTouchEnd, onTouchMove, onTouchStart, ready, refreshing } =
     @touchstart.passive="onTouchStart"
     @touchmove.passive="onTouchMove"
     @touchend="onTouchEnd"
+    @touchcancel="onTouchCancel"
   >
     <header class="catalog-header">
       <div>

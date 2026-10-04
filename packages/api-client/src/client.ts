@@ -94,6 +94,14 @@ function normalizeAxiosError(error: unknown): ApiError {
   const axiosError = error as AxiosError<ApiResponse<unknown>>;
   const status = axiosError.response?.status;
   const requestId = requestIdFrom(axiosError.config);
+  if (axios.isCancel(error) || axiosError.code === AxiosError.ERR_CANCELED) {
+    return new ApiError('Request cancelled', {
+      cause: error,
+      code: axiosError.code,
+      kind: 'aborted',
+      requestId,
+    });
+  }
   if (
     axiosError.code === AxiosError.ETIMEDOUT ||
     axiosError.code === AxiosError.ECONNABORTED
@@ -172,7 +180,16 @@ export function createApiClient(
     },
     async (error: unknown) => {
       const normalized = normalizeAxiosError(error);
-      if (normalized.kind === 'unauthorized') {
+      // An expired response belongs to the credentials used to send it.
+      // It must not sign out a session established while it was in flight.
+      const token = options.getAccessToken?.();
+      const sentAuthorization = axios.isAxiosError(error)
+        ? error.config?.headers.get('Authorization')
+        : undefined;
+      const currentSession =
+        !options.getAccessToken ||
+        sentAuthorization === (token ? `Bearer ${token}` : undefined);
+      if (normalized.kind === 'unauthorized' && currentSession) {
         await options.onUnauthorized?.(normalized);
       }
       throw normalized;

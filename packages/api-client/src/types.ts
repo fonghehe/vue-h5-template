@@ -28,6 +28,7 @@ export interface PaginationResponse<T> {
 }
 
 export type ApiErrorKind =
+  | 'aborted'
   | 'business'
   | 'configuration'
   | 'http'

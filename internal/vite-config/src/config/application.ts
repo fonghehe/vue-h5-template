@@ -121,7 +121,8 @@ function createCssOptions(
     unitPrecision: 3,
     maxDisplayWidth: 600,
     propList: ['*'],
-    selectorBlackList: ['.ignore', 'keep-px'],
+    // v5 string patterns use equality; match the class in Vue scoped selectors.
+    selectorBlackList: ['.ignore', /\.keep-px(?![\w-])/u],
     valueBlackList: ['1px solid'],
     mobileUnit: 'vw',
     rootContainingBlockSelectorList: ['van-popup--bottom'],

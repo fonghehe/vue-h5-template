@@ -35,7 +35,14 @@ function send() {
 }
 
 function onKeydown(event: KeyboardEvent) {
-  if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+  // Some WebViews report the IME confirmation as Enter after compositionend.
+  if (
+    event.key !== 'Enter' ||
+    event.shiftKey ||
+    event.isComposing ||
+    event.keyCode === 229
+  )
+    return;
   event.preventDefault();
   send();
 }
@@ -55,6 +62,8 @@ defineExpose({ focus: () => textarea.value?.focus() });
         :disabled="disabled"
         :aria-label="t('mobile.message')"
         enterkeyhint="send"
+        name="message"
+        autocomplete="off"
         maxlength="4000"
         :placeholder="t('mobile.ask')"
         rows="1"
@@ -133,6 +142,16 @@ textarea {
 .send-button:disabled {
   color: #9fa7b2;
   background: #eef1f5;
+}
+
+.composer:focus-within {
+  outline: 2px solid var(--app-primary);
+  outline-offset: 2px;
+}
+
+.send-button:focus-visible {
+  outline: 2px solid var(--app-primary);
+  outline-offset: 3px;
 }
 
 .stop-button span {

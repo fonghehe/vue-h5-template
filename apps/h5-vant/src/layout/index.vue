@@ -60,12 +60,23 @@ const navTitle = computed(() =>
 
 <template>
   <div class="app-shell flex flex-col w-100dvw" :style="shellStyle">
-    <van-nav-bar
-      :title="navTitle"
-      :left-arrow="!tabbarVisible"
-      safe-area-inset-top
-      @click-left="goBack"
-    />
+    <van-nav-bar :title="navTitle" safe-area-inset-top @click-left="goBack">
+      <template v-if="!tabbarVisible" #left>
+        <button
+          type="button"
+          class="header-back keep-px"
+          :aria-label="t('common.back')"
+          @click.stop="goBack"
+        >
+          <van-icon
+            class="van-nav-bar__arrow"
+            name="arrow-left"
+            size="18"
+            aria-hidden="true"
+          />
+        </button>
+      </template>
+    </van-nav-bar>
     <div v-if="!isOnline" class="offline-banner" role="status">
       {{ t('mobile.offlineBanner') }}
     </div>
@@ -87,11 +98,14 @@ const navTitle = computed(() =>
       safe-area-inset-bottom
     >
       <van-tabbar-item
+        class="tab-control keep-px"
         v-for="(item, index) in tabItem"
         :key="item.key"
         :data-testid="`tab-${item.key === 'mine' ? 'member' : item.key === 'example' ? 'examples' : item.key}`"
         :icon="item.icon"
         @click="tabSwitch(item, index)"
+        @keydown.enter.prevent="tabSwitch(item, index)"
+        @keydown.space.prevent="tabSwitch(item, index)"
       >
         {{ t(`app.${item.key}`) }}
       </van-tabbar-item>
@@ -102,8 +116,35 @@ const navTitle = computed(() =>
 </template>
 
 <style scoped>
+/* Preserve the touch-target floor with the existing px-to-vw opt-out. */
+.header-back.keep-px,
+.tab-control.keep-px {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.tab-control:focus-visible {
+  outline: 2px solid var(--app-primary);
+  outline-offset: -3px;
+}
+
 .app-shell {
   position: relative;
+}
+
+.header-back {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--van-nav-bar-icon-color);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+}
+
+.header-back:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: -4px;
 }
 
 .app-content {
@@ -134,6 +175,6 @@ const navTitle = computed(() =>
 
 .offline-banner a {
   font-weight: 600;
-  color: inherit;
+  color: var(--van-nav-bar-icon-color);
 }
 </style>

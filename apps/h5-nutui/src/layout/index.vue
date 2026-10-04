@@ -83,7 +83,7 @@ const goBack = () => {
     >
       <template #left-show>
         <button
-          class="header-back"
+          class="header-back keep-px"
           :aria-label="t('common.back')"
           @click.stop="goBack"
         >
@@ -115,20 +115,45 @@ const goBack = () => {
       active-color="var(--app-primary)"
       unactive-color="var(--app-text-muted)"
     >
-      <nut-tabbar-item
+      <button
         v-for="item in tabItem"
         :key="item.key"
+        type="button"
+        class="tab-control keep-px"
+        :aria-label="item.label()"
         :data-testid="`tab-${item.key}`"
-        :tab-title="item.label()"
-        :icon="item.icon"
-        :to="item.path"
-      />
+        :aria-current="route.path === item.path ? 'page' : undefined"
+        @click="router.push(item.path)"
+      >
+        <nut-tabbar-item :tab-title="item.label()" :icon="item.icon" />
+      </button>
     </nut-tabbar>
     <FloatingAiButton :with-tabs="tabbarVisible" />
   </div>
 </template>
 
 <style scoped>
+/* Preserve the touch-target floor with the existing px-to-vw opt-out. */
+.header-back.keep-px,
+.tab-control.keep-px {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.tab-control {
+  flex: 1;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+}
+
+.tab-control:focus-visible {
+  outline: 2px solid var(--app-primary);
+  outline-offset: -3px;
+}
+
 .app-shell {
   position: relative;
 }
@@ -144,8 +169,6 @@ const goBack = () => {
 .header-back {
   display: grid;
   place-items: center;
-  min-width: 44px;
-  min-height: 44px;
   padding: 0;
   color: var(--nut-navbar-color, #fff);
   cursor: pointer;

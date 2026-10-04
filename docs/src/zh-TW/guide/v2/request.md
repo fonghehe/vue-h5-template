@@ -47,3 +47,7 @@ make dev
 | `/api/product/**` | Business Service `:8002` | 商品目錄與詳情 |
 
 瀏覽器始終呼叫同源相對 URL，可保留 refresh cookie、Bearer token 與 SSE 行為，並避免開發環境 CORS 差異。服務位置不同時調整 `VITE_API_TARGET` 和 `VITE_AI_API_TARGET`；請勿把 Provider 密鑰放進前端環境變數。
+
+## 工作階段與請求生命週期
+
+取消請求以 `ApiError.kind === 'aborted'` 拒絕。透過 `fetchUserInfoApi(signal)` 或 `getProductList(params, signal)` 傳遞 `AbortSignal`；請求範例會在離開頁面時取消未完成的請求。只有失敗請求使用的憑證仍屬於目前工作階段時，才執行未授權回呼。

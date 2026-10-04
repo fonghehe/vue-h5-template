@@ -22,3 +22,9 @@ Language preference is managed by Vue I18n and localStorage, not Pinia.
 Detail links accept a single positive decimal integer ID within JavaScript's safe integer range. Missing, repeated, malformed or oversized IDs show recovery guidance without issuing a detail request. Reusing the page for another product clears the previous “Added to cart” feedback.
 
 Catalog, paginated and infinite product queries forward TanStack Query's `AbortSignal` through `getProductList(params, signal)` to the HTTP client. Changing locale or page, or unmounting the last observer, cancels obsolete work. A late result cannot populate the wrong locale's active view; query keys still own cache isolation.
+
+## Session and request lifetimes
+
+Each app creates its session store with `defineUserStore` from `@vh5/stores/user` and injects typed API functions, login-response mapping and the cancellation error factory. The stores package depends only on lower-level infrastructure; it does not import `@vh5/api-client` or generated backend contracts. Only the token and identity snapshot are persisted; request handles and revision guards remain outside Pinia state. Superseded login results cannot restore a cleared session, profile requests are cancelled on session changes or store disposal, and an old logout cannot clear a newer login. Remote caches remain in TanStack Query.
+
+Query favorites use the same `FavoriteButton` as product details. App wrappers pass the current session; private reads, mutations and late results stay isolated across account changes. Guests see a sign-in link.

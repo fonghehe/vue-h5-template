@@ -56,3 +56,7 @@ make dev
 | `/api/product/**` | Business Service `:8002` | 商品列表与详情 |
 
 浏览器始终请求相对的同源地址，因此刷新 Cookie、Bearer Token 和 SSE 行为与生产网关一致，也不会产生开发环境 CORS 分歧。服务地址不同时修改 `VITE_API_TARGET` 和 `VITE_AI_API_TARGET`；它们只是开发代理地址，不能存放 Provider 密钥。
+
+## 会话与请求生命周期
+
+取消请求以 `ApiError.kind === 'aborted'` 拒绝。通过 `fetchUserInfoApi(signal)` 或 `getProductList(params, signal)` 传递 `AbortSignal`；请求示例会在离开页面时取消未完成的请求。只有失败请求使用的凭证仍属于当前会话时，才执行未授权回调。

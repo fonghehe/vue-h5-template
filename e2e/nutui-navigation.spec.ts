@@ -21,15 +21,15 @@ test('NutUI tabs navigate to list, member and examples', async ({ page }) => {
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/home');
 
-  await page.locator('.nut-tabbar-item[data-testid="tab-list"]').click();
+  await page.getByRole('button', { name: 'List', exact: true }).click();
   await expect(page).toHaveURL(/\/list$/u);
   await expect(page.locator('.product-card').first()).toBeVisible();
 
-  await page.locator('.nut-tabbar-item[data-testid="tab-member"]').click();
+  await page.getByRole('button', { name: 'Member', exact: true }).click();
   await expect(page).toHaveURL(/\/member$/u);
   await expect(page.locator('.profile-panel')).toBeVisible();
 
-  await page.locator('.nut-tabbar-item[data-testid="tab-examples"]').click();
+  await page.getByRole('button', { name: 'Examples', exact: true }).click();
   await expect(page).toHaveURL(/\/examples$/u);
   await expect(
     page.getByRole('heading', { name: 'Patterns for real mobile products' }),
@@ -41,13 +41,13 @@ test('NutUI legacy URLs redirect to canonical pages', async ({ page }) => {
   await page.goto('/mine');
   await expect(page).toHaveURL(/\/member$/u);
   await expect(
-    page.locator('.nut-tabbar-item[data-testid="tab-member"]'),
+    page.getByRole('button', { name: 'Member', exact: true }),
   ).toBeVisible();
 
   await page.goto('/example');
   await expect(page).toHaveURL(/\/examples$/u);
   await expect(
-    page.locator('.nut-tabbar-item[data-testid="tab-examples"]'),
+    page.getByRole('button', { name: 'Examples', exact: true }),
   ).toBeVisible();
 });
 

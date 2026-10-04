@@ -47,3 +47,7 @@ make dev
 | `/api/product/**` | Business service `:8002` | Catalogue と商品詳細 |
 
 ブラウザーは常に同一オリジンの相対 URL を呼び出すため、refresh cookie、Bearer token、SSE の挙動を本番 gateway と揃えられます。サービスの場所を変える場合は `VITE_API_TARGET` と `VITE_AI_API_TARGET` を変更してください。Provider の秘密情報はフロントエンド環境変数に保存しません。
+
+## セッションとリクエストのライフサイクル
+
+中止したリクエストは `ApiError.kind === 'aborted'` で拒否されます。`fetchUserInfoApi(signal)` または `getProductList(params, signal)` に `AbortSignal` を渡します。リクエスト例は画面を離れると未完了の処理を中止します。認証エラーのコールバックは、失敗したリクエストの認証情報が現在のセッションと一致する場合のみ実行します。
