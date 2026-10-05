@@ -115,7 +115,7 @@ catalog:
   dayjs: ^1.11.21
   defu: ^6.1.7
   depcheck: ^1.4.7
-  dompurify: ^3.4.14
+  dompurify: ^3.4.16
   dotenv: ^17.4.2
   es-toolkit: ^1.50.0
   eslint: ^10.8.0
