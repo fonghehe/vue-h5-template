@@ -26,6 +26,7 @@ const product = useQuery({
 });
 const cart = useCartStore();
 const added = shallowRef(false);
+
 watch(id, () => {
   added.value = false;
 });

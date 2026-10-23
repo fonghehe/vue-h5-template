@@ -1,0 +1,12 @@
+.startup-error {
+  max-width: 480px;
+  padding: calc(16px + env(safe-area-inset-top)) 16px 16px;
+  margin-inline: auto;
+  font-family: system-ui, sans-serif;
+}
+
+.startup-error button {
+  min-height: 44px;
+  padding-inline: 12px;
+  font: inherit;
+}

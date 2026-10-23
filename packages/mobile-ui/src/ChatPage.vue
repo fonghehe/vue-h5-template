@@ -23,12 +23,15 @@ const { t, locale } = useI18n();
 const notice = shallowRef('');
 let copyVersion = 0;
 let copyTimer: ReturnType<typeof setTimeout> | undefined;
+
 function resetCopy() {
   copyVersion += 1;
   clearTimeout(copyTimer);
   notice.value = '';
 }
+
 onScopeDispose(resetCopy);
+
 const provider = new FetchChatProvider({
   endpoint: props.endpoint || '/api/ai/chat',
   headers: () => {

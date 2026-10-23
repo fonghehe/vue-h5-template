@@ -1,3 +1,4 @@
+import type { Options as ViewportOptions } from 'postcss-mobile-forever';
 import type { CSSOptions, UserConfig } from 'vite';
 
 import type { DefineApplicationOptions } from '../typing';
@@ -24,6 +25,7 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
     const root = process.cwd();
     const isBuild = command === 'build';
     const env = loadEnv(mode, root);
+    const pwaOptions = getDefaultPwaOptions(appTitle, application.uiLibrary);
     const plugins = await loadApplicationPlugins({
       archiver: true,
       archiverPluginOptions: {},
@@ -45,12 +47,19 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       nitroMockOptions: {},
       print: !isBuild,
       pwa: true,
-      pwaOptions: getDefaultPwaOptions(appTitle, application.uiLibrary),
       unocss: true,
       eruda: false,
       vxeTableLazyImport: true,
       ...envConfig,
       ...application,
+      pwaOptions: {
+        ...pwaOptions,
+        ...application.pwaOptions,
+        manifest:
+          application.pwaOptions?.manifest === false
+            ? false
+            : { ...pwaOptions.manifest, ...application.pwaOptions?.manifest },
+      },
     });
     const { pxToViewport = true, pxToViewportOptions } = application;
 
@@ -96,23 +105,15 @@ function defineApplicationConfig(userConfigPromise?: DefineApplicationOptions) {
       await getCommonConfig(),
       applicationConfig,
     );
-    // 合并 css 配置，确保我们的 postcss 配置不会被覆盖
-    if (vite.css) {
-      mergedCommonConfig.css = {
-        ...mergedCommonConfig.css,
-        ...vite.css,
-        postcss: mergedCommonConfig.css?.postcss,
-      };
-    }
     return mergeConfig(mergedCommonConfig, vite);
   });
 }
 
 function createCssOptions(
   pxToViewport = true,
-  pxToViewportOptions?: any,
+  pxToViewportOptions?: ViewportOptions,
 ): CSSOptions {
-  const baseViewportOpts = {
+  const baseViewportOpts: ViewportOptions = {
     appSelector: '#app',
     viewportWidth: 375,
     // Shared product pages already use responsive grids. Do not shrink their

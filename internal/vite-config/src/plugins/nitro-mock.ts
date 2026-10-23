@@ -29,7 +29,7 @@ export const viteNitroMockPlugin = ({
         return;
       }
 
-      runNitroServer(pkg.dir, port, verbose);
+      await runNitroServer(pkg.dir, port, verbose);
 
       const _printUrls = server.printUrls;
       server.printUrls = () => {

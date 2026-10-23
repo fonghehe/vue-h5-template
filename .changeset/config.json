@@ -11,10 +11,11 @@
   "ignore": [
     "@vh5/backend-mock",
     "@vh5/docs",
+    "@vh5/h5-ionic",
     "@vh5/h5-nutui",
+    "@vh5/h5-tdesign",
     "@vh5/h5-vant",
-    "@vh5/h5-varlet",
-    "@vh5/playground"
+    "@vh5/h5-varlet"
   ],
   "linked": [],
   "privatePackages": { "tag": false, "version": true },

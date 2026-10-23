@@ -93,7 +93,8 @@ export async function vue(): Promise<Linter.Config[]> {
           'error',
           {
             html: {
-              component: 'always',
+              // This rule groups <slot> with components and has no per-tag options.
+              component: 'any',
               normal: 'never',
               void: 'always',
             },
@@ -114,6 +115,10 @@ export async function vue(): Promise<Linter.Config[]> {
           'DebuggerStatement',
           'LabeledStatement',
           'WithStatement',
+          {
+            selector: 'VElement[rawName="slot"][startTag.selfClosing=true]',
+            message: 'Use an explicit closing tag for <slot>.',
+          },
         ],
         'vue/no-restricted-v-bind': ['error', '/^v-/'],
         'vue/no-sparse-arrays': 'error',

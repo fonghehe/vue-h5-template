@@ -10,13 +10,12 @@ import { useUserStore } from '@/store/modules/user';
 
 const userStore = useUserStore();
 const route = useRoute();
-const loginHintKey =
-  import.meta.env.VITE_NITRO_MOCK === 'true'
-    ? 'app.mockLoginHint'
-    : 'app.serviceLoginHint';
+const mockEnabled =
+  import.meta.env.DEV && import.meta.env.VITE_NITRO_MOCK === 'true';
+const loginHintKey = mockEnabled ? 'app.mockLoginHint' : 'app.serviceLoginHint';
 const formData = reactive({
-  name: 'user',
-  pwd: '123456',
+  name: mockEnabled ? 'user' : '',
+  pwd: mockEnabled ? '123456' : '',
 });
 const ruleForm = ref<{
   validate(): Promise<{ errors?: unknown; valid: boolean }>;

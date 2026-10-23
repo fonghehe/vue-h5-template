@@ -48,6 +48,7 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 watch(value, () => nextTick(resize));
+
 onMounted(resize);
 
 defineExpose({ focus: () => textarea.value?.focus() });

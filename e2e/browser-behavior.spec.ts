@@ -43,6 +43,37 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
+test('a failed bootstrap replaces the loading screen with a reload action', async ({
+  page,
+}) => {
+  const chunk =
+    process.env.E2E_PREVIEW === '1'
+      ? '**/js/bootstrap-*.js'
+      : '**/src/bootstrap.ts';
+  await page.route(chunk, (route) =>
+    route.fulfill({
+      status: 503,
+      contentType: 'application/javascript',
+      headers: { 'Cache-Control': 'no-store' },
+      body: '',
+    }),
+  );
+  await page.goto('/home');
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('This page could not load');
+  await expect(page.locator('#__app-loading__')).toBeHidden();
+  const retry = alert.getByRole('button', { name: 'Reload page' });
+  await expect(retry).toBeEnabled();
+  await page.unroute(chunk);
+  const navigation = page.waitForRequest(
+    (request) =>
+      request.isNavigationRequest() &&
+      new URL(request.url()).pathname === '/home',
+  );
+  await retry.click();
+  await navigation;
+});
+
 test('a failed lazy route stops progress and recovers with a document reload', async ({
   page,
 }) => {
@@ -166,6 +197,16 @@ test('chat controls remain reachable after viewport shrink and restore', async (
   await expect(input).toBeInViewport();
 });
 
+test('production login starts with empty credentials', async ({ page }) => {
+  test.skip(process.env.E2E_PREVIEW !== '1', 'Production build only');
+  await page.goto('/login');
+  const username = page
+    .getByPlaceholder('Enter username')
+    .or(page.getByRole('textbox', { name: 'Enter username' }));
+  await expect(username).toHaveValue('');
+  await expect(page.locator('input[type="password"]:visible')).toHaveValue('');
+});
+
 test('production preview does not serve the development API', async ({
   request,
 }) => {
@@ -174,6 +215,37 @@ test('production preview does not serve the development API', async ({
   expect(response.headers()['content-type']).not.toContain('application/json');
   expect(await response.text()).not.toContain('hasMore');
 });
+
+for (const mode of ['ios', 'md']) {
+  test(`Ionic header titles stay centered in ${mode} mode`, async ({
+    page,
+  }) => {
+    test.skip(process.env.E2E_APP !== 'ionic', 'Ionic toolbar only');
+    await page.setViewportSize({ width: 320, height: 640 });
+
+    for (const { path, label } of [
+      { path: '/home', label: 'Home' },
+      { path: '/examples/mobile', label: 'Mobile Web APIs' },
+    ]) {
+      await page.goto(`${path}?ionic:mode=${mode}`);
+      await expect(page.locator('html')).toHaveAttribute('mode', mode);
+
+      const toolbar = page.locator('ion-header ion-toolbar');
+      const title = toolbar.getByText(label, { exact: true });
+      await expect(title).toBeVisible();
+      await expect
+        .poll(() =>
+          title.evaluate((element) => {
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            const text = range.getBoundingClientRect();
+            return Math.abs(text.left + text.width / 2 - innerWidth / 2);
+          }),
+        )
+        .toBeLessThanOrEqual(1);
+    }
+  });
+}
 
 test('the header back control has a name, visible focus and keyboard activation', async ({
   page,
@@ -198,14 +270,21 @@ test('bottom tabs support keyboard activation with a visible focus indicator', a
   page,
 }) => {
   await page.goto('/home');
-  const list = page.locator('[data-testid="tab-list"]:not(.nut-badge)').first();
+  const tabControl = (name: string) => {
+    const tab = page
+      .locator(`[data-testid="tab-${name}"]:not(.nut-badge)`)
+      .first();
+    return process.env.E2E_APP === 'ionic' ? tab.getByRole('button') : tab;
+  };
+  const list = tabControl('list');
   await list.focus();
   await expect(list).toBeFocused();
   await list.press('Enter');
   await expect(page).toHaveURL(/\/list$/u);
-  const examples = page
-    .locator('[data-testid="tab-examples"]:not(.nut-badge)')
-    .first();
+  if (process.env.E2E_APP === 'ionic') {
+    await expect(list).toHaveCSS('color', 'rgb(0, 84, 233)');
+  }
+  const examples = tabControl('examples');
   await examples.focus();
   await examples.press('Space');
   await expect(page).toHaveURL(/\/examples$/u);

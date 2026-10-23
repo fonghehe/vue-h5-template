@@ -25,6 +25,7 @@ const tabItem = [
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
 const contentRef = ref<HTMLElement>();
+
 // Vue Router resets the window; this mobile shell scrolls its own content.
 watch(
   () => route.fullPath,
@@ -36,6 +37,7 @@ watch(
   },
   { flush: 'post' },
 );
+
 watch(
   () => route.path,
   (path) => {
@@ -45,14 +47,17 @@ watch(
   },
   { immediate: true },
 );
+
 const tabSwitch = (item: (typeof tabItem)[number], index: number) => {
   router.push(item.path);
   activeTab.value = index;
 };
+
 const goBack = () => {
   if (globalThis.history.length > 1) router.go(-1);
   else router.replace('/home');
 };
+
 const navTitle = computed(() =>
   t(typeof route.meta.title === 'string' ? route.meta.title : 'app.home'),
 );

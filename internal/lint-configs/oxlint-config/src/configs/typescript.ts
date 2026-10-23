@@ -1,6 +1,7 @@
 import type { OxlintConfig } from 'oxlint';
 
 const typescript: OxlintConfig = {
+  options: { typeAware: true },
   rules: {
     // —— 从 @typescript-eslint strict 预设迁移而来（非类型感知，oxlint 原生支持）——
     // no-array-constructor / no-useless-constructor 已由 javascript 配置以核心规则覆盖。
@@ -28,11 +29,12 @@ const typescript: OxlintConfig = {
     'typescript/triple-slash-reference': 'error',
     'typescript/unified-signatures': 'error',
 
-    'typescript/await-thenable': 'off',
+    'typescript/await-thenable': 'error',
     'typescript/consistent-return': 'off',
     'typescript/no-base-to-string': 'off',
     'typescript/no-duplicate-type-constituents': 'off',
-    'typescript/no-floating-promises': 'off',
+    // Report existing bootstrap and CLI cases while the workspace adopts this rule.
+    'typescript/no-floating-promises': 'warn',
     'typescript/no-misused-spread': 'off',
     'typescript/no-redundant-type-constituents': 'off',
     'typescript/no-unnecessary-boolean-literal-compare': 'off',

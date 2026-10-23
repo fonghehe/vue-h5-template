@@ -1,3 +1,4 @@
+import type { Options as ViewportOptions } from 'postcss-mobile-forever';
 import type { PluginVisualizerOptions } from 'rollup-plugin-visualizer';
 import type { ConfigEnv, PluginOption, UserConfig } from 'vite';
 import type { PluginOptions } from 'vite-plugin-dts';
@@ -174,53 +175,7 @@ interface CommonPluginOptions {
   /**
    * px-to-viewport 配置选项
    */
-  pxToViewportOptions?: {
-    /**
-     * 需要转换的文件扩展名
-     * @default ['.vue', '.tsx', '.ts', '.jsx', '.js']
-     */
-    exclude?: RegExp | RegExp[];
-    /**
-     * 字体单位
-     * @default 'vw'
-     */
-    fontViewportUnit?: string;
-    /**
-     * 是否转换媒体查询中的 px
-     * @default false
-     */
-    mediaQuery?: boolean;
-    /**
-     * 最小转换值
-     * @default 1
-     */
-    minPixelValue?: number;
-    /**
-     * 需要忽略的选择器
-     * @default []
-     */
-    selectorBlackList?: string[];
-    /**
-     * 单位转换精度
-     * @default 5
-     */
-    unitPrecision?: number;
-    /**
-     * 视口高度
-     * @default 667
-     */
-    viewportHeight?: number;
-    /**
-     * 视口单位
-     * @default 'vw'
-     */
-    viewportUnit?: string;
-    /**
-     * 视口宽度
-     * @default 375
-     */
-    viewportWidth?: number;
-  };
+  pxToViewportOptions?: ViewportOptions;
   /**
    * UI 库类型
    * - vant: Vant UI 库

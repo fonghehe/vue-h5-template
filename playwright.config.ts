@@ -6,11 +6,14 @@ const browser = process.env.E2E_BROWSER ?? 'chromium';
 if (browser !== 'chromium' && browser !== 'webkit')
   throw new Error('E2E_BROWSER must be chromium or webkit');
 const port = new Map([
+  ['ionic', 15_781],
   ['nutui', 15_777],
+  ['tdesign', 15_780],
   ['vant', 15_778],
   ['varlet', 15_779],
 ]).get(app);
-if (!port) throw new Error('E2E_APP must be vant, nutui or varlet');
+if (!port)
+  throw new Error('E2E_APP must be vant, nutui, varlet, tdesign or ionic');
 const baseURL = `http://127.0.0.1:${port}`;
 
 export default defineConfig({

@@ -20,12 +20,14 @@ const displayName = computed(
 const busy = ref(false);
 const failed = ref(false);
 const avatarLoaded = ref(false);
+
 watch(
   () => [props.avatar, props.loggedIn],
   () => {
     avatarLoaded.value = false;
   },
 );
+
 async function signOut() {
   if (busy.value) return;
   busy.value = true;

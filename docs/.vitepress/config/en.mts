@@ -88,6 +88,8 @@ export const en = {
             { text: 'NutUI', link: '/apps/nutui' },
             { text: 'Vant', link: '/apps/vant' },
             { text: 'Varlet', link: '/apps/varlet' },
+            { text: 'TDesign Mobile Vue', link: '/apps/tdesign' },
+            { text: 'Ionic Vue', link: '/apps/ionic' },
             { text: 'Mock Server', link: '/apps/backend-mock' },
           ],
         },

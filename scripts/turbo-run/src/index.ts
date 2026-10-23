@@ -10,13 +10,12 @@ try {
   turboRun
     .command('[script]')
     .usage(`Run turbo interactively.`)
-    .action(async (command: string) => {
-      run({ command });
-    });
+    .action((command: string) => run({ command }));
 
   turboRun.usage('turbo-run');
   turboRun.help();
-  turboRun.parse();
+  turboRun.parse(undefined, { run: false });
+  await turboRun.runMatchedCommand();
 } catch (error) {
   consola.error(error);
   process.exit(1);

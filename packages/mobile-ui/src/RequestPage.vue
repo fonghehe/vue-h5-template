@@ -12,16 +12,19 @@ import './surface.css';
 const { t } = useI18n();
 const loading = ref(false);
 let controller: AbortController | undefined;
+
 onScopeDispose(() => {
   controller?.abort();
   controller = undefined;
 });
+
 const result = ref<{
   count?: number;
   error?: string;
   name?: string;
   total?: number;
 }>();
+
 async function request(profile: boolean) {
   if (loading.value) return;
   const active = new AbortController();

@@ -1,4 +1,4 @@
-import { createApp, watchEffect } from 'vue';
+import { createApp } from 'vue';
 
 import { configureApiClient } from '@vh5/api-client';
 import { i18n } from '@vh5/locales';
@@ -47,14 +47,12 @@ async function bootstrap(namespace: string) {
   app.mount('#app');
 
   // 动态标题
-  watchEffect(() => {
-    const routeTitle = router.currentRoute.value.meta?.title as
-      | string
-      | undefined;
-    const pageTitle = routeTitle
-      ? `${t(routeTitle)} - Vue H5 Template`
-      : 'Vue H5 Template';
-    useTitle(pageTitle);
+  const appTitle = import.meta.env.VITE_APP_TITLE || 'Vue H5 Template';
+  useTitle(() => {
+    const routeTitle = router.currentRoute.value.meta.title;
+    return typeof routeTitle === 'string'
+      ? `${t(routeTitle)} - ${appTitle}`
+      : appTitle;
   });
 }
 

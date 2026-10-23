@@ -11,6 +11,7 @@ const { isOnline } = useNetworkStatus();
 const { viewportHeight } = useVisualViewport();
 const canShare = computed(() => typeof navigator.share === 'function');
 const notice = ref('');
+
 async function copy() {
   try {
     await navigator.clipboard.writeText('Vue H5 Template v2');
@@ -19,6 +20,7 @@ async function copy() {
     notice.value = 'mobile.copyFailed';
   }
 }
+
 async function share() {
   try {
     await navigator.share({ title: document.title, url: location.href });

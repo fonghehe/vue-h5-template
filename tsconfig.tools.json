@@ -1,11 +1,14 @@
 {
   "extends": "@vh5/tsconfig/web.json",
   "compilerOptions": {
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+    "allowJs": true
   },
   "include": [
+    "eslint.config.mjs",
+    "oxfmt.config.ts",
+    "oxlint.config.ts",
     "vitest.config.ts",
-    "vitest.setup.ts",
     "playwright.config.ts",
     "e2e/**/*.ts",
     "scripts/__tests__/**/*.ts"

@@ -5,6 +5,14 @@
       "path": "apps/backend-mock"
     },
     {
+      "name": "@vh5/h5-ionic",
+      "path": "apps/h5-ionic"
+    },
+    {
+      "name": "@vh5/h5-tdesign",
+      "path": "apps/h5-tdesign"
+    },
+    {
       "name": "@vh5/h5-nutui",
       "path": "apps/h5-nutui"
     },
@@ -27,10 +35,6 @@
     {
       "name": "@vh5/eslint-config",
       "path": "internal/lint-configs/eslint-config"
-    },
-    {
-      "name": "@vh5/lint-staged-config",
-      "path": "internal/lint-configs/lint-staged-config"
     },
     {
       "name": "@vh5/oxfmt-config",
@@ -61,10 +65,6 @@
       "path": "packages/@core/base/design"
     },
     {
-      "name": "@vh5-core/icons",
-      "path": "packages/@core/base/icons"
-    },
-    {
       "name": "@vh5-core/shared",
       "path": "packages/@core/base/shared"
     },
@@ -77,12 +77,20 @@
       "path": "packages/@core/composables"
     },
     {
-      "name": "@vh5-core/preferences",
-      "path": "packages/@core/preferences"
+      "name": "@vh5/ai-chat",
+      "path": "packages/ai-chat"
+    },
+    {
+      "name": "@vh5/api-client",
+      "path": "packages/api-client"
     },
     {
       "name": "@vh5/locales",
       "path": "packages/locales"
+    },
+    {
+      "name": "@vh5/mobile-ui",
+      "path": "packages/mobile-ui"
     },
     {
       "name": "@vh5/stores",
@@ -95,6 +103,10 @@
     {
       "name": "@vh5/utils",
       "path": "packages/utils"
+    },
+    {
+      "name": "@vh5/turbo-run",
+      "path": "scripts/turbo-run"
     },
     {
       "name": "@vh5/vsh",

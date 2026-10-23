@@ -33,7 +33,7 @@ function render(session = 'session-a') {
     props: { productId: 1, session },
     global: {
       plugins: [[VueQueryPlugin, { queryClient: client }]],
-      stubs: { RouterLink: { template: '<a><slot /></a>' } },
+      stubs: { RouterLink: { template: '<a><slot></slot></a>' } },
     },
   });
 }

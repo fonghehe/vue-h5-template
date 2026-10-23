@@ -40,8 +40,24 @@
       "cache": false,
       "persistent": true
     },
-    "typecheck": {
+    "type-check": {
       "outputs": []
+    },
+    "@vh5/eslint-config#type-check": {
+      "dependsOn": ["@vh5/oxlint-config#stub"],
+      "outputs": []
+    },
+    "//#typecheck:tools": {
+      "dependsOn": [
+        "@vh5/eslint-config#stub",
+        "@vh5/oxfmt-config#stub",
+        "@vh5/oxlint-config#stub"
+      ],
+      "outputs": []
+    },
+    "stub": {
+      "dependsOn": ["^stub"],
+      "outputs": ["dist/**"]
     },
     "test": {
       "outputs": ["coverage/**"]

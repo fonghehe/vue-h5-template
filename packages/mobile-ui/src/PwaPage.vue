@@ -13,10 +13,12 @@ interface InstallEvent extends Event {
 const prompt = shallowRef<InstallEvent>();
 const { t } = useI18n();
 const { isOnline } = useNetworkStatus();
+
 function capture(event: Event) {
   event.preventDefault();
   prompt.value = event as InstallEvent;
 }
+
 async function install() {
   const event = prompt.value;
   prompt.value = undefined;
@@ -26,7 +28,9 @@ async function install() {
     /* A dismissed or unavailable prompt remains disabled. */
   }
 }
+
 onMounted(() => window.addEventListener('beforeinstallprompt', capture));
+
 onBeforeUnmount(() =>
   window.removeEventListener('beforeinstallprompt', capture),
 );

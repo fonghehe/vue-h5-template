@@ -43,6 +43,7 @@ const shellStyle = computed(() => ({
 const activeTab = ref(0);
 const tabbarVisible = ref(true);
 const contentRef = ref<HTMLElement>();
+
 // Vue Router resets the window; this mobile shell scrolls its own content.
 watch(
   () => route.fullPath,
@@ -54,6 +55,7 @@ watch(
   },
   { flush: 'post' },
 );
+
 const navTitle = computed(() =>
   t(typeof route.meta.title === 'string' ? route.meta.title : 'app.home'),
 );

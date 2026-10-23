@@ -7,11 +7,11 @@
     "dev": "vite --mode development",
     "dev:services": "vite --mode services",
     "build": "pnpm vite build --mode production",
+    "build-only": "vite build",
     "build:analyze": "pnpm vite build --mode analyze",
     "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.node.json",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "type-check": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.node.json"
   },
   "dependencies": {
     "@nutui/icons-vue": "catalog:",

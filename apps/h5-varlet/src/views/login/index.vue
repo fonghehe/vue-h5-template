@@ -7,15 +7,14 @@ import router from '@/router';
 import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
-const loginHintKey =
-  import.meta.env.VITE_NITRO_MOCK === 'true'
-    ? 'app.mockLoginHint'
-    : 'app.serviceLoginHint';
+const mockEnabled =
+  import.meta.env.DEV && import.meta.env.VITE_NITRO_MOCK === 'true';
+const loginHintKey = mockEnabled ? 'app.mockLoginHint' : 'app.serviceLoginHint';
 const userStore = useUserStore();
 const loading = ref(false);
 const formData = reactive({
-  name: 'user',
-  pwd: '123456',
+  name: mockEnabled ? 'user' : '',
+  pwd: mockEnabled ? '123456' : '',
 });
 
 async function submit() {

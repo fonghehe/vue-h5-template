@@ -44,8 +44,9 @@ describe('user store', () => {
   });
 
   it('persists and restores only the token and identity snapshot', async () => {
+    const rootComponent = {};
     const pinia = createPinia().use(persistedState);
-    createApp({}).use(pinia);
+    createApp(rootComponent).use(pinia);
     const store = useUserStore(pinia);
     store.setToken('persisted-token');
     store.setInfo({ username: 'persisted-user' });
@@ -56,7 +57,7 @@ describe('user store', () => {
     });
     store.$dispose();
     const restoredPinia = createPinia().use(persistedState);
-    createApp({}).use(restoredPinia);
+    createApp(rootComponent).use(restoredPinia);
     const restored = useUserStore(restoredPinia);
     expect(restored.isLoggedIn).toBe(true);
     expect(restored.getUserInfo.username).toBe('persisted-user');

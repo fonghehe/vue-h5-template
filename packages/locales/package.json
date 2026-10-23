@@ -13,6 +13,7 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./startup": "./src/startup.ts",
     "./langs/zh-CN/app.json": "./src/langs/zh-CN/app.json",
     "./langs/zh-TW/app.json": "./src/langs/zh-TW/app.json",
     "./langs/en-US/app.json": "./src/langs/en-US/app.json",

@@ -14,9 +14,11 @@ const removeErrorHandler = router.onError((_error, to) => {
   reloadHref.value = router.resolve(to.fullPath).href;
   emit('failure');
 });
+
 const removeAfterHook = router.afterEach((_to, _from, failure) => {
   if (!failure) reloadHref.value = undefined;
 });
+
 onScopeDispose(() => {
   removeErrorHandler();
   removeAfterHook();

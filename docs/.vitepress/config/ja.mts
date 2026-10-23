@@ -107,6 +107,8 @@ export const ja = {
             { text: 'NutUI', link: '/ja/apps/nutui' },
             { text: 'Vant', link: '/ja/apps/vant' },
             { text: 'Varlet', link: '/ja/apps/varlet' },
+            { text: 'TDesign Mobile Vue', link: '/ja/apps/tdesign' },
+            { text: 'Ionic Vue', link: '/ja/apps/ionic' },
             { text: 'Mock サーバー', link: '/ja/apps/backend-mock' },
           ],
         },

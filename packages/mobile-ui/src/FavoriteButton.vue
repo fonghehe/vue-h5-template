@@ -38,6 +38,7 @@ const mutation = useMutation({
     client.setQueryData(input.key, data);
   },
 });
+
 watch(
   () => props.session,
   () => {
@@ -46,10 +47,12 @@ watch(
   },
   { flush: 'sync' },
 );
+
 watch(
   () => props.productId,
   () => mutation.reset(),
 );
+
 function toggle() {
   if (
     !favorite.data.value ||

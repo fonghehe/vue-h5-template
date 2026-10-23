@@ -3,13 +3,16 @@ import { reactive } from 'vue';
 
 import { $t as t } from '@vh5/locales';
 
-withDefaults(defineProps<{ loading?: boolean }>(), { loading: false });
+const props = defineProps<{ loading?: boolean; mockEnabled?: boolean }>();
 
 const emit = defineEmits<{
   submit: [credentials: { password: string; username: string }];
 }>();
 
-const form = reactive({ password: '123456', username: 'user' });
+const form = reactive({
+  password: props.mockEnabled ? '123456' : '',
+  username: props.mockEnabled ? 'user' : '',
+});
 
 function submit() {
   if (!form.username.trim() || !form.password) return;

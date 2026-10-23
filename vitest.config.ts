@@ -1,13 +1,21 @@
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vitest/config';
+
+const requireFromVant = createRequire(
+  new URL('apps/h5-vant/package.json', import.meta.url),
+);
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('apps/h5-vant/src', import.meta.url)),
+      // Shared components and app tests must use the same Router injection key.
+      'vue-router': dirname(requireFromVant.resolve('vue-router/package.json')),
     },
   },
   test: {
@@ -51,6 +59,5 @@ export default defineConfig({
       },
     },
     exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
-    setupFiles: ['./vitest.setup.ts'],
   },
 });

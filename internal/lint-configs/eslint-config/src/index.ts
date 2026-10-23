@@ -5,6 +5,7 @@ import {
   javascript,
   jsonc,
   node,
+  oxlintCompatibility,
   perfectionist,
   pnpm,
   typescript,
@@ -32,11 +33,14 @@ async function defineConfig(config: FlatConfig[] = []) {
     perfectionist(),
     yaml(),
     pnpm(),
+    ...oxlintCompatibility(),
     ...customConfig,
     ...config,
   ];
 
-  const resolved = await Promise.all(configs);
+  const resolved = await Promise.all(
+    configs.map((config) => Promise.resolve(config)),
+  );
 
   return resolved.flat();
 }

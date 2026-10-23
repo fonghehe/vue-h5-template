@@ -50,12 +50,14 @@ const receipt = ref<DemoReceipt>();
 const selectedLines = computed(() =>
   cart.lines.filter((line) => line.selected),
 );
+
 const money = (cents: number) =>
   new Intl.NumberFormat(locale.value, {
     style: 'currency',
     currency: 'CNY',
     currencyDisplay: 'narrowSymbol',
   }).format(cents / 100);
+
 const methodLabel = computed(
   () => methods.find(({ id }) => id === receipt.value?.method)?.label ?? '',
 );

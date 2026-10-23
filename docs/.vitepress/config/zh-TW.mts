@@ -95,6 +95,8 @@ export const zhTW = {
             { text: 'NutUI 版', link: '/zh-TW/apps/nutui' },
             { text: 'Vant 版', link: '/zh-TW/apps/vant' },
             { text: 'Varlet 版', link: '/zh-TW/apps/varlet' },
+            { text: 'TDesign Mobile Vue', link: '/zh-TW/apps/tdesign' },
+            { text: 'Ionic Vue', link: '/zh-TW/apps/ionic' },
             { text: 'Mock 服務', link: '/zh-TW/apps/backend-mock' },
           ],
         },

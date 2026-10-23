@@ -1,0 +1,18 @@
+:root {
+  --app-primary: #0052d9;
+  --app-primary-deep: #003b9d;
+  --app-primary-soft: #eaf1ff;
+  --app-primary-rgb: 0 82 217;
+  --app-surface: #f4f7fc;
+  --app-surface-raised: #fff;
+  --app-text: #172033;
+  --app-text-muted: #596679;
+  --app-border: #dce4ef;
+  --app-card-shadow: 0 10px 30px rgb(var(--app-primary-rgb) / 10%);
+  --td-brand-color: var(--app-primary);
+}
+
+body {
+  color: var(--app-text);
+  background: var(--app-surface);
+}

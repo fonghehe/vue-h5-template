@@ -9,13 +9,16 @@ let observer: ResizeObserver | undefined;
 onMounted(() => {
   const element = dock.value;
   if (!element) return;
+
   const measure = () => {
     height.value = Math.ceil(element.getBoundingClientRect().height);
   };
+
   measure();
   observer = new ResizeObserver(measure);
   observer.observe(element, { box: 'border-box' });
 });
+
 onBeforeUnmount(() => observer?.disconnect());
 </script>
 

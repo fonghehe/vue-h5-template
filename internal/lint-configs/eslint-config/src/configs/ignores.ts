@@ -18,6 +18,8 @@ export async function ignores(): Promise<Linter.Config[]> {
         '**/bun.lockb',
         '**/output',
         '**/coverage',
+        '**/playwright-report',
+        '**/test-results',
         '**/temp',
         '**/.temp',
         '**/tmp',

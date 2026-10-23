@@ -95,6 +95,8 @@ export const zhHK = {
             { text: 'NutUI 版', link: '/zh-HK/apps/nutui' },
             { text: 'Vant 版', link: '/zh-HK/apps/vant' },
             { text: 'Varlet 版', link: '/zh-HK/apps/varlet' },
+            { text: 'TDesign Mobile Vue', link: '/zh-HK/apps/tdesign' },
+            { text: 'Ionic Vue', link: '/zh-HK/apps/ionic' },
             { text: 'Mock 服務', link: '/zh-HK/apps/backend-mock' },
           ],
         },

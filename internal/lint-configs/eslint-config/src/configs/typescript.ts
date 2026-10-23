@@ -34,6 +34,11 @@ export async function typescript(): Promise<Linter.Config[]> {
       },
     },
     {
+      // Core ESLint treats named parameters in declarations as unused variables.
+      files: ['**/*.d.{ts,mts,cts}'],
+      rules: { 'no-unused-vars': 'off' },
+    },
+    {
       // Vue `<script>` 的未使用变量同样交给 oxlint，避免核心规则误报 TS 类型签名形参
       files: ['**/*.vue'],
       rules: {

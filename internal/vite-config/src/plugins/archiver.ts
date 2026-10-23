@@ -60,9 +60,8 @@ async function zipFolder(
       resolve();
     });
 
-    archive.on('error', (err) => {
-      reject(err);
-    });
+    output.on('error', reject);
+    archive.on('error', reject);
 
     archive.pipe(output);
 
@@ -70,6 +69,6 @@ async function zipFolder(
     archive.directory(folderPath, false);
 
     // 流式处理完成
-    archive.finalize();
+    archive.finalize().catch(reject);
   });
 }

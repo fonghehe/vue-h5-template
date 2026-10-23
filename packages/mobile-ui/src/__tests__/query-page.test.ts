@@ -60,7 +60,7 @@ function render(session = 'account-a') {
     props: { session },
     global: {
       plugins: [[VueQueryPlugin, { queryClient: client }]],
-      stubs: { RouterLink: { template: '<a><slot /></a>' } },
+      stubs: { RouterLink: { template: '<a><slot></slot></a>' } },
     },
   });
 }

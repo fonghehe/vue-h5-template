@@ -8,10 +8,9 @@ import router from '@/router';
 import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
-const loginHintKey =
-  import.meta.env.VITE_NITRO_MOCK === 'true'
-    ? 'app.mockLoginHint'
-    : 'app.serviceLoginHint';
+const mockEnabled =
+  import.meta.env.DEV && import.meta.env.VITE_NITRO_MOCK === 'true';
+const loginHintKey = mockEnabled ? 'app.mockLoginHint' : 'app.serviceLoginHint';
 const userStore = useUserStore();
 const loading = ref(false);
 
@@ -35,7 +34,11 @@ async function submit(credentials: { password: string; username: string }) {
       <span class="eyebrow">WELCOME BACK</span>
       <h1>{{ t('app.login') }}</h1>
       <p>{{ t(loginHintKey) }}</p>
-      <LoginForm :loading="loading" @submit="submit" />
+      <LoginForm
+        :loading="loading"
+        :mock-enabled="mockEnabled"
+        @submit="submit"
+      />
     </div>
   </section>
 </template>

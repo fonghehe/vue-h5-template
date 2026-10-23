@@ -72,7 +72,9 @@ async function viteImportMapPlugin(
       for await (const { message, type } of generator.logStream()) {
         console.log(`${type}: ${message}`);
       }
-    })();
+    })().catch((error: unknown) => {
+      console.warn('Failed to read import map logs:', error);
+    });
   }
 
   const imports = options.inputMap?.imports ?? {};

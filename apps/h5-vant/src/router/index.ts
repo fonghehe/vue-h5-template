@@ -121,7 +121,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  startProgress();
+  startProgress().catch((error: unknown) => {
+    console.warn('Failed to start navigation progress:', error);
+  });
   const userStore = useUserStore();
   if (to.meta.guestOnly && userStore.isLoggedIn) return { name: 'mine' };
   if (!to.meta.requiresAuth) return true;
@@ -143,7 +145,9 @@ router.beforeEach(async (to) => {
 });
 
 router.afterEach(() => {
-  stopProgress();
+  stopProgress().catch((error: unknown) => {
+    console.warn('Failed to stop navigation progress:', error);
+  });
 });
 
 export default router;

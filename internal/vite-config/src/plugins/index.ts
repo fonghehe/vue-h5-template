@@ -168,21 +168,27 @@ async function loadApplicationPlugins(
         VitePWA({
           injectRegister: 'auto',
           registerType: 'autoUpdate',
+          ...pwaOptions,
           workbox: {
             cleanupOutdatedCaches: true,
             globPatterns: ['**/*.{css,html,ico,js,png,svg,webp,woff2}'],
-            // The cached SPA shell is the navigation fallback. API requests are
-            // explicitly excluded and therefore never receive stale app data.
             navigateFallback: '/index.html',
-            navigateFallbackDenylist: [/^\/api\//],
+            ...pwaOptions?.workbox,
+            // Keep API paths outside the cached SPA shell with custom options.
+            navigateFallbackDenylist: [
+              /^\/api\//,
+              ...(pwaOptions?.workbox?.navigateFallbackDenylist ?? []),
+            ],
           },
-          ...pwaOptions,
-          manifest: {
-            display: 'standalone',
-            start_url: '/',
-            theme_color: '#ffffff',
-            ...pwaOptions?.manifest,
-          },
+          manifest:
+            pwaOptions?.manifest === false
+              ? false
+              : {
+                  display: 'standalone',
+                  start_url: '/',
+                  theme_color: '#ffffff',
+                  ...pwaOptions?.manifest,
+                },
         }),
     },
     {

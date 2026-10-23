@@ -10,8 +10,7 @@ const loadingAssets = ['default-loading.html'];
 export default defineConfig({
   clean: true,
   deps: {
-    neverBundle: ['@vh5/node-utils'],
-    skipNodeModulesBundle: true,
+    neverBundle: true,
   },
   dts: {
     resolver: 'tsc',

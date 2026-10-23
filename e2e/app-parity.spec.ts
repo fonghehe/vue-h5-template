@@ -143,6 +143,26 @@ test('language changes translate pages and persist after reload', async ({
   await expect(page.getByRole('textbox', { name: 'メッセージ' })).toBeVisible();
 });
 
+test('native login inputs submit edited credentials', async ({ page }) => {
+  test.skip(
+    process.env.E2E_APP !== 'ionic' && process.env.E2E_APP !== 'tdesign',
+    'TDesign and Ionic login controls',
+  );
+  await page.goto('/login');
+  const username = page.getByPlaceholder('Enter username');
+  const password = page.getByPlaceholder('Enter password');
+  const submit = page.getByRole('button', { name: 'Login', exact: true });
+  await username.fill('');
+  await submit.click();
+  await expect(page.getByRole('alert')).toHaveText('Enter username');
+
+  await username.fill('admin');
+  await password.fill('123456');
+  await submit.click();
+  await expect(page).toHaveURL(/\/member$/u);
+  await expect(page.locator('.account-details')).toContainText('Signed in');
+});
+
 test('floating chat entry uses the app theme and clears the bottom tabs', async ({
   page,
 }) => {

@@ -6,6 +6,7 @@ import { loadLocaleMessages, useI18n } from '@vh5/locales';
 const { locale, t } = useI18n();
 const pending = ref(false);
 const error = ref(false);
+
 async function change(event: Event) {
   const value = (event.target as HTMLSelectElement).value;
   if (value !== 'en-US' && value !== 'zh-CN' && value !== 'ja-JP') return;

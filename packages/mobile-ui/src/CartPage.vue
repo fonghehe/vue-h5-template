@@ -13,6 +13,7 @@ import './commerce.css';
 const cart = useCartStore();
 const router = useRouter();
 const { t, locale } = useI18n();
+
 const money = (cents: number) =>
   new Intl.NumberFormat(locale.value, {
     style: 'currency',

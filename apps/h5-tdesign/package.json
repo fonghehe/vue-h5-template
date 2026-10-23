@@ -1,0 +1,40 @@
+{
+  "name": "@vh5/h5-tdesign",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode development",
+    "dev:services": "vite --mode services",
+    "build": "pnpm vite build --mode production",
+    "build-only": "vite build",
+    "build:analyze": "pnpm vite build --mode analyze",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "oxfmt --write src",
+    "type-check": "vue-tsc --noEmit && vue-tsc --noEmit -p tsconfig.node.json"
+  },
+  "dependencies": {
+    "@tanstack/vue-query": "catalog:",
+    "@vh5-core/composables": "workspace:*",
+    "@vh5/api-client": "workspace:*",
+    "@vh5/locales": "workspace:*",
+    "@vh5/mobile-ui": "workspace:*",
+    "@vh5/stores": "workspace:*",
+    "@vh5/styles": "workspace:*",
+    "@vh5/utils": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "tdesign-icons-vue-next": "catalog:",
+    "tdesign-mobile-vue": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vh5/tsconfig": "workspace:*",
+    "@vh5/vite-config": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

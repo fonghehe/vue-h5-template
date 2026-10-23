@@ -38,6 +38,9 @@ function mergeOxlintConfigs(...configs: OxlintConfig[]): OxlintConfig {
     merged.jsPlugins = [
       ...new Set([...(merged.jsPlugins ?? []), ...(config.jsPlugins ?? [])]),
     ];
+    if (config.options) {
+      merged.options = { ...merged.options, ...config.options };
+    }
     merged.overrides = [
       ...(merged.overrides ?? []),
       ...(config.overrides ?? []),
