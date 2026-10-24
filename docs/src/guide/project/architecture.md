@@ -6,7 +6,7 @@ App route → shared ChatPage → useStreamingChat → FetchChatProvider → Nit
 bootstrap → i18n → Pinia → configureApiClient → VueQueryPlugin → router → mount
 ```
 
-Three apps share product behavior but keep independent native navigation, themes, locale adapters and session integration. `packages/mobile-ui` owns presentation and its Query/cart logic; `api-client` owns REST contracts; `ai-chat` owns streaming. App `views` are lazy wrappers, not three duplicated business implementations.
+Five apps share product behavior but keep independent native navigation, themes, locale adapters and session integration. `packages/mobile-ui` owns presentation and its Query/cart logic; `api-client` owns REST contracts; `ai-chat` owns streaming. App `views` are lazy wrappers, with shared business logic in the packages.
 
 Pinia is for client state; TanStack Query caches remote data; Vue I18n owns language. The cart is local and checkout is a demo, not a payment integration. The same REST/SSE contracts work with Nitro Mock or the companion business/AI services.
 

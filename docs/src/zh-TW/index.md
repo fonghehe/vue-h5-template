@@ -5,7 +5,7 @@ sidebar: false
 hero:
   name: Vue H5 Template
   text: Vue 3 行動端 H5 開發範本
-  tagline: 基於 Turborepo + Vue 3 + TypeScript 的行動端 Monorepo 範本，開箱即用，支援 NutUI / Vant / Varlet 三套 UI
+  tagline: 基於 Turborepo + Vue 3 + TypeScript 的行動端 Monorepo 範本，開箱即用，支援 NutUI / Vant / Varlet / TDesign / Ionic Vue 五套 UI
   actions:
     - theme: brand
       text: 快速開始 ->

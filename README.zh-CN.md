@@ -1,198 +1,67 @@
-<div align="center">
+# Vue H5 Template
 
-<h1>Vue H5 Template</h1>
+基于 Vue 3、TypeScript 和 Turborepo 的移动 Web 开发模板。
 
-基于 Vue 3 + TypeScript + Turborepo 的移动端 H5 开发模板
+[English](./README.md) | 简体中文 | [日本語](./README.ja-JP.md) | [繁體中文（台）](./README.zh-TW.md) | [繁體中文（港）](./README.zh-HK.md)
 
-[English](./README.md) | 简体中文 | [日本語](./README.ja-JP.md) | [繁體中文(台)](./README.zh-TW.md) | [繁體中文(港)](./README.zh-HK.md)
+## 项目包含什么
 
-</div>
+Vant、NutUI、Varlet、TDesign Mobile Vue 和 Ionic Vue 是五个独立构建的应用。它们共用首页、列表、会员和示例四个主入口，以及商品详情、收藏、本地购物车和结算演示。每个应用有自己的导航、主题和组件示例。
 
-## 一致的移动端体验
+- **数据与路由**。使用显式懒加载路由、OpenAPI 生成类型和共享 Axios 客户端。TanStack Vue Query 管理远程数据，Pinia 管理会话和本地购物车。
+- **流式聊天**。SSE 客户端支持停止、重试、重新生成和经过净化的 Markdown。模型配置和凭据由配套后端管理。
+- **移动端交互**。提供安全区适配、跟随键盘调整的聊天输入、下拉刷新、离线提示和可选 PWA。
+- **语言**。应用默认使用英文，可在会员页切换英文、简体中文和日文。项目文档提供五种语言版本。
 
-三套应用共享 Home / List / Member / Examples、商品详情与购物车、Query 与请求示例及流式对话。原生导航和组件展示保留各框架特色，共享页面使用应用自己的主题色。
+## 本地启动
 
-页面默认英文，Member 可切换中文、日文；保存语言选择，并同步页面文案、浏览器语言、路由标题和 Mock 商品语言。AI 悬浮按钮位于底部 Tab 上方，在会员、聊天输入和结算相关页面隐藏。商品卡片在 320px 屏幕仍保持实际 44px 触控尺寸。
-
-三个目标均支持 Mock 和独立 AI/Business 服务。使用 `pnpm test:e2e` 验证 Vant、NutUI、Varlet。参见[UI 架构](docs/src/zh/guide/v2/ui-framework.md)。
-
-## 简介
-
-Vue H5 Template 是一个免费开源的移动端 H5 开发模板，基于 Turborepo Monorepo 架构，使用最新的 Vue 3、Vite、TypeScript 等主流技术栈，提供 NutUI、Vant、Varlet 三套 UI 框架的 H5 应用模板。
-
-## 特性
-
-- **Monorepo 架构**：基于 Turborepo + pnpm workspace，统一管理多个 H5 应用和共享包
-- **三套 UI 框架**：分别提供 NutUI、Vant、Varlet 版本，自由选择适合的 UI 组件库
-- **独立视觉系统**：Vant 蓝、NutUI 红、Varlet 紫分别使用完整设计 Token，避免跨框架颜色混用
-- **类型安全基础设施**：严格 TypeScript、显式懒路由、OpenAPI 自动生成类型与统一 API Error
-- **Streaming AI Chat**：厂商无关的 SSE/ReadableStream Client、AbortController 与安全 Markdown
-- **Server State**：TanStack Vue Query 提供缓存、Mutation、分页与 Infinite Query 示例
-- **移动端生产基线**：Safe Area、键盘友好的输入栏、可选 PWA 与仅生产构建执行的图片压缩
-- **真实移动业务模式**：错误边界、离线状态、Visual Viewport、下拉刷新、Web Share、剪贴板与持久化购物车
-- **Vite 构建**：基于 Vite 的构建配置，支持自动导入和组件自动注册
-- **UnoCSS**：原子化 CSS 引擎，全局使用 utility-first 风格写样式
-- **状态管理**：Pinia + 持久化插件，生产环境 AES 加密存储
-- **Mock 服务**：基于 Nitro 的 Mock 后端，提供登录认证、商品列表等接口
-- **Eruda**：内置移动端调试控制台，仅在非生产环境开启
-- **统一规范**：共享 ESLint / OxLint / Stylelint / Oxfmt / Commitlint 配置
-- **移动适配**：postcss-mobile-forever 移动端适配方案（设计稿宽 375px，最大显示宽 600px）
-- **国际化**：支持简体中文、繁体中文、英文、日文四种语言
-
-## 技术栈
-
-| 技术                | 版本  | 说明               |
-| ------------------- | ----- | ------------------ |
-| Vue 3               | 3.5   | 前端框架           |
-| TypeScript          | 6.0   | 类型安全           |
-| Vite                | 8.1   | 构建工具           |
-| UnoCSS              | 66.x  | 原子化 CSS 引擎    |
-| Turborepo           | 2.10   | Monorepo 管理      |
-| pnpm                | 11.10 | 包管理器           |
-| Pinia               | 4.0   | 状态管理           |
-| Vue Router          | 5.0   | 路由               |
-| TanStack Vue Query  | 5.x   | 服务端状态与缓存   |
-| Axios               | 1.x   | 类型安全 REST 传输 |
-| Vue I18n            | 11.4  | 国际化             |
-| Nitro               | 2.x   | Mock 服务器        |
-| NutUI               | 4.3   | UI 组件库          |
-| Vant                | 4.10   | UI 组件库          |
-| Varlet              | 3.19  | UI 组件库          |
-| VueUse              | 14.x  | 组合式工具集       |
-| Eruda               | 3.x   | 移动端调试控制台   |
-
-## 环境要求
-
-- [Node.js](https://nodejs.org/) >= 22.18.0
-- [pnpm](https://pnpm.io/) >= 11.0.0
-- [Git](https://git-scm.com/)
-
-## 安装使用
+使用 **Node.js 24.x**，以及 **pnpm 12 或以上**。根清单固定了 pnpm 版本。
 
 ```bash
-# 克隆项目
 git clone https://github.com/fonghehe/vue-h5-template.git
 cd vue-h5-template
-
-# 安装依赖
 pnpm install
-
-# 启动开发（交互式选择应用）
-pnpm dev
-
-# 启动指定应用
-pnpm dev:nutui    # NutUI 版
-pnpm dev:vant     # Vant 版
-pnpm dev:varlet   # Varlet 版
 ```
 
-开发环境默认使用内置 Nitro Mock。需要连接配套的 `vue-h5-template-business-service`（`:8002`）和 `vue-h5-template-ai-service`（`:8001`）时，先启动两个后端，再执行 `pnpm dev:services:vant`、`pnpm dev:services:nutui` 或 `pnpm dev:services:varlet`。代理规则和环境变量见[请求架构文档](https://fonghehe.github.io/vue-h5-template/zh/guide/v2/request)。
-
-## 构建
+选择一个应用启动。也可以用 `pnpm dev` 交互选择工作区包。
 
 ```bash
-# 构建所有应用
-pnpm build
-
-# 构建指定应用
-pnpm build:nutui
-pnpm build:vant
-pnpm build:varlet
-
-# 构建文档
-pnpm build:docs
-
-# 完整质量门禁（lint + 类型 + 单测 + build）
-pnpm check
-pnpm test:e2e
-
-# 生成 API 类型 / 分析 Bundle
-pnpm api:generate
-pnpm build:analyze
+pnpm dev:vant    # 5778
+pnpm dev:nutui   # 5777
+pnpm dev:varlet  # 5779
+pnpm dev:tdesign # 5783
+pnpm dev:ionic   # 5784
 ```
 
-## 项目结构
+开发命令会启动或复用 **5320** 端口的 Nitro Mock，测试账号为 `user / 123456` 和 `admin / 123456`。接入独立业务服务（8002）和 AI 服务（8001）时，先启动两个后端，再运行 `pnpm dev:services:<ui>`。
 
-```
-vue-h5-template/
-├── apps/
-│   ├── backend-mock/       # Nitro Mock 服务
-│   ├── h5-nutui/           # NutUI H5 应用（端口 5777）
-│   ├── h5-vant/            # Vant H5 应用（端口 5778）
-│   └── h5-varlet/          # Varlet H5 应用（端口 5779）
-├── docs/                   # VitePress 文档站
-├── internal/
-│   ├── lint-configs/       # ESLint、OxLint、Stylelint、Oxfmt、Commitlint 配置
-│   ├── node-utils/         # Node.js 工具
-│   ├── tsconfig/           # 共享 TypeScript 配置
-│   └── vite-config/        # 共享 Vite 配置
-├── packages/
-│   ├── @core/              # 核心包（base/shared、design、typings、composables）
-│   ├── ai-chat/            # 厂商无关的流式对话
-│   ├── api-client/         # Axios Client 与 OpenAPI 类型
-│   ├── locales/            # 国际化语言包
-│   ├── stores/             # Pinia 状态管理
-│   ├── styles/             # 共享样式
-│   └── utils/              # 共享工具
-├── openapi/                # Mock Backend Schema
-├── scripts/                # 构建脚本和 CLI 工具
-└── AGENTS.md               # AI Coding 架构约束
-```
+## 构建与验证
 
-## 测试账号
+| 用途 | 命令 |
+| --- | --- |
+| 本地文档 | `pnpm dev:docs` |
+| 构建单个应用 | `pnpm build:vant` / `pnpm build:nutui` / `pnpm build:varlet` / `pnpm build:tdesign` / `pnpm build:ionic` |
+| 构建工作区 / 仅文档 | `pnpm build` / `pnpm build:docs` |
+| 检查代码、类型、单测和构建 | `pnpm check` |
+| 五套应用的浏览器测试 | `pnpm test:e2e` |
+| 重新生成 API 类型 | `pnpm api:generate` |
 
-Mock 服务提供以下测试账号：
+应用产物位于 `apps/h5-<ui>/dist`，构建目标为 Chrome/Android WebView 111+ 和 Safari/iOS WebView 16.4+。生产托管需配置 SPA 回退和两个后端的路由。
 
-| 用户名 | 密码   | 角色     |
-| ------ | ------ | -------- |
-| user   | 123456 | 普通用户 |
-| admin  | 123456 | 管理员   |
+## 仓库结构
+
+| 路径 | 职责 |
+| --- | --- |
+| `apps/h5-{vant,nutui,varlet,tdesign,ionic}` | 应用外壳、路由表和 UI 框架适配 |
+| `packages/mobile-ui` | 共享业务页面和查询 hooks |
+| `packages/{api-client,ai-chat}` | REST 契约和流式客户端 |
+| `packages/{locales,stores,styles}` | 共享文案、客户端状态和主题样式 |
+| `apps/backend-mock` | 仅供开发使用的 Nitro Mock |
+| `internal` | 共享构建、Lint 和 TypeScript 配置 |
+| `openapi`, `e2e`, `docs` | API 契约、浏览器测试和项目文档 |
 
 ## 文档
 
-- [在线文档](https://fonghehe.github.io/vue-h5-template/)
-
-## 浏览器支持
-
-生产构建目标为 Chrome / Android WebView 111+ 与 Safari / iOS WebView 16.4+，支持基于这些内核的近期微信和企业微信 WebView；不支持 IE 与旧版 Android WebView。
-
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt=" Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --- | --- | --- | --- |
-| Edge ≥ 111 | Firefox ≥ 115 | Chrome ≥ 111 | Safari ≥ 16.4 |
-
-## 贡献
-
-欢迎参与贡献，请参考 [贡献指南](https://github.com/fonghehe/vue-h5-template/blob/main/CONTRIBUTING.md)。
-
-Git 提交规范请遵循 [Conventional Commits](https://www.conventionalcommits.org/) 约定。
-
-## License
+[在线文档](https://fonghehe.github.io/vue-h5-template/zh/) · [后端模式](./docs/src/zh/guide/essentials/server.md) · [部署](./docs/src/zh/guide/essentials/build.md) · [贡献指南](./CONTRIBUTING.md)
 
 [MIT](./LICENSE)
-
-详细的说明文档请[点击](https://fonghehe.github.io/vue-h5-template/)查看
-
-如果对你有帮助送我一颗珍贵的小星星（づ￣ 3 ￣）づ ╭❤ ～
-
-# 关于我
-
-扫描添加下方的微信并备注加交流群(已超过 200 人，只能邀请)，交流学习，及时获取代码最新动态。
-
- <p>
-  <img src="https://cdn.jsdelivr.net/gh/fonghehe/picture/personal/account.jpg" width="256">
-</p>
-
-如果你觉得该项目有给你带来帮助，方便了你的日常开发，可以请作者喝一杯 ☕ 支持持续的迭代
-
- <table >
-  <tr align="center">
-  <td>WechatPay</td>
-  <td>AliPay</td>
-  </tr>
-  <tr style="text-align:center">
-    <td> <img src="https://cdn.jsdelivr.net/gh/fonghehe/picture/contribute/wechatPay.jpeg" width="256" /></td>
-    <td>
-      <img src="https://cdn.jsdelivr.net/gh/fonghehe/picture/contribute/aliPay.jpeg" width="256" />
-    </td>
-  </tr>
-</table>

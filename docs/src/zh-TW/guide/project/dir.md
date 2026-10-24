@@ -1,13 +1,11 @@
 # 目錄結構
 
 ```text
-apps/h5-{vant,nutui,varlet}/src/
+apps/h5-{vant,nutui,varlet,tdesign,ionic}/src/
   bootstrap.ts
   router/index.ts
   layout/index.vue
   views/                    → @vh5/mobile-ui/*.vue
-  locales/index.ts
-  api/                      → @vh5/api-client
 packages/
   mobile-ui/src/             → pages, cart.ts, queries.ts, surface.css
   api-client/src/modules/    → auth.ts, user.ts, product.ts
@@ -22,7 +20,7 @@ e2e/
 docs/src/                   → English; zh/, ja/, zh-TW/, zh-HK/
 ```
 
-共享業務頁放 `packages/mobile-ui/src`，應用提供延遲路由包裝；框架專屬登入及元件示例留在應用。工作階段 store 在 Vant/Varlet 的 `stores/user.ts`、NutUI 的 `store/modules/user.ts`。
+共享業務頁放 `packages/mobile-ui/src`，應用提供延遲路由包裝；框架專屬登入及元件示例留在應用。工作階段 store 在 Vant/Varlet/TDesign/Ionic 的 `stores/user.ts`、NutUI 的 `store/modules/user.ts`。
 
 接口與生成型別歸 `api-client`，串流與生命週期歸 `ai-chat`，瀏覽器工具歸 `packages/@core/composables`，不要集中成巨型 composable。
 

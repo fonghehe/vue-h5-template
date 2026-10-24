@@ -1,43 +1,17 @@
-# Project Update
+# Project maintenance
 
-## Syncing Latest Code
+## Update the checkout
 
-```bash
-# Fetch latest changes
-git fetch origin
-git pull origin main
+From a clean checkout tracking the upstream branch, pull with `git pull --ff-only`, then run `pnpm install --frozen-lockfile`. Restart running dev servers after changing workspace packages or build configuration.
 
-# Reinstall dependencies (in case of lockfile changes)
-pnpm install
-```
+## Update dependencies
 
-## Dependency Updates
+Inspect candidates with `pnpm outdated -r`. Change the relevant catalog entries in `pnpm-workspace.yaml`, run `pnpm install`, and review the catalog and lockfile together. Keep workspace-local references on `workspace:*`.
 
-```bash
-# Check outdated dependencies
-pnpm outdated -r
+## Verify changes
 
-# Update all dependencies interactively
-pnpm update -r --interactive --latest
-```
+Run `pnpm check`. Run `pnpm test:e2e` for changes to runtime dependencies, navigation, requests or build integration. Check the five UI apps when changing shared dependencies.
 
-## Cleaning Cache
+## Rebuild local artifacts
 
-If you encounter build issues after updating, try cleaning the cache:
-
-```bash
-# Clean all caches, node_modules, and dist
-pnpm clean
-
-# Full reinstall
-pnpm reinstall
-```
-
-## Handling Breaking Changes
-
-When updating major versions of dependencies:
-
-1. Check the UI framework migration guide (NutUI / Vant / Varlet)
-2. Review Vite release notes for breaking changes
-3. Test all three app variants after updating
-4. Update shared Vite config if plugin APIs changed
+`pnpm clean` removes installed modules, build outputs and Turbo caches. Run `pnpm install --frozen-lockfile` afterward to reproduce the locked dependency graph.

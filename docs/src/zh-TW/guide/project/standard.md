@@ -1,6 +1,6 @@
 # 程式碼規範
 
-> `lefthook.yml` 已使用正確的 `pnpm typecheck`，涵蓋 workspace、三個應用設定和測試工具。CI 獨立執行 lint、型別檢查、單元測試覆蓋率及建置。
+> `lefthook.yml` 已使用正確的 `pnpm typecheck`，涵蓋 workspace、五個應用設定和測試工具。CI 獨立執行 lint、型別檢查、單元測試覆蓋率及建置。
 
 ## Lint 工具鏈
 

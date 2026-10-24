@@ -4,4 +4,4 @@
 
 PWA 與正式圖片壓縮分別由 `VITE_PWA_ENABLED`、`VITE_IMAGE_OPTIMIZE` 控制。Service Worker 不快取 `/api/**`。Secret 與 AI Key 不可放進 `VITE_*`。
 
-微信/企業微信 WebView 需符合目標內核，不保證舊版。舊 Dockerfile 面向 playground，需先調整。子目錄要檢查 PWA URL、SPA fallback 與根路徑連結。見[部署邊界](../essentials/build.md)。
+微信/企業微信 WebView 需符合目標內核，不保證舊版。子目錄要檢查 PWA URL、SPA fallback 與根路徑連結。見[部署邊界](../essentials/build.md)。

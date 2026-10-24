@@ -1,7 +1,5 @@
 # 命令行工具（vsh）
 
-> CLI 生成基本頁再複製 layout/locales/API/stores，唔係已驗證嘅 v2 完整副本；依賴同 bootstrap 仲要對齊 mobile UI/Query。請參考現有應用，生成後跑型別、build 同 browser tests。
-
 專案內置一款命令行工具 `@vh5/vsh`（命令名 `vsh`），基於 [cac](https://github.com/cacjs/cac) 構建。佢封裝咗程式碼檢查、依賴檢查、腳手架同 workspace 管理，等貢獻者唔使記住冗長嘅命令鏈。
 
 ## 執行命令
@@ -12,7 +10,7 @@
 # 經由 pnpm 呼叫（推薦）
 pnpm exec vsh <command>
 
-# 或者經由根目錄已封裝好嘅 npm 腳本
+# 或者經由根目錄已封裝好嘅 package.json 指令
 pnpm lint        # vsh lint
 pnpm format      # vsh lint --format
 pnpm publint     # vsh publint
@@ -32,7 +30,7 @@ pnpm exec vsh lint
 pnpm exec vsh lint --threads 4   # 顯式指定 oxfmt / oxlint 嘅執行緒數
 ```
 
-依序執行：
+檢查項目如下。邏輯 CPU 唔多過四個時，按表格次序執行。
 
 | 工具 | 命令 |
 | ---- | ---- |
@@ -45,7 +43,7 @@ pnpm exec vsh lint --threads 4   # 顯式指定 oxfmt / oxlint 嘅執行緒數
 
 ```bash
 pnpm format
-# 依序執行：stylelint --fix、oxfmt、oxlint --fix --type-aware、eslint --fix
+# 檢查項目如下。邏輯 CPU 唔多過四個時，按表格次序執行。stylelint --fix、oxfmt、oxlint --fix --type-aware、eslint --fix
 ```
 
 ### `vsh publint`
@@ -58,13 +56,13 @@ pnpm publint
 
 ### `vsh create-app`
 
-互動式咁喺 `apps/` 下生成一個新嘅 H5 應用。佢會先問 UI 框架（Varlet / Vant / NutUI）同應用名稱，跟住生成完整腳手架（`package.json`、`vite.config.ts`、路由、頁面、國際化、stores），並且從對應嘅參考應用複製 `layout/`、`locales/`、`api/`、`stores/`。
+精靈有五種參考應用可揀，會將揀咗嗰個複製到 `apps/`。
 
 ```bash
 pnpm create-app
 ```
 
-生成完成之後，請跟住輸出嘅後續步驟操作：執行 `pnpm install`，並喺根 `package.json` 入面加 `dev:<name>` / `build:<name>` 腳本。
+預設連接埠、接入要求同驗證指令見[建立應用](../essentials/create-app.md)。
 
 ### `vsh check-circular`
 
@@ -99,8 +97,7 @@ pnpm exec vsh check-dep --ignore-patterns dist,public
 
 ```bash
 pnpm exec vsh code-workspace
-pnpm exec vsh code-workspace --spaces 4
-pnpm exec vsh code-workspace --auto-commit   # 自動 git add 結果
+pnpm exec oxfmt --write vh5.code-workspace
 ```
 
 `vsh lint` 所驅動嘅檢查工具鏈詳見 [代碼規範](./standard)。

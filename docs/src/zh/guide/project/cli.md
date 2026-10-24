@@ -1,7 +1,5 @@
 # 命令行工具（vsh）
 
-> CLI 目前生成基础页面并复制参考布局/语言/API/store，不是已验证的 v2 完整应用副本；生成的依赖及 bootstrap 仍需与共享 mobile UI、Query 对齐。以现有 H5 应用为准，生成后务必执行类型检查、构建与浏览器测试。
-
 项目内置了一款命令行工具 `@vh5/vsh`（命令名 `vsh`），基于 [cac](https://github.com/cacjs/cac) 构建。它封装了代码检查、依赖检查、脚手架与 workspace 管理，让贡献者无需记忆冗长的命令链。
 
 ## 运行命令
@@ -12,7 +10,7 @@
 # 通过 pnpm 调用（推荐）
 pnpm exec vsh <command>
 
-# 或通过根目录已封装好的 npm 脚本
+# 或通过根目录已封装好的 package.json 脚本
 pnpm lint        # vsh lint
 pnpm format      # vsh lint --format
 pnpm publint     # vsh publint
@@ -32,7 +30,7 @@ pnpm exec vsh lint
 pnpm exec vsh lint --threads 4   # 显式指定 oxfmt / oxlint 的线程数
 ```
 
-按顺序执行：
+检查项如下。逻辑 CPU 不超过四个时，按表格顺序运行。
 
 | 工具 | 命令 |
 | ---- | ---- |
@@ -58,13 +56,13 @@ pnpm publint
 
 ### `vsh create-app`
 
-交互式地在 `apps/` 下生成一个新 H5 应用。它会先询问 UI 框架（Varlet / Vant / NutUI）和应用名称，然后生成完整脚手架（`package.json`、`vite.config.ts`、路由、页面、国际化、stores），并从对应的参考应用复制 `layout/`、`locales/`、`api/`、`stores/`。
+向导会把所选五套参考应用之一复制到 `apps/`。
 
 ```bash
 pnpm create-app
 ```
 
-生成完成后，请按输出的后续步骤操作：运行 `pnpm install`，并在根 `package.json` 中添加 `dev:<name>` / `build:<name>` 脚本。
+默认端口、接入要求和验证命令见[创建应用](../essentials/create-app.md)。
 
 ### `vsh check-circular`
 
@@ -99,8 +97,7 @@ pnpm exec vsh check-dep --ignore-patterns dist,public
 
 ```bash
 pnpm exec vsh code-workspace
-pnpm exec vsh code-workspace --spaces 4
-pnpm exec vsh code-workspace --auto-commit   # 自动 git add 结果
+pnpm exec oxfmt --write vh5.code-workspace
 ```
 
 `vsh lint` 所驱动的检查工具链详见 [代码规范](./standard)。

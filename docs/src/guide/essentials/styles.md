@@ -1,6 +1,6 @@
 # Styles and Mobile Themes
 
-Use one theme entry per app: `@vh5/styles/vant`, `@vh5/styles/nutui`, or `@vh5/styles/varlet`, plus `@vh5/styles/global`. Never import all three theme files together. Tokens live in `packages/styles/src/<ui>/index.css`: Vant blue `#1989fa`, NutUI red `#fa2c19`, Varlet purple `#6750a4`.
+All apps import `@vh5/styles/global`. Vant, NutUI and Varlet also load their own theme from `packages/styles/src/<ui>/index.css` (`#1989fa`, `#fa2c19` and `#6750a4` respectively). TDesign and Ionic define their app tokens in `apps/h5-<ui>/src/theme.css` (`#0052d9` and `#0054e9`). Both apps disable px-to-viewport conversion in their Vite configs.
 
 ```ts
 // Vant bootstrap; choose only the current app's theme.

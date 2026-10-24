@@ -30,7 +30,7 @@ To use a real backend, replace `openapi/schema.yaml`, run `pnpm api:generate`, a
 
 ## Mock and service modes
 
-All three H5 apps support the same two development modes:
+All five H5 apps support the same two development modes:
 
 ```bash
 # Nitro mock: no external database or service is required

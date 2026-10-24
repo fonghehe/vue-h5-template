@@ -5,7 +5,7 @@ sidebar: false
 hero:
   name: Vue H5 Template
   text: Vue 3 Mobile H5 Development Template
-  tagline: Monorepo template based on Turborepo + Vue 3 + TypeScript, supporting NutUI / Vant / Varlet
+  tagline: Monorepo template based on Turborepo + Vue 3 + TypeScript, supporting NutUI / Vant / Varlet / TDesign / Ionic Vue
   actions:
     - theme: brand
       text: Get Started ->
@@ -19,7 +19,7 @@ hero:
 
 features:
   - title: "Shared mobile product"
-    details: "The same Home, List, Member and Examples in Vant, NutUI and Varlet, with independent themes."
+    details: "The same Home, List, Member and Examples in Vant, NutUI, Varlet, TDesign and Ionic Vue, with independent themes."
     link: /guide/v2/ui-framework
   - title: "Streaming AI Chat"
     details: "Floating entry, incremental SSE responses, stop, retry, regeneration and sanitized Markdown."
@@ -40,6 +40,6 @@ features:
     details: "Vite 8/Rolldown, safe areas, responsive shared CSS, optional PWA and build-only image optimization."
     link: /guide/essentials/styles
   - title: "Verified engineering"
-    details: "Independent package type checks, Vitest and three-app Playwright suites; AGENTS.md documents boundaries."
+    details: "Independent package type checks, Vitest and five-app Playwright suites; AGENTS.md documents boundaries."
     link: /guide/v2/testing
 ---

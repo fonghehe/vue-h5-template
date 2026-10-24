@@ -2,7 +2,7 @@
 
 Vant headers use `--app-primary` with white titles, icons and text actions. Navigation tokens are scoped to `.van-nav-bar` so lazy-loaded Vant root defaults cannot reset the theme.
 
-All three apps expose the same tabs in the same order: **Home → List → Member → Examples**, at `/home`, `/list`, `/member`, and `/examples`. Legacy `/mine` and `/example` URLs remain supported. Member is guest-accessible so language preferences do not require login; protected API requests still use centralized 401 handling.
+All five apps expose the same tabs in the same order: **Home → List → Member → Examples**, at `/home`, `/list`, `/member`, and `/examples`. Legacy `/mine` and `/example` URLs remain supported. Member is guest-accessible so language preferences do not require login; protected API requests still use centralized 401 handling.
 
 ## Shared functionality, separate themes
 
@@ -16,11 +16,11 @@ Design tokens in `packages/styles` keep Vant blue (`#1989fa`), NutUI red (`#fa2c
 
 Pages default to English. Member offers English, 简体中文 and 日本語; the choice persists under `vh5:locale`. Translate page copy, route/document titles, placeholders, and accessibility labels together. REST requests send `Accept-Language`; Nitro localizes product fixtures. Real business services are responsible for their own translated content. Query cache keys include locale.
 
-The themed floating AI button opens the lazy `/ai/chat` route above the bottom tabs. It is hidden on Member, Chat, Login, Cart, Payment and Details to avoid competing with input or checkout controls. Streaming, Stop, Regenerate, Copy and sanitized Markdown use the same implementation in all three apps.
+The themed floating AI button opens the lazy `/ai/chat` route above the bottom tabs. It is hidden on Member, Chat, Login, Cart, Payment and Details to avoid competing with input or checkout controls. Streaming, Stop, Regenerate, Copy and sanitized Markdown use the same implementation in all five apps.
 
 Both `pnpm dev:<ui>` (Nitro Mock) and `pnpm dev:services:<ui>` (AI port 8001, Business port 8002) remain supported. No provider secret belongs in frontend environment variables.
 
-SVG and optional PWA examples are also shared across all three apps. App-specific Vant SVG assets remain supported separately. NutUI’s missing Japanese locale is supplied by the typed `apps/h5-nutui/src/locales/nutui-ja.ts` adapter. Existing Traditional Chinese dictionaries remain available to custom integrations; the default selector exposes the three product languages above. Language preference is managed by Vue I18n and localStorage, not Pinia.
+SVG and optional PWA examples are also shared across all five apps. App-specific Vant SVG assets remain supported separately. NutUI’s missing Japanese locale is supplied by the typed `apps/h5-nutui/src/locales/nutui-ja.ts` adapter. Existing Traditional Chinese dictionaries remain available to custom integrations; the default selector exposes the three product languages above. Language preference is managed by Vue I18n and localStorage, not Pinia.
 
 NutUI scopes navigation tokens to `.nut-navbar` and supplies a native `Left` icon in the back-button slot with `currentColor`, avoiding the library icon’s hardcoded gray on the red header.
 
@@ -28,4 +28,17 @@ NutUI scopes navigation tokens to `.nut-navbar` and supplies a native `Left` ico
 
 The four bottom tabs are the primary navigation. Home is an informational overview without duplicate feature links or a language selector. Member itself is the personal center: it shows the supplied avatar/name, login status, account information and preferences, with login/logout as appropriate. It does not invent editable profile fields or new backend endpoints. Language switching is available only here.
 
-The catalog provides the primary cart entry; Details returns to the catalog instead of adding another cart shortcut. AI Chat uses only the shared floating button, not Home cards or an Examples row. Examples is the sole menu for Query, Request, Mobile Web APIs, SVG, PWA and native components. Back/continue links within checkout remain workflow controls. All three apps share this structure and retain their own theme.
+The catalog provides the primary cart entry; Details returns to the catalog instead of adding another cart shortcut. AI Chat uses only the shared floating button, not Home cards or an Examples row. Examples is the sole menu for Query, Request, Mobile Web APIs, SVG, PWA and native components. Back/continue links within checkout remain workflow controls. All five apps share this structure and retain their own theme.
+
+## TDesign and Ionic Vue
+
+The TDesign app uses named imports from `tdesign-mobile-vue` and loads the documented global stylesheet. Ionic Vue uses the official individual-component setup with `IonicVue` and its stylesheets. Vue Router keeps the shared H5 navigation and unmounts business pages when leaving them.
+
+| | TDesign | Ionic Vue |
+| --- | --- | --- |
+| Mock development | `pnpm dev:tdesign` (5783) | `pnpm dev:ionic` (5784) |
+| Backend services | `pnpm dev:services:tdesign` | `pnpm dev:services:ionic` |
+| Production build | `pnpm build:tdesign` | `pnpm build:ionic` |
+| Browser tests | `pnpm test:e2e:tdesign` | `pnpm test:e2e:ionic` |
+
+[TDesign Mobile Vue](https://tdesign.tencent.com/mobile-vue/) · [Ionic Vue](https://ionicframework.com/docs/vue/overview)

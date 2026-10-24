@@ -1,6 +1,6 @@
 # Adding a Feature
 
-1. Add a framework-neutral page in `packages/mobile-ui/src`; add lazy wrappers and explicit routes in all three apps. Keep native-only UI in its app.
+1. Add a framework-neutral page in `packages/mobile-ui/src`; add lazy wrappers and explicit routes in all five apps. Keep native-only UI in its app.
 
 2. Add English, Chinese and Japanese message keys and a translated `meta.title`. Use canonical paths for shared links; preserve each app's theme and safe-area layout.
 

@@ -1,6 +1,6 @@
 # 樣式同 Mobile 主題
 
-每個應用只載入 `@vh5/styles/global` 加一個主題入口（vant / nutui / varlet）。token 喺 `packages/styles/src/<ui>/index.css`：Vant 藍 `#1989fa`、NutUI 紅 `#fa2c19`、Varlet 紫 `#6750a4`。
+全部應用都會載入 `@vh5/styles/global`。Vant、NutUI 同 Varlet 喺 `packages/styles/src/<ui>/index.css` 載入各自主題色（依次係 `#1989fa`、`#fa2c19`、`#6750a4`）。TDesign 同 Ionic 嘅主題變數喺 `apps/h5-<ui>/src/theme.css`（依次係 `#0052d9`、`#0054e9`），兩個應用都喺 Vite 設定停用 px-to-viewport 轉換。
 
 ```ts
 // Vant bootstrap; choose only the current app's theme.

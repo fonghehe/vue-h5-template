@@ -2,7 +2,7 @@
 
 ## 安装和模块解析
 
-使用 Node 22.x 的 22.18+ 或 24.x、pnpm 11.10.0。workspace 依赖变化后运行 `pnpm install`。旧服务出现 `Failed to resolve import @vh5/mobile-ui/...` 时，停止旧进程，重启 `pnpm dev:vant`，刷新浏览器。另一个端口的构建/测试通过不等于旧进程已恢复。
+使用 Node 24.x 和 pnpm 12 或以上版本。workspace 依赖变化后运行 `pnpm install`。旧服务出现 `Failed to resolve import @vh5/mobile-ui/...` 时，停止旧进程，重启 `pnpm dev:vant`，刷新浏览器。另一个端口的构建/测试通过不等于旧进程已恢复。
 
 ## 端口和 Mock
 
@@ -14,8 +14,8 @@
 
 ## 类型与修改
 
-执行 `pnpm typecheck`，不要使用已废弃的 `pnpm check:type`。它检查共享包、Mock 后端、工具及三个应用（源码和 `tsconfig.node.json`），也检查根测试配置和 E2E 代码。自动导入声明由 Vite 生成，路由仍手写。
+执行 `pnpm typecheck`。它检查共享包、Mock 后端、工具及五个应用（源码和 `tsconfig.node.json`），也检查根测试配置和 E2E 代码。自动导入声明由 Vite 生成，路由仍手写。
 
 ## 新增功能与部署
 
-参见[功能指南](../essentials/contributing-features.md)、[后端模式](../essentials/server.md)、[构建](../essentials/build.md)。子目录/PWA 和旧 playground Dockerfile 需要按环境审查。安装失败时不要首先删除 lockfile。
+参见[功能指南](../essentials/contributing-features.md)、[后端模式](../essentials/server.md)和[部署指南](../essentials/build.md)。部署到子目录时，在目标环境验证 SPA 回退和 PWA 路径。

@@ -5,7 +5,7 @@ sidebar: false
 hero:
   name: Vue H5 Template
   text: Vue 3 モバイル H5 開発テンプレート
-  tagline: Turborepo + Vue 3 + TypeScript ベースのモバイル Monorepo テンプレート。NutUI / Vant / Varlet 対応
+  tagline: Turborepo + Vue 3 + TypeScript ベースのモバイル Monorepo テンプレート。NutUI / Vant / Varlet / TDesign / Ionic Vue 対応
   actions:
     - theme: brand
       text: クイックスタート ->
@@ -40,6 +40,6 @@ features:
     details: "Vite 8/Rolldown、安全領域、共有 responsive CSS、任意 PWA、ビルド時画像最適化。"
     link: /ja/guide/essentials/styles
   - title: "品質検証"
-    details: "共有パッケージ型チェック、Vitest、3 アプリ Playwright。境界は AGENTS.md に記載。"
+    details: "共有パッケージ型チェック、Vitest、5 アプリ Playwright。境界は AGENTS.md に記載。"
     link: /ja/guide/v2/testing
 ---

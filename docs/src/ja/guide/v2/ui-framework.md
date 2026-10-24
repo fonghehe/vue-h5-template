@@ -2,7 +2,7 @@
 
 Vant のヘッダーは `--app-primary` を背景に、タイトル・アイコン・テキスト操作を白で表示します。ナビゲーション変数を `.van-nav-bar` に設定し、遅延読み込みされる Vant のルート既定値による上書きを防ぎます。
 
-3つのアプリは同じ機能と順序のタブを提供します：**Home → List → Member → Examples**。URL は `/home`、`/list`、`/member`、`/examples` です。旧 `/mine` と `/example` も利用できます。Member は未ログインでも開けるため、言語変更に認証は不要です。保護された API の 401 は引き続き共通処理します。
+5 つのアプリは同じ機能と順序のタブを提供します：**Home → List → Member → Examples**。URL は `/home`、`/list`、`/member`、`/examples` です。旧 `/mine` と `/example` も利用できます。Member は未ログインでも開けるため、言語変更に認証は不要です。保護された API の 401 は引き続き共通処理します。
 
 ## 共通機能と独立したテーマ
 
@@ -16,11 +16,11 @@ Vant のヘッダーは `--app-primary` を背景に、タイトル・アイコ�
 
 初期言語は英語です。Member で English、简体中文、日本語を選択でき、`vh5:locale` に保存されます。本文、ルート・文書タイトル、入力例、アクセシビリティラベルを一緒に翻訳します。REST は `Accept-Language` を送り、Nitro Mock は翻訳済み商品データを返します。実際の業務サービスの翻訳はバックエンド側で提供してください。Query のキャッシュキーには言語を含めます。
 
-テーマ色の AI フローティングボタンをタブの上に配置し、遅延読み込みの `/ai/chat` を開きます。Member、Chat、Login、Cart、Payment、Details では入力や購入操作を妨げないよう非表示です。ストリーミング、停止、再生成、コピー、安全な Markdown は3つのアプリで共通です。
+テーマ色の AI フローティングボタンをタブの上に配置し、遅延読み込みの `/ai/chat` を開きます。Member、Chat、Login、Cart、Payment、Details では入力や購入操作を妨げないよう非表示です。ストリーミング、停止、再生成、コピー、安全な Markdown は5 つのアプリで共通です。
 
 `pnpm dev:<ui>`（Nitro Mock）と `pnpm dev:services:<ui>`（AI 8001、Business 8002）を引き続き利用できます。フロントエンド環境変数にプロバイダーの秘密鍵を保存しないでください。
 
-SVG と任意の PWA サンプルも3アプリで共通です。Vant 固有の SVG 資産も引き続き利用できます。NutUI にない日本語辞書は型付きの `apps/h5-nutui/src/locales/nutui-ja.ts` で補います。繁体字中国語の既存辞書はカスタム統合向けに残し、標準の選択欄には上記3言語を表示します。言語設定は Pinia ではなく Vue I18n と localStorage で管理します。
+SVG と任意の PWA サンプルも5 アプリで共通です。Vant 固有の SVG 資産も引き続き利用できます。NutUI にない日本語辞書は型付きの `apps/h5-nutui/src/locales/nutui-ja.ts` で補います。繁体字中国語の既存辞書はカスタム統合向けに残し、標準の選択欄には上記3言語を表示します。言語設定は Pinia ではなく Vue I18n と localStorage で管理します。
 
 NutUI のナビゲーション変数は `.nut-navbar` に設定します。戻るボタンのスロットにネイティブの `Left` アイコンを置き、`currentColor` を継承させ、固定の灰色が赤いヘッダーで見えにくくなる問題を防ぎます。
 
@@ -28,4 +28,17 @@ NutUI のナビゲーション変数は `.nut-navbar` に設定します。戻�
 
 4つの下部タブを主ナビゲーションにします。Home は概要表示のみで、機能リンクや言語選択を重複させません。Member 自体をマイページとし、渡されたアバター・名前、ログイン状態、アカウント情報と設定を表示します。状態に応じてログイン・ログアウトを提供し、未実装のプロフィール編集項目や新しい API は追加しません。言語変更はここだけで行います。
 
-カートの入口は商品一覧に集約し、詳細画面からは一覧へ戻ります。AI Chat は共通フローティングボタンのみとし、Home と Examples の重複リンクを削除します。Query、Request、Mobile Web API、SVG、PWA、ネイティブコンポーネントは Examples にまとめます。決済フローの戻る・買い物を続ける操作は維持します。3アプリは同じ構成で、それぞれのテーマ色を使います。
+カートの入口は商品一覧に集約し、詳細画面からは一覧へ戻ります。AI Chat は共通フローティングボタンのみとし、Home と Examples の重複リンクを削除します。Query、Request、Mobile Web API、SVG、PWA、ネイティブコンポーネントは Examples にまとめます。決済フローの戻る・買い物を続ける操作は維持します。5 アプリは同じ構成で、それぞれのテーマ色を使います。
+
+## TDesign と Ionic Vue
+
+TDesign アプリは `tdesign-mobile-vue` の名前付きインポートと公式のグローバル CSS を使用します。 Ionic Vue は公式の個別コンポーネント方式で `IonicVue` とスタイルシートを読み込みます。共有 H5 ルートには Vue Router を使用し、ページを離れる際に画面をアンマウントします。
+
+| | TDesign | Ionic Vue |
+| --- | --- | --- |
+| Mock での開発 | `pnpm dev:tdesign` (5783) | `pnpm dev:ionic` (5784) |
+| バックエンドサービス | `pnpm dev:services:tdesign` | `pnpm dev:services:ionic` |
+| 本番ビルド | `pnpm build:tdesign` | `pnpm build:ionic` |
+| ブラウザテスト | `pnpm test:e2e:tdesign` | `pnpm test:e2e:ionic` |
+
+[TDesign Mobile Vue](https://tdesign.tencent.com/mobile-vue/) · [Ionic Vue](https://ionicframework.com/docs/vue/overview)

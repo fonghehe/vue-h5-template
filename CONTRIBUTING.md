@@ -10,8 +10,8 @@ Thank you for your interest in contributing! This project is an open-source Vue 
 
 | Tool  | Version              |
 | ----- | -------------------- |
-| Node  | `>= 22.18.0`         |
-| pnpm  | `>= 11.0.0`          |
+| Node  | 24.x |
+| pnpm  | `>= 12.0.0`          |
 
 Install dependencies once you have the correct versions:
 
@@ -27,15 +27,17 @@ pnpm install
    git checkout -b feat/your-feature
    ```
 
-2. **Run the dev server** for the app you are working on (NutUI / Vant / Varlet):
+2. **Run the dev server** for the app you are working on:
 
    ```bash
    pnpm dev:nutui      # apps/h5-nutui
    pnpm dev:vant       # apps/h5-vant
    pnpm dev:varlet     # apps/h5-varlet
+   pnpm dev:tdesign    # apps/h5-tdesign
+   pnpm dev:ionic      # apps/h5-ionic
    ```
 
-3. **Commit with `czg`** (cz-git). Do not use plain `git commit` — commit messages are linted:
+3. **Commit with `czg`** (cz-git). The commit hook validates the same message format when you commit directly.
 
    ```bash
    pnpm exec czg
@@ -61,6 +63,8 @@ pnpm install
 ## Documentation
 
 The documentation site is built with VitePress and ships in five languages (English, 简体中文, 日本語, 繁體中文 — Taiwan, 繁體中文 — Hong Kong). Source files live under `docs/src/`. When you change behavior that affects contributors or users, please update the relevant docs and keep all language variants in sync.
+
+Preview changes with `pnpm dev:docs`. Run `pnpm -F @vh5/docs type-check` to validate VitePress configuration and `pnpm build:docs` to build the site and check internal links. See the [translation guide](./docs/src/guide/project/translating.md) for locale paths and sidebar entries.
 
 ## License
 

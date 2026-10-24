@@ -2,7 +2,7 @@
 
 Vant 頂欄使用 `--app-primary`，標題、圖示與文字操作為白色。導覽變數定義在 `.van-nav-bar` 上，避免 Vant 延遲載入的根層預設樣式覆蓋主題。
 
-三個應用採用相同 Tab 順序與業務功能：**Home → List → Member → Examples**，對應 `/home`、`/list`、`/member`、`/examples`。舊 `/mine`、`/example` 仍可使用。Member 開放訪客存取，語言切換不需要登入；受保護 API 仍統一處理 401。
+五個應用採用相同 Tab 順序與業務功能：**Home → List → Member → Examples**，對應 `/home`、`/list`、`/member`、`/examples`。舊 `/mine`、`/example` 仍可使用。Member 開放訪客存取，語言切換不需要登入；受保護 API 仍統一處理 401。
 
 ## 共用功能，獨立主題
 
@@ -29,3 +29,16 @@ NutUI 將導覽變數設於 `.nut-navbar`，返回按鈕插槽使用原生 `Left
 四個底部 Tab 負責主導覽。首頁僅展示專案概覽，不再重複放功能連結或語言選單。會員頁本身就是個人中心：展示傳入的頭像/名稱、登入狀態、帳戶資訊與偏好設定，依狀態顯示登入或登出；不虛構資料編輯欄位或新後端 API。語言切換只保留於此。
 
 商品列表提供購物車主入口，詳情返回列表，不再額外放購物車捷徑。AI Chat 僅保留共用浮動按鈕，首頁卡片與範例列表不再重複導向。Query、Request、行動 Web 能力、SVG、PWA 與原生元件統一由範例頁進入。結帳中的返回/繼續購物屬於流程操作，仍保留。三端共用相同結構，各自沿用主題色。
+
+## TDesign 和 Ionic Vue
+
+TDesign 應用程式使用 `tdesign-mobile-vue` 的具名匯入，並載入官方全域樣式。 Ionic Vue 採用官方的個別元件整合方式，註冊 `IonicVue` 並載入配套樣式。共用 H5 路由維持 Vue Router，離開頁面時會卸載業務元件。
+
+| | TDesign | Ionic Vue |
+| --- | --- | --- |
+| Mock 開發 | `pnpm dev:tdesign` (5783) | `pnpm dev:ionic` (5784) |
+| 串接後端服務 | `pnpm dev:services:tdesign` | `pnpm dev:services:ionic` |
+| 正式建置 | `pnpm build:tdesign` | `pnpm build:ionic` |
+| 瀏覽器測試 | `pnpm test:e2e:tdesign` | `pnpm test:e2e:ionic` |
+
+[TDesign Mobile Vue](https://tdesign.tencent.com/mobile-vue/) · [Ionic Vue](https://ionicframework.com/docs/vue/overview)

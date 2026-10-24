@@ -5,10 +5,10 @@ This file is the source of truth for AI coding agents working in this repository
 ## Architecture
 
 - This is a pnpm + Turborepo monorepo. Use pnpm only.
-- Vant, NutUI and Varlet expose the same Home / List / Member / Examples tabs.
+- All five H5 apps expose the same Home / List / Member / Examples tabs.
 - Keep one primary entry per feature: tabs own main navigation, the catalog owns cart access, the floating button owns AI Chat, and Examples owns technical demos (including Mobile Web APIs). Home is an overview, not another launcher. Member is the personal center and the only language-switching location. Transactional back/continue links are workflow controls, not extra feature menus.
 - Framework-neutral product views live in `packages/mobile-ui`; app views are lazy wrappers. Native navigation and component showcases stay app-specific.
-- A production app selects one UI framework; never import all three into one app.
+- Keep UI framework imports scoped to their respective apps.
 - `apps/backend-mock` is a Nitro development backend. Production builds must not start it.
 - `pnpm dev:<ui>` uses Nitro mock data; `pnpm dev:services:<ui>` proxies AI traffic to port 8001 and business traffic to port 8002.
 - Shared browser API concerns live in `packages/api-client`; streaming AI concerns live in `packages/ai-chat`.
@@ -93,7 +93,7 @@ Do not add empty layers, placeholder directories, or speculative abstractions.
 - Interaction-heavy components need Vue Test Utils tests.
 - Critical user paths belong in Playwright.
 - Test behavior and boundaries, not implementation trivia.
-- Place shared cart, query, Markdown and chat tests in `packages/mobile-ui/src/__tests__`; app-specific tests stay with that app. Test shared functionality once and use E2E to verify all three app integrations.
+- Place shared cart, query, Markdown and chat tests in `packages/mobile-ui/src/__tests__`; app-specific tests stay with that app. Test shared functionality once and use E2E to verify all five app integrations.
 - Use injectable Axios/fetch adapters and controlled promises for transport tests. Cover timeout/network/HTTP errors, auth headers, SSE byte boundaries, cancellation, retry and overlapping request lifecycles without real network calls or model keys.
 - Test Vue reactivity while streams are in progress, not only the final message string. Cancelled work must never overwrite a newer conversation's state.
 - Query tests use an isolated QueryClient with automatic retry disabled; verify locale cache keys, pagination and error recovery. Dispose clients, component wrappers, watchers and mocks after tests.
@@ -116,6 +116,8 @@ pnpm build:analyze
 pnpm dev:services:vant
 pnpm dev:services:nutui
 pnpm dev:services:varlet
+pnpm dev:services:tdesign
+pnpm dev:services:ionic
 pnpm build:docs
 ```
 

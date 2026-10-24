@@ -1,13 +1,11 @@
 # ディレクトリ構成
 
 ```text
-apps/h5-{vant,nutui,varlet}/src/
+apps/h5-{vant,nutui,varlet,tdesign,ionic}/src/
   bootstrap.ts
   router/index.ts
   layout/index.vue
   views/                    → @vh5/mobile-ui/*.vue
-  locales/index.ts
-  api/                      → @vh5/api-client
 packages/
   mobile-ui/src/             → pages, cart.ts, queries.ts, surface.css
   api-client/src/modules/    → auth.ts, user.ts, product.ts
@@ -22,7 +20,7 @@ e2e/
 docs/src/                   → English; zh/, ja/, zh-TW/, zh-HK/
 ```
 
-共有画面は `packages/mobile-ui/src`、アプリは遅延ルートラッパーです。固有ログインと UI 例はアプリに置きます。セッション store は Vant/Varlet の `stores/user.ts`、NutUI の `store/modules/user.ts`。
+共有画面は `packages/mobile-ui/src`、アプリは遅延ルートラッパーです。固有ログインと UI 例はアプリに置きます。セッション store は Vant/Varlet/TDesign/Ionic の `stores/user.ts`、NutUI の `store/modules/user.ts`。
 
 API 関数・生成型は `api-client`、プロトコル・会話ライフサイクルは `ai-chat`、ブラウザのライフサイクルは `packages/@core/composables` に配置します。巨大な画面 composable に集めません。
 

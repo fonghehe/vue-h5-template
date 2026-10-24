@@ -8,4 +8,4 @@ PWA is optional through `VITE_PWA_ENABLED=true`. The service worker precaches st
 
 Never ship `VITE_NITRO_MOCK=true`, secrets, AI keys or production signing keys in frontend environment variables. Recommended response headers include a tested CSP, `X-Content-Type-Options: nosniff`, a restrictive `Permissions-Policy`, and an appropriate `Referrer-Policy`.
 
-Embedded WeChat/WeCom WebViews must meet the target engine capabilities; older clients are not guaranteed. The legacy Dockerfile targets playground and needs adaptation. Subdirectory deployments need a review of PWA URLs, SPA fallback and root-relative links. See [build and deployment boundaries](../essentials/build.md).
+Embedded WeChat/WeCom WebViews must meet the target engine capabilities; older clients are not guaranteed. Subdirectory deployments need a review of PWA URLs, SPA fallback and root-relative links. See [build and deployment boundaries](../essentials/build.md).

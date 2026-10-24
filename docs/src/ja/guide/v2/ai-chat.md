@@ -1,6 +1,6 @@
 # ストリーミング AI Chat
 
-3つのレイアウトはテーマ色のフローティングボタンから遅延読み込みの `/ai/chat` を開きます。共有 UI は `packages/mobile-ui/src/ChatPage.vue` にあり、各アプリが token と endpoint を渡します。Chat、Login、Cart、Details では非表示です。UI は英語を初期値として中国語・日本語にも対応します。AI 出力は翻訳辞書ではなく、信頼できないコンテンツとして扱います。
+各レイアウトはテーマ色のフローティングボタンから遅延読み込みの `/ai/chat` を開きます。共有 UI は `packages/mobile-ui/src/ChatPage.vue` にあり、各アプリが token と endpoint を渡します。Chat、Login、Cart、Details では非表示です。UI は英語を初期値として中国語・日本語にも対応します。AI 出力は翻訳辞書ではなく、信頼できないコンテンツとして扱います。
 
 `/ai/chat` はベンダー非依存の `ChatProvider` を使います。`FetchChatProvider` が `POST /api/ai/chat` の SSE を `ReadableStream` で読み、`useStreamingChat` がメッセージ、状態、再試行、再生成、`AbortController` を管理します。
 

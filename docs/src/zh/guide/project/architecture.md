@@ -6,7 +6,7 @@ App route → shared ChatPage → useStreamingChat → FetchChatProvider → Nit
 bootstrap → i18n → Pinia → configureApiClient → VueQueryPlugin → router → mount
 ```
 
-三套应用共享业务行为，保留原生导航、主题、语言适配及会话接入。`mobile-ui` 管页面和 Query/cart 逻辑，`api-client` 管 REST 契约，`ai-chat` 管流协议；应用 views 是懒加载包装，不再维护三套重复业务实现。
+五套应用共享业务行为，保留原生导航、主题、语言适配及会话接入。`mobile-ui` 管页面和 Query/cart 逻辑，`api-client` 管 REST 契约，`ai-chat` 管流协议；应用 views 是懒加载包装，业务逻辑集中在共享包。
 
 Pinia 管客户端状态，Vue Query 缓存远端数据，Vue I18n 管语言。购物车是本地示例，结算不是支付集成。Nitro 与业务/AI 服务使用相同的 REST/SSE 契约。
 

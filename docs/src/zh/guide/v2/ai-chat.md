@@ -1,6 +1,6 @@
 # 流式 AI Chat
 
-三套布局均提供主题色 AI 悬浮入口，打开懒加载的 `/ai/chat`。共享 UI 位于 `packages/mobile-ui/src/ChatPage.vue`，各应用传入当前会话 token 和 endpoint。Chat、Login、Cart、Details 隐藏入口。界面默认英文并支持中文、日文；服务商响应仍是不可信内容，不属于前端翻译字典。
+五套布局均提供主题色 AI 悬浮入口，打开懒加载的 `/ai/chat`。共享 UI 位于 `packages/mobile-ui/src/ChatPage.vue`，各应用传入当前会话 token 和 endpoint。Chat、Login、Cart、Details 隐藏入口。界面默认英文并支持中文、日文；服务商响应仍是不可信内容，不属于前端翻译字典。
 
 `/ai/chat` 没有绑定任何 AI 厂商，而是依赖轻量 `ChatProvider` 接口。`FetchChatProvider` 通过 `POST /api/ai/chat` 发送消息，并从 `ReadableStream` 解析 SSE；`useStreamingChat` 管理 messages、status、error、regenerate、retry 和 `AbortController`。点击 Stop 会立即终止请求。
 

@@ -1,43 +1,17 @@
-# プロジェクト更新
+# プロジェクトの保守
 
-## 最新コードの同期
+## コードを同期する
 
-```bash
-# 最新の変更を取得
-git fetch origin
-git pull origin main
+変更のない状態で上流を追跡しているブランチを開き、`git pull --ff-only` と `pnpm install --frozen-lockfile` を実行します。ワークスペースパッケージやビルド設定の変更後は開発サーバーを再起動します。
 
-# 依存関係を再インストール（lockfile の変更がある場合）
-pnpm install
-```
+## 依存関係を更新する
 
-## 依存関係の更新
+`pnpm outdated -r` で更新候補を確認します。`pnpm-workspace.yaml` の該当する catalog 項目を変更して `pnpm install` を実行し、catalog とロックファイルの差分を確認します。内部依存関係には `workspace:*` を使用します。
 
-```bash
-# 古い依存関係を確認
-pnpm outdated -r
+## 変更を検証する
 
-# すべての依存関係をインタラクティブに最新版へ更新
-pnpm update -r --interactive --latest
-```
+`pnpm check` を実行します。実行時の依存関係、ナビゲーション、通信、ビルド連携を変更した場合は `pnpm test:e2e` も実行します。共通の依存関係を変更した場合は 5 つの UI アプリを確認します。
 
-## キャッシュのクリア
+## ローカル成果物を作り直す
 
-更新後にビルドの問題が発生した場合、キャッシュをクリアしてみてください：
-
-```bash
-# すべてのキャッシュ、node_modules、dist をクリア
-pnpm clean
-
-# 完全再インストール
-pnpm reinstall
-```
-
-## 破壊的変更への対応
-
-依存関係のメジャーバージョンを更新する際：
-
-1. UI フレームワークの移行ガイドを確認（NutUI / Vant / Varlet）
-2. Vite のリリースノートで破壊的変更を確認
-3. 更新後、3つのアプリバリアントすべてをテスト
-4. プラグイン API が変更された場合、共有 Vite 設定を更新
+`pnpm clean` はインストール済みモジュール、ビルド成果物、Turbo キャッシュを削除します。その後 `pnpm install --frozen-lockfile` でロック済みの依存関係を復元します。

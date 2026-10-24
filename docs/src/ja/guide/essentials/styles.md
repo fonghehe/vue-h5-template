@@ -1,6 +1,6 @@
 # スタイルとモバイルテーマ
 
-各アプリは `@vh5/styles/global` と 1 つのテーマ（vant / nutui / varlet）のみ読み込みます。3 テーマを一緒に使わないでください。`packages/styles/src/<ui>/index.css` に Vant 青 `#1989fa`、NutUI 赤 `#fa2c19`、Varlet 紫 `#6750a4` を定義します。
+すべてのアプリが `@vh5/styles/global` を読み込みます。Vant、NutUI、Varlet のテーマは `packages/styles/src/<ui>/index.css` にあり、色は順に `#1989fa`、`#fa2c19`、`#6750a4` です。TDesign と Ionic のテーマ変数は `apps/h5-<ui>/src/theme.css` にあり、色は順に `#0052d9`、`#0054e9` です。この 2 アプリは Vite 設定で px-to-viewport 変換を無効にしています。
 
 ```ts
 // Vant bootstrap; choose only the current app's theme.

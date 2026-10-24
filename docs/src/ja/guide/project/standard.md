@@ -1,6 +1,6 @@
 # コード規約
 
-> `lefthook.yml` は正しい `pnpm typecheck` を使い、workspace、3 アプリの設定、テストツールを検証します。CI は lint、型チェック、単体テストのカバレッジ、ビルドを独立して実行します。
+> `lefthook.yml` は正しい `pnpm typecheck` を使い、workspace、5 アプリの設定、テストツールを検証します。CI は lint、型チェック、単体テストのカバレッジ、ビルドを独立して実行します。
 
 ESLint、Oxfmt、Stylelint、OXLint、Commitlint の共有設定を使用しています。
 

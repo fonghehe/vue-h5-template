@@ -1,13 +1,11 @@
 # Directory Structure
 
 ```text
-apps/h5-{vant,nutui,varlet}/src/
+apps/h5-{vant,nutui,varlet,tdesign,ionic}/src/
   bootstrap.ts
   router/index.ts
   layout/index.vue
   views/                    → @vh5/mobile-ui/*.vue
-  locales/index.ts
-  api/                      → @vh5/api-client
 packages/
   mobile-ui/src/             → pages, cart.ts, queries.ts, surface.css
   api-client/src/modules/    → auth.ts, user.ts, product.ts
@@ -22,7 +20,7 @@ e2e/
 docs/src/                   → English; zh/, ja/, zh-TW/, zh-HK/
 ```
 
-Place shared product pages in `packages/mobile-ui/src`, with lazy route wrappers in every app. Framework-specific login and UI showcases remain in the apps. Session stores are under `stores/user.ts` for Vant/Varlet and `store/modules/user.ts` for NutUI.
+Place shared product pages in `packages/mobile-ui/src`, with lazy route wrappers in every app. Framework-specific login and UI showcases remain in the apps. Session stores are under `stores/user.ts` for Vant/Varlet/TDesign/Ionic and `store/modules/user.ts` for NutUI.
 
 Endpoint functions and generated API types belong to `api-client`; protocols and conversation lifecycle belong to `ai-chat`. Add browser lifecycle helpers to `packages/@core/composables`, not to a giant page composable.
 

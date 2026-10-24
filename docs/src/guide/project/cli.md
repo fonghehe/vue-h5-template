@@ -1,7 +1,5 @@
 # CLI — vsh
 
-> The CLI currently generates basic pages and copies reference layout/locales/API/stores. It is not a verified clone of the current v2 product apps: generated dependencies/bootstrap still need alignment with shared mobile UI and Query integration. Use an existing H5 app as the reference and run type checks, build and browser tests before using a generated app.
-
 The project bundles a small command-line tool, `@vh5/vsh` (invoked as `vsh`), built on [cac](https://github.com/cacjs/cac). It wraps linting, dependency checks, scaffolding, and workspace management so contributors don't have to memorize long command chains.
 
 ## Running commands
@@ -12,7 +10,7 @@ The CLI is a workspace package whose binary is `vsh`. You can invoke it in two w
 # Via pnpm (preferred)
 pnpm exec vsh <command>
 
-# Or through the root npm scripts that already wrap the common commands
+# Or through the root package scripts that already wrap the common commands
 pnpm lint        # vsh lint
 pnpm format      # vsh lint --format
 pnpm publint     # vsh publint
@@ -32,7 +30,7 @@ pnpm exec vsh lint
 pnpm exec vsh lint --threads 4   # explicit thread count for oxfmt / oxlint
 ```
 
-It runs, in order:
+The suite runs these checks. On machines with up to four logical CPUs, the checks run in the order shown.
 
 | Tool | Command |
 | ---- | ------- |
@@ -58,13 +56,13 @@ pnpm publint
 
 ### `vsh create-app`
 
-Interactively scaffolds a new H5 app under `apps/`. It prompts for a UI framework (Varlet / Vant / NutUI) and an app name, then generates a full boilerplate (`package.json`, `vite.config.ts`, router, views, i18n, stores) and copies `layout/`, `locales/`, `api/`, and `stores/` from the matching reference app.
+The wizard copies one of the five reference apps into `apps/`.
 
 ```bash
 pnpm create-app
 ```
 
-After it finishes, follow the printed next steps: run `pnpm install`, then add `dev:<name>` / `build:<name>` scripts to the root `package.json`.
+See [Create App](../essentials/create-app.md) for default ports, integration requirements and validation commands.
 
 ### `vsh check-circular`
 
@@ -99,8 +97,7 @@ Regenerates the `vh5.code-workspace` file from the current workspace packages so
 
 ```bash
 pnpm exec vsh code-workspace
-pnpm exec vsh code-workspace --spaces 4
-pnpm exec vsh code-workspace --auto-commit   # git add the result
+pnpm exec oxfmt --write vh5.code-workspace
 ```
 
 See [Code Standards](./standard) for the lint toolchain that `vsh lint` drives.

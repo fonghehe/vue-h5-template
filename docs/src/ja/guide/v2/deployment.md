@@ -4,4 +4,4 @@
 
 PWA は `VITE_PWA_ENABLED`、本番画像最適化は `VITE_IMAGE_OPTIMIZE` で切替できます。Service Worker は `/api/**` をキャッシュしません。Secret や AI Key を `VITE_*` に置かないでください。
 
-WeChat/WeCom WebView も対象エンジンの能力が必要で、旧クライアントは保証しません。旧 Dockerfile は playground 向けです。サブパスでは PWA URL、SPA fallback、ルート相対リンクも確認します。[配信の境界](../essentials/build.md)を参照してください。
+WeChat/WeCom WebView も対象エンジンの能力が必要で、旧クライアントは保証しません。サブパスでは PWA URL、SPA fallback、ルート相対リンクも確認します。[配信の境界](../essentials/build.md)を参照してください。

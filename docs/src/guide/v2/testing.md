@@ -1,15 +1,24 @@
 # Testing
 
+The root `vitest.config.ts` configures the entire workspace. Tests stay beside the code they exercise, and browser API mocks belong in the suites that need them.
 
 `pnpm typecheck` also checks VitePress configuration through `@vh5/docs`. Run `pnpm -F @vh5/docs type-check` for this scope alone; a successful documentation build does not replace type checking.
 
 ## Type checks and development startup
 
-`pnpm typecheck` independently checks the three apps, shared runtime packages (`utils`, `stores`, `locales`, core packages, UI/API/AI), the Mock backend, Vite configuration and workspace CLI tools. Each app checks both its source and `tsconfig.node.json`; `tsconfig.tools.json` covers root Vitest/Playwright configuration and E2E code. Package tests are type-checked too. Every new source-bearing package needs a `type-check` script so the recursive command discovers it. For focused checks, use `pnpm -F @vh5/utils type-check` or `pnpm -F @vh5/mobile-ui type-check`.
+`pnpm typecheck` independently checks the five apps, shared runtime packages (`utils`, `stores`, `locales`, core packages, UI/API/AI), the Mock backend, Vite configuration and workspace CLI tools. Each app checks both its source and `tsconfig.node.json`; `tsconfig.tools.json` covers root Vitest/Playwright configuration and E2E code. Package tests are type-checked too. Every new source-bearing package needs a `type-check` script so Turbo discovers it. For focused checks, use `pnpm -F @vh5/utils type-check` or `pnpm -F @vh5/mobile-ui type-check`.
 
 After adding workspace packages or changing their exports, run `pnpm install` and restart the development server. Vant fails if its port is occupied instead of silently switching ports. If an old server reports `Failed to resolve import @vh5/mobile-ui/...`, stop that server and run `pnpm dev:vant` again, then reload the browser. E2E also checks direct route loads for module HTTP errors and uncaught browser errors.
 
-The default `pnpm test:e2e` runs the shared behavioral suite on Vant, NutUI and Varlet sequentially. It covers tab parity, English/Chinese/Japanese switching and persistence, 320px catalog touch targets, the floating AI entry, Query pagination/mutation, login, Mock API and 401 handling. Dedicated app ports are 15778/15777/15779; tests wait for the Nitro API. Use `pnpm test:e2e:nutui` or `pnpm test:e2e:varlet` for one target.
+`pnpm test:e2e` runs the shared Playwright suites sequentially in the order below. Development runs wait for the Nitro product API before starting. The suites cover tab parity, language persistence, catalog touch targets, checkout, AI chat, Query, login and HTTP 401 handling.
+
+| App | `E2E_APP` | Test port | Run one app |
+| --- | --- | --- | --- |
+| [Vant](../../apps/vant.md) | `vant` | 15778 | `pnpm exec playwright test` |
+| [NutUI](../../apps/nutui.md) | `nutui` | 15777 | `pnpm test:e2e:nutui` |
+| [Varlet](../../apps/varlet.md) | `varlet` | 15779 | `pnpm test:e2e:varlet` |
+| [TDesign Mobile Vue](../../apps/tdesign.md) | `tdesign` | 15780 | `pnpm test:e2e:tdesign` |
+| [Ionic Vue](../../apps/ionic.md) | `ionic` | 15781 | `pnpm test:e2e:ionic` |
 
 The test pyramid is intentionally small and behavior-focused.
 
@@ -20,6 +29,7 @@ The test pyramid is intentionally small and behavior-focused.
 ```bash
 pnpm test
 pnpm test:coverage
+pnpm exec playwright install chromium
 pnpm test:e2e
 pnpm check
 ```
@@ -50,15 +60,15 @@ Playwright checks that a favorite survives a browser reload, can be removed, and
 
 ## Browser recovery and production preview
 
-Build the three apps first (`pnpm build`). Set `E2E_PREVIEW=1` to run only the browser behavior suite against Vite preview; Nitro Mock remains disabled in production. This suite checks lazy-load failure/reload, layout at 320×640, 844×390 and 1280×800, keyboard navigation and chat viewport shrink/restore. Responses needed by this suite are intercepted in the browser. The preview server is also checked directly to ensure it does not serve the development product API.
+Build the five apps first (`pnpm build`). Set `E2E_PREVIEW=1` to run only the browser behavior suite against Vite preview; Nitro Mock remains disabled in production. This suite checks lazy-load failure/reload, layout at 320×640, 844×390 and 1280×800, keyboard navigation and chat viewport shrink/restore. Responses needed by this suite are intercepted in the browser. The preview server is also checked directly to ensure it does not serve the development product API.
 
 ```bash
 E2E_APP=vant E2E_PREVIEW=1 pnpm exec playwright test
-E2E_APP=nutui E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
-E2E_APP=varlet E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
+pnpm exec playwright install webkit
+E2E_APP=ionic E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
 ```
 
-`E2E_BROWSER=webkit` selects WebKit; the default is Chromium. `E2E_CHANNEL=chrome` optionally uses installed Chrome for Chromium runs. Run each app with `E2E_APP=vant`, `nutui` or `varlet`. These are browser simulations: viewport resizing does not verify a real iOS/Android keyboard, device safe-area values or an embedded WebView.
+`E2E_BROWSER=webkit` selects WebKit; the default is Chromium. `E2E_CHANNEL=chrome` optionally uses installed Chrome for Chromium runs. Choose the app using the `E2E_APP` values in the table above. These are browser simulations: viewport resizing does not verify a real iOS/Android keyboard, device safe-area values or an embedded WebView.
 
 `RouteLoadError` handles Router navigation failures separately from rendering errors. It stops app-owned progress through an event, keeps the current page available and offers a document reload of the failed destination. Successful navigation clears the notice; unmount removes both Router hooks.
 

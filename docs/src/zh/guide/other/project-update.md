@@ -1,43 +1,17 @@
-# 项目更新
+# 项目维护
 
-## 同步最新代码
+## 同步代码
 
-```bash
-# 获取最新变更
-git fetch origin
-git pull origin main
+确认当前工作区干净且分支跟踪上游后，执行 `git pull --ff-only`，再运行 `pnpm install --frozen-lockfile`。工作区包或构建配置变更后，重启正在运行的开发服务。
 
-# 重新安装依赖（以防 lockfile 有变更）
-pnpm install
-```
+## 更新依赖
 
-## 依赖更新
+用 `pnpm outdated -r` 查看候选更新。修改 `pnpm-workspace.yaml` 中相关 catalog 条目，运行 `pnpm install`，并一起审阅 catalog 与锁文件。工作区内部依赖使用 `workspace:*`。
 
-```bash
-# 检查过时的依赖
-pnpm outdated -r
+## 验证变更
 
-# 交互式更新所有依赖到最新版本
-pnpm update -r --interactive --latest
-```
+运行 `pnpm check`。运行时依赖、导航、请求或构建集成变更后，运行 `pnpm test:e2e`。共享依赖变更时验证五套 UI 应用。
 
-## 清理缓存
+## 重建本地产物
 
-如果更新后遇到构建问题，尝试清理缓存：
-
-```bash
-# 清理所有缓存、node_modules 和 dist
-pnpm clean
-
-# 完整重装
-pnpm reinstall
-```
-
-## 处理破坏性变更
-
-更新依赖的大版本时：
-
-1. 查看 UI 框架迁移指南（NutUI / Vant / Varlet）
-2. 查看 Vite 发布说明了解破坏性变更
-3. 更新后测试所有三个应用变体
-4. 如果插件 API 变更，更新共享 Vite 配置
+`pnpm clean` 会删除已安装的依赖、构建产物和 Turbo 缓存。清理后使用 `pnpm install --frozen-lockfile` 恢复锁定的依赖。

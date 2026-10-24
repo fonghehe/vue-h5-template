@@ -10,7 +10,7 @@ In mobile H5 development, developers often face similar challenges when starting
 - Implementing common features like authentication, state management, and internationalization
 - Managing multiple apps with shared code and configurations
 
-Vue H5 Template was created to solve these problems with a well-structured, production-ready Monorepo template.
+Vue H5 Template provides five mobile web apps with shared feature pages and tooling. Choose an app as your starting point and use the deployment guide to connect your own backend.
 
 ## Why Monorepo?
 
@@ -33,13 +33,15 @@ With Monorepo, all apps share the same:
 
 ### Multi-UI Framework Support
 
-Different teams or projects may prefer different UI frameworks. Vue H5 Template provides three ready-to-use app templates:
+Different teams or projects may prefer different UI frameworks. Vue H5 Template provides five ready-to-use app templates:
 
 | App       | UI Framework | Default Port |
 | --------- | ------------ | ------------ |
 | h5-nutui  | NutUI 4.x    | 5777         |
 | h5-vant   | Vant 4.x     | 5778         |
 | h5-varlet | Varlet 3.x   | 5779         |
+| h5-tdesign | TDesign Mobile Vue 1.x | 5783 |
+| h5-ionic | Ionic Vue 9.x | 5784 |
 
 You can choose one or use multiple simultaneously.
 

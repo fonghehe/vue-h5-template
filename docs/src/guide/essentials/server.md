@@ -1,15 +1,19 @@
 # Backend Modes
 
-All three apps support the same two modes. Choose one of the following commands; do not run all commands in one terminal.
+All five apps support the same two modes. Choose one of the following commands; do not run all commands in one terminal.
 
 ```bash
 pnpm dev:vant
 pnpm dev:nutui
 pnpm dev:varlet
+pnpm dev:tdesign
+pnpm dev:ionic
 
 pnpm dev:services:vant
 pnpm dev:services:nutui
 pnpm dev:services:varlet
+pnpm dev:services:tdesign
+pnpm dev:services:ionic
 ```
 
 ## Local Nitro Mock

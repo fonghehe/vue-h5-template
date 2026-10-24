@@ -1,15 +1,19 @@
 # バックエンドモード
 
-3 アプリとも同じ 2 モードを利用できます。以下から対象のコマンドを 1 つ選んでください。
+5 アプリとも同じ 2 モードを利用できます。以下から対象のコマンドを 1 つ選んでください。
 
 ```bash
 pnpm dev:vant
 pnpm dev:nutui
 pnpm dev:varlet
+pnpm dev:tdesign
+pnpm dev:ionic
 
 pnpm dev:services:vant
 pnpm dev:services:nutui
 pnpm dev:services:varlet
+pnpm dev:services:tdesign
+pnpm dev:services:ionic
 ```
 
 ## Nitro Mock

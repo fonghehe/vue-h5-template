@@ -5,7 +5,7 @@ sidebar: false
 hero:
   name: Vue H5 Template
   text: Vue 3 移动端 H5 开发模板
-  tagline: 基于 Turborepo + Vue 3 + TypeScript 的移动端 Monorepo 模板，开箱即用，支持 NutUI / Vant / Varlet 三套 UI
+  tagline: 基于 Turborepo + Vue 3 + TypeScript 的移动端 Monorepo 模板，开箱即用，支持 NutUI / Vant / Varlet / TDesign / Ionic Vue 五套 UI
   actions:
     - theme: brand
       text: 快速开始 ->
@@ -19,7 +19,7 @@ hero:
 
 features:
   - title: "共享移动业务"
-    details: "Vant、NutUI、Varlet 共用 Home、List、Member、Examples，保留各自主题。"
+    details: "Vant、NutUI、Varlet、TDesign 和 Ionic Vue 共用 Home、List、Member、Examples，保留各自主题。"
     link: /zh/guide/v2/ui-framework
   - title: "流式 AI Chat"
     details: "悬浮入口、增量 SSE、停止、重试、重新生成与净化后的 Markdown。"

@@ -1,13 +1,11 @@
 # 目录结构
 
 ```text
-apps/h5-{vant,nutui,varlet}/src/
+apps/h5-{vant,nutui,varlet,tdesign,ionic}/src/
   bootstrap.ts
   router/index.ts
   layout/index.vue
   views/                    → @vh5/mobile-ui/*.vue
-  locales/index.ts
-  api/                      → @vh5/api-client
 packages/
   mobile-ui/src/             → pages, cart.ts, queries.ts, surface.css
   api-client/src/modules/    → auth.ts, user.ts, product.ts
@@ -22,7 +20,7 @@ e2e/
 docs/src/                   → English; zh/, ja/, zh-TW/, zh-HK/
 ```
 
-共享业务页放 `packages/mobile-ui/src`，各应用只写懒加载路由包装；框架专属登录和组件示例留在应用。会话 store 位于 Vant/Varlet 的 `stores/user.ts`、NutUI 的 `store/modules/user.ts`。
+共享业务页放 `packages/mobile-ui/src`，各应用只写懒加载路由包装；框架专属登录和组件示例留在应用。会话 store 位于 Vant/Varlet/TDesign/Ionic 的 `stores/user.ts`、NutUI 的 `store/modules/user.ts`。
 
 接口函数和生成类型归 `api-client`，协议和会话生命周期归 `ai-chat`。浏览器生命周期工具放 `packages/@core/composables`，不要塞进巨型页面 composable。
 

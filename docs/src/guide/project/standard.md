@@ -1,6 +1,6 @@
 # Code Standards
 
-> `lefthook.yml` calls the supported `pnpm typecheck` command. It checks the workspace, all three app configurations and test tooling; CI independently runs lint, type checks, unit coverage and builds.
+> `lefthook.yml` calls the supported `pnpm typecheck` command. It checks the workspace, all five app configurations and test tooling; CI independently runs lint, type checks, unit coverage and builds.
 
 ## Lint Tools
 

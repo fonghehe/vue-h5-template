@@ -8,7 +8,7 @@
 - `fetchUserInfoApi` 从统一拦截器获取 Token。
 - 移除未真正启用的文件路由插件，运行时继续使用显式路由。
 - 浏览器目标升级为 Safari 16.4+ / Chrome 111+。
-- 需要 Node 22.18+/24 和 pnpm 11。
+- 需要 Node 24.x 和 pnpm 12 或以上版本。
 
 推荐顺序：更新 workspace/构建配置；用共享 API Client 替换本地 fetch；把 `response.data` 改为直接数据；服务端状态迁到 Vue Query；补路由 Meta；生成 OpenAPI 类型；评估 PWA/存储/安全策略；最后运行 `pnpm check` 和 E2E。
 
@@ -16,4 +16,4 @@
 
 ## 当前实现边界
 
-三套应用共享业务 Tab、主题和 HTTP 401；仅 Vant 实际检查 `requiresAuth`，`authority` 尚非已接入角色授权。业务页面默认不缓存，包括购物车与 Query；三个布局在路由变化时重置 `.app-content` 滚动位置。Pinia 持久化和 Query 数据缓存独立于 KeepAlive。user/cart 即使生产也显式使用 localStorage。`/payment` 已提供纯前端支付方式演示；真实支付、自动刷新 token、服务端购物车同步与上传尚未实现。参见[路由](../essentials/route.md)、[状态](../essentials/state.md)与[部署](../essentials/build.md)。
+五套应用共享业务 Tab、主题和 HTTP 401；仅 Vant 实际检查 `requiresAuth`，`authority` 尚非已接入角色授权。业务页面默认不缓存，包括购物车与 Query；五个布局在路由变化时重置 `.app-content` 滚动位置。Pinia 持久化和 Query 数据缓存独立于 KeepAlive。user/cart 即使生产也显式使用 localStorage。`/payment` 已提供纯前端支付方式演示；真实支付、自动刷新 token、服务端购物车同步与上传尚未实现。参见[路由](../essentials/route.md)、[状态](../essentials/state.md)与[部署](../essentials/build.md)。

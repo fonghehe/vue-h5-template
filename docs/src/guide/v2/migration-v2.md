@@ -8,7 +8,7 @@
 - `fetchUserInfoApi` reads the token from the centralized interceptor.
 - runtime routes remain handwritten; obsolete generated file-router integration is removed.
 - builds target Safari 16.4+ and Chrome 111+.
-- Node 22.18+/24 and pnpm 11 are required.
+- Node 24.x and pnpm 12 or later are required.
 
 ## Migration order
 

@@ -1,9 +1,9 @@
 # v2 アーキテクチャ
 
-3つのアプリは `packages/mobile-ui` で同じタブと遅延読み込みビューを共有し、各 UI 固有のナビゲーションとコンポーネント例を維持します。本番ビルドは1つの UI ライブラリだけを含みます。
+5 つのアプリは `packages/mobile-ui` で同じタブと遅延読み込みビューを共有し、各 UI 固有のナビゲーションとコンポーネント例を維持します。本番ビルドは1つの UI ライブラリだけを含みます。
 
 ルートは意図的に手書きです。現在の規模では Layout、遅延読み込み、title、KeepAlive、認証と権限を明示でき、未使用だったファイルルーティング生成より理解しやすいためです。
-3つのアプリには、アプリケーションエラーバウンダリ、オフライン表示、Mobile Web API ページ、永続化可能なカートフローがあります。Network、Visual Viewport、Pull-to-refresh のライフサイクルは `@vh5-core/composables` に置きます。
+5 つのアプリには、アプリケーションエラーバウンダリ、オフライン表示、Mobile Web API ページ、永続化可能なカートフローがあります。Network、Visual Viewport、Pull-to-refresh のライフサイクルは `@vh5-core/composables` に置きます。
 
 ## 現在の実装範囲
 

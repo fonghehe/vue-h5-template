@@ -3,15 +3,15 @@
 Vue H5 Template v2 is a pnpm/Turborepo monorepo with explicit product and infrastructure boundaries.
 
 ```text
-apps/h5-vant ───────┐
-apps/h5-nutui ──────┼── packages/api-client ── apps/backend-mock
-apps/h5-varlet ─────┘
-all apps ────────────── packages/mobile-ui ── packages/ai-chat ───── POST /api/ai/chat
-all apps ────────────── packages/{stores,utils,styles,locales}
-all builds ──────────── internal/{vite-config,lint-configs,tsconfig}
+apps/h5-{vant,nutui,varlet,tdesign,ionic}
+  └─ packages/mobile-ui
+     ├─ TanStack Query → packages/api-client → Nitro Mock or business service
+     └─ packages/ai-chat → Nitro Mock or AI service
+shared client packages → packages/{stores,utils,styles,locales}
+workspace tooling → internal/{vite-config,lint-configs,tsconfig}
 ```
 
-All three apps share the same product tabs and lazy views through `packages/mobile-ui`, while retaining independent native navigation and UI-library showcases. Each production build contains one UI framework.
+All five apps share the same product tabs and lazy views through `packages/mobile-ui`, while retaining independent native navigation and UI-library showcases. Each production build contains one UI framework.
 
 ## Routing decision
 
@@ -26,7 +26,7 @@ v2 keeps handwritten Vue Router records. The previous `unplugin-vue-router` depe
 - Core composables: network, Visual Viewport and pull-to-refresh lifecycle.
 - SFC: rendering and local interaction only.
 
-All three apps include an application error boundary, an offline status banner, a mobile Web API page and a persisted cart flow. These are product examples rather than new infrastructure layers: cart selection belongs to Pinia, product data remains server state, and browser lifecycle code stays in `@vh5-core/composables`.
+All five apps include an application error boundary, an offline status banner, a mobile Web API page and a persisted cart flow. These are product examples rather than new infrastructure layers: cart selection belongs to Pinia, product data remains server state, and browser lifecycle code stays in `@vh5-core/composables`.
 
 See [Request Architecture](./request), [State Management](./state-management), and [AI Chat](./ai-chat).
 

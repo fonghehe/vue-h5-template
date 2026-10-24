@@ -1,15 +1,24 @@
 # テスト
 
+ルートの `vitest.config.ts` でワークスペース全体を設定します。テストは対象コードの近くに置き、ブラウザー API のモックは必要なテストスイート内で設定します。
 
 `pnpm typecheck` は `@vh5/docs` の VitePress 設定も検査します。個別には `pnpm -F @vh5/docs type-check` を実行してください。文書のビルド成功だけでは型の正しさを確認できません。
 
 ## 型チェックと開発サーバー
 
-`pnpm typecheck` は 3 アプリ、共有ランタイムパッケージ（utils、stores、locales、core、UI/API/AI）、Mock バックエンド、Vite 設定、workspace CLI を個別に検証します。各アプリのソースと `tsconfig.node.json`、さらに `tsconfig.tools.json` でルートの Vitest/Playwright 設定と E2E コードも確認します。パッケージ内のテストも対象です。ソースを持つ新規パッケージには `type-check` スクリプトが必要です。個別実行は `pnpm -F @vh5/utils type-check` または `pnpm -F @vh5/mobile-ui type-check`。
+`pnpm typecheck` は 5 アプリ、共有ランタイムパッケージ（utils、stores、locales、core、UI/API/AI）、Mock バックエンド、Vite 設定、workspace CLI を個別に検証します。各アプリのソースと `tsconfig.node.json`、さらに `tsconfig.tools.json` でルートの Vitest/Playwright 設定と E2E コードも確認します。パッケージ内のテストも対象です。ソースを持つ新規パッケージには `type-check` スクリプトが必要です。Turbo がこのスクリプトを実行します。個別実行は `pnpm -F @vh5/utils type-check` または `pnpm -F @vh5/mobile-ui type-check`。
 
 workspace パッケージの追加や exports の変更後は `pnpm install` を実行し、開発サーバーを再起動してください。Vant はポート使用中に別ポートへ移動せずエラーになります。古いサーバーで `Failed to resolve import @vh5/mobile-ui/...` が出た場合、そのサーバーを停止して `pnpm dev:vant` を再実行し、ブラウザを再読み込みしてください。E2E は各ルートへの直接アクセスでモジュールの HTTP エラーと未捕捉のブラウザ例外も検証します。
 
-`pnpm test:e2e` は Vant、NutUI、Varlet で共通テストを順番に実行します。タブ機能、英中日の切り替えと保存、320px のタッチ領域、AI ボタン、Query のページ分割・更新、ログイン、Mock API、401 を検証します。ポートは 15778/15777/15779 で、Nitro API の起動を待ちます。単体実行には `pnpm test:e2e:nutui` または `pnpm test:e2e:varlet` を使います。
+`pnpm test:e2e` は次の表の順番で共通の Playwright スイートを実行します。開発モードでは Nitro の商品 API の起動を待ちます。共通タブ、言語設定の保存、商品一覧のタッチ領域、決済、AI チャット、Query、ログイン、HTTP 401 を検証します。
+
+| アプリ | `E2E_APP` | テスト用ポート | 個別実行 |
+| --- | --- | --- | --- |
+| [Vant](../../apps/vant.md) | `vant` | 15778 | `pnpm exec playwright test` |
+| [NutUI](../../apps/nutui.md) | `nutui` | 15777 | `pnpm test:e2e:nutui` |
+| [Varlet](../../apps/varlet.md) | `varlet` | 15779 | `pnpm test:e2e:varlet` |
+| [TDesign Mobile Vue](../../apps/tdesign.md) | `tdesign` | 15780 | `pnpm test:e2e:tdesign` |
+| [Ionic Vue](../../apps/ionic.md) | `ionic` | 15781 | `pnpm test:e2e:ionic` |
 
 Vitest + happy-dom で utility/request/store/composable、Vue Test Utils で Login Form と Chat Input、Playwright で Home/Login/Mock API/401/SSE を検証します。
 
@@ -31,6 +40,7 @@ API テストでは ID、本文、キャンセル、言語変換、AI の base U
 ```bash
 pnpm test packages/api-client/src/__tests__/features.test.ts packages/mobile-ui/src/__tests__/favorite-button.test.ts packages/mobile-ui/src/__tests__/chat-page.test.ts
 pnpm test:coverage
+pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
@@ -38,15 +48,15 @@ Playwright は再読み込み後のお気に入り、解除、リモート提案
 
 ## ブラウザーの復旧と本番プレビュー
 
-先に `pnpm build` で三つのアプリをビルドします。`E2E_PREVIEW=1` では Vite preview に対してブラウザー動作テストのみを実行し、本番の Nitro Mock は無効のままです。遅延読み込みの失敗と復旧、320×640・844×390・1280×800 のレイアウト、キーボード操作、チャット表示領域の縮小と復元を検証します。必要な応答はブラウザーで傍受し、プレビューサーバーに開発用商品 API がないことも直接確認します。
+先に `pnpm build` で5 つのアプリをビルドします。`E2E_PREVIEW=1` では Vite preview に対してブラウザー動作テストのみを実行し、本番の Nitro Mock は無効のままです。遅延読み込みの失敗と復旧、320×640・844×390・1280×800 のレイアウト、キーボード操作、チャット表示領域の縮小と復元を検証します。必要な応答はブラウザーで傍受し、プレビューサーバーに開発用商品 API がないことも直接確認します。
 
 ```bash
 E2E_APP=vant E2E_PREVIEW=1 pnpm exec playwright test
-E2E_APP=nutui E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
-E2E_APP=varlet E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
+pnpm exec playwright install webkit
+E2E_APP=ionic E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
 ```
 
-`E2E_BROWSER=webkit` で WebKit を選択します。既定は Chromium です。`E2E_CHANNEL=chrome` でインストール済み Chrome を利用できます。`E2E_APP=vant`、`nutui`、`varlet` で各アプリを実行します。これらはブラウザーによる模擬検証であり、実機の iOS/Android キーボード、セーフエリア、WebView の確認にはなりません。
+`E2E_BROWSER=webkit` で WebKit を選択します。既定は Chromium です。`E2E_CHANNEL=chrome` でインストール済み Chrome を利用できます。上の表にある `E2E_APP` の値でアプリを選びます。これらはブラウザーによる模擬検証であり、実機の iOS/Android キーボード、セーフエリア、WebView の確認にはなりません。
 
 `RouteLoadError` は描画エラーとは別に Router の読み込み失敗を処理します。イベントでアプリ側の進捗表示を停止し、現在のページを保持して失敗した遷移先へのページ再読み込みを案内します。遷移成功で通知を消し、アンマウント時に両 Router フックを解除します。
 

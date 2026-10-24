@@ -8,4 +8,4 @@
 
 生产环境不得开启 Nitro Mock，也不得把 Secret、AI Key 或签名密钥写入 `VITE_*`。建议由部署层配置并验证 CSP、`nosniff`、`Permissions-Policy` 和 `Referrer-Policy`。
 
-微信/企业微信内嵌 WebView 必须满足目标内核能力，不保证旧客户端兼容。旧 Dockerfile 面向 playground，使用前需调整。子目录部署需检查 PWA URL、SPA fallback 和根路径链接。参见[构建与部署边界](../essentials/build.md)。
+微信/企业微信内嵌 WebView 必须满足目标内核能力，不保证旧客户端兼容。子目录部署需检查 PWA URL、SPA fallback 和根路径链接。参见[构建与部署边界](../essentials/build.md)。

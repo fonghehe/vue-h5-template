@@ -1,15 +1,19 @@
 # 後端模式
 
-三個應用都支援兩種模式，請揀一條命令啟動：
+五個應用都支援兩種模式，請揀一條命令啟動：
 
 ```bash
 pnpm dev:vant
 pnpm dev:nutui
 pnpm dev:varlet
+pnpm dev:tdesign
+pnpm dev:ionic
 
 pnpm dev:services:vant
 pnpm dev:services:nutui
 pnpm dev:services:varlet
+pnpm dev:services:tdesign
+pnpm dev:services:ionic
 ```
 
 `dev:<ui>` 將 `/api/**` 代理到 5320 嘅 Nitro Mock。Port 有空位先自動啟動，已佔用就唔會再開另一個實例，唔使獨立後端或者 AI key。

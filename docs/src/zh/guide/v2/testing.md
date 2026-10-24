@@ -1,15 +1,24 @@
 # 测试
 
+根目录的 `vitest.config.ts` 统一配置整个工作区。测试放在对应代码旁边，需要模拟浏览器 API 的测试在各自的测试套件内配置。
 
 `pnpm typecheck` 也通过 `@vh5/docs` 检查 VitePress 配置。单独验证可运行 `pnpm -F @vh5/docs type-check`；文档构建成功不能替代类型检查。
 
 ## 类型检查与开发启动
 
-`pnpm typecheck` 独立检查三个应用、共享运行时包（utils、stores、locales、core、UI/API/AI）、Mock 后端、Vite 配置和 workspace CLI。每个应用都检查源码及 `tsconfig.node.json`；`tsconfig.tools.json` 检查根目录 Vitest/Playwright 配置和 E2E 代码。包内测试也参与类型检查。新增含源码的包必须提供 `type-check` 脚本，否则递归命令不会检查它。局部验证可用 `pnpm -F @vh5/utils type-check` 或 `pnpm -F @vh5/mobile-ui type-check`。
+`pnpm typecheck` 独立检查五个应用、共享运行时包（utils、stores、locales、core、UI/API/AI）、Mock 后端、Vite 配置和 workspace CLI。每个应用都检查源码及 `tsconfig.node.json`；`tsconfig.tools.json` 检查根目录 Vitest/Playwright 配置和 E2E 代码。包内测试也参与类型检查。新增含源码的包必须提供 `type-check` 脚本，才能被 Turbo 检查。局部验证可用 `pnpm -F @vh5/utils type-check` 或 `pnpm -F @vh5/mobile-ui type-check`。
 
 新增 workspace 包或修改导出后，执行 `pnpm install` 并重启开发服务。Vant 端口被占用时会报错，不再悄悄切换端口。如果旧服务提示 `Failed to resolve import @vh5/mobile-ui/...`，停止该服务，重新执行 `pnpm dev:vant`，然后刷新浏览器。E2E 还会逐页直接访问路由，检查模块 HTTP 错误和未捕获的浏览器异常。
 
-`pnpm test:e2e` 依次运行 Vant、NutUI、Varlet 的共享行为测试，包括 Tab 功能一致性、英中日切换与持久化、320px 商品卡触控尺寸、AI 悬浮入口、Query 分页/变更、登录、Mock API 和 401。应用测试端口为 15778/15777/15779，启动后等待 Nitro API 就绪。可用 `pnpm test:e2e:nutui` 或 `pnpm test:e2e:varlet` 单独执行。
+`pnpm test:e2e` 按下表顺序运行共享 Playwright 套件。开发模式会等待 Nitro 商品 API 就绪。套件覆盖 Tab 一致性、语言持久化、商品触控区域、结账、AI 聊天、Query、登录和 HTTP 401 处理。
+
+| 应用 | `E2E_APP` | 测试端口 | 单独运行 |
+| --- | --- | --- | --- |
+| [Vant](../../apps/vant.md) | `vant` | 15778 | `pnpm exec playwright test` |
+| [NutUI](../../apps/nutui.md) | `nutui` | 15777 | `pnpm test:e2e:nutui` |
+| [Varlet](../../apps/varlet.md) | `varlet` | 15779 | `pnpm test:e2e:varlet` |
+| [TDesign Mobile Vue](../../apps/tdesign.md) | `tdesign` | 15780 | `pnpm test:e2e:tdesign` |
+| [Ionic Vue](../../apps/ionic.md) | `ionic` | 15781 | `pnpm test:e2e:ionic` |
 
 - Vitest + happy-dom：utils、request、stores、composables。
 - Vue Test Utils：登录表单、AI Chat Input 与应用错误边界交互。
@@ -18,6 +27,7 @@
 ```bash
 pnpm test
 pnpm test:coverage
+pnpm exec playwright install chromium
 pnpm test:e2e
 pnpm check
 ```
@@ -48,15 +58,15 @@ Playwright 验证收藏刷新保持、取消收藏、远程建议以及请求失
 
 ## 浏览器恢复与生产预览
 
-先运行 `pnpm build` 构建三套应用。设置 `E2E_PREVIEW=1` 后，仅在 Vite preview 上执行浏览器行为测试，生产包仍关闭 Nitro Mock。覆盖懒加载失败及整页恢复、320×640、844×390、1280×800 布局、键盘导航和聊天视口缩小恢复。所需响应由浏览器测试拦截提供，另直接请求预览服务器，确认没有开发商品 API。
+先运行 `pnpm build` 构建五套应用。设置 `E2E_PREVIEW=1` 后，仅在 Vite preview 上执行浏览器行为测试，生产包仍关闭 Nitro Mock。覆盖懒加载失败及整页恢复、320×640、844×390、1280×800 布局、键盘导航和聊天视口缩小恢复。所需响应由浏览器测试拦截提供，另直接请求预览服务器，确认没有开发商品 API。
 
 ```bash
 E2E_APP=vant E2E_PREVIEW=1 pnpm exec playwright test
-E2E_APP=nutui E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
-E2E_APP=varlet E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
+pnpm exec playwright install webkit
+E2E_APP=ionic E2E_PREVIEW=1 E2E_BROWSER=webkit pnpm exec playwright test
 ```
 
-`E2E_BROWSER=webkit` 选择 WebKit，默认 Chromium；`E2E_CHANNEL=chrome` 可选择已安装 Chrome。通过 `E2E_APP=vant`、`nutui`、`varlet` 分别运行。这些是浏览器模拟：调整视口不能证明真实 iOS/Android 键盘、设备安全区或内嵌 WebView 行为。
+`E2E_BROWSER=webkit` 选择 WebKit，默认 Chromium；`E2E_CHANNEL=chrome` 可选择已安装 Chrome。用上表的 `E2E_APP` 值选择应用。这些是浏览器模拟：调整视口不能证明真实 iOS/Android 键盘、设备安全区或内嵌 WebView 行为。
 
 `RouteLoadError` 单独处理 Router 导航加载异常，通过事件停止应用层进度条，保留当前页面并提供失败目标的整页重新加载。导航成功后提示消失，组件卸载时移除两个 Router 钩子。
 

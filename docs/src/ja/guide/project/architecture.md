@@ -6,7 +6,7 @@ App route → shared ChatPage → useStreamingChat → FetchChatProvider → Nit
 bootstrap → i18n → Pinia → configureApiClient → VueQueryPlugin → router → mount
 ```
 
-3 アプリは業務画面を共有し、ネイティブナビ・テーマ・言語・セッション接続は個別です。`mobile-ui` が画面と Query/cart、`api-client` が REST、`ai-chat` がストリームを担当します。views は遅延ラッパーで、業務処理を複製しません。
+5 アプリは業務画面を共有し、ネイティブナビ・テーマ・言語・セッション接続は個別です。`mobile-ui` が画面と Query/cart、`api-client` が REST、`ai-chat` がストリームを担当します。views は遅延ラッパーで、業務処理を複製しません。
 
 Pinia はクライアント状態、Vue Query はサーバーキャッシュ、Vue I18n は言語です。カートはローカル、決済はデモです。Nitro と業務/AI サービスで REST/SSE 契約を共用します。
 

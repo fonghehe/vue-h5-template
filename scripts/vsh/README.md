@@ -25,7 +25,7 @@ pnpm create-app  # vsh create-app
 | ---- | ---- |
 | `vsh lint` | 執行程式碼檢查（oxfmt / oxlint / eslint / stylelint）；`--format` 自動修復 |
 | `vsh publint` | 檢查各套件 `package.json` 是否符合發佈規範 |
-| `vsh create-app` | 互動式建立一個新的 H5 應用（NutUI / Vant / Varlet） |
+| `vsh create-app` | 從五種 UI 框架的參考應用建立 H5 應用 |
 | `vsh check-circular` | 掃描循環依賴（基於 `circular-dependency-scanner`） |
 | `vsh check-dep` | 檢查缺失 / 未使用的依賴（基於 `depcheck`） |
 | `vsh code-workspace` | 依 workspace 套件重新生成 `vh5.code-workspace` |

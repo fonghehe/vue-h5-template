@@ -1,15 +1,19 @@
 # 后端模式
 
-三个应用都支持以下两种模式。选择一条命令启动目标应用，不要在一个终端依次执行所有命令。
+五个应用都支持以下两种模式。选择一条命令启动目标应用，不要在一个终端依次执行所有命令。
 
 ```bash
 pnpm dev:vant
 pnpm dev:nutui
 pnpm dev:varlet
+pnpm dev:tdesign
+pnpm dev:ionic
 
 pnpm dev:services:vant
 pnpm dev:services:nutui
 pnpm dev:services:varlet
+pnpm dev:services:tdesign
+pnpm dev:services:ionic
 ```
 
 ## 本地 Nitro Mock

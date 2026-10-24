@@ -1,6 +1,6 @@
 # 代码规范
 
-> `lefthook.yml` 已使用正确的 `pnpm typecheck`，覆盖 workspace、三个应用配置和测试工具。CI 独立执行 lint、类型检查、单元测试覆盖率和构建。
+> `lefthook.yml` 已使用正确的 `pnpm typecheck`，覆盖 workspace、五个应用配置和测试工具。CI 独立执行 lint、类型检查、单元测试覆盖率和构建。
 
 ## Lint 工具链
 

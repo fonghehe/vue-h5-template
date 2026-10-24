@@ -1,6 +1,6 @@
 # Streaming AI Chat
 
-The themed floating entry is available in all three layouts and opens the lazy `/ai/chat` page. Shared UI lives in `packages/mobile-ui/src/ChatPage.vue`; wrappers pass the current session token and endpoint. Chat, Login, Cart and Details hide the entry. UI copy supports English (default), Chinese and Japanese; provider output remains untrusted content, not a frontend translation dictionary.
+The themed floating entry is available in all five layouts and opens the lazy `/ai/chat` page. Shared UI lives in `packages/mobile-ui/src/ChatPage.vue`; wrappers pass the current session token and endpoint. Chat, Login, Cart and Details hide the entry. UI copy supports English (default), Chinese and Japanese; provider output remains untrusted content, not a frontend translation dictionary.
 
 The `/ai/chat` page uses a lightweight provider-neutral protocol instead of binding the template to one AI vendor.
 
